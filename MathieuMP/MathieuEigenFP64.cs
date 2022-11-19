@@ -1,4 +1,7 @@
-﻿namespace MathieuMP {
+﻿// Copyright (c) T.Yoshimura 2022
+// https://github.com/tk-yoshimura
+
+namespace MathieuMP {
     public static class MathieuEigenFP64 {
         public static double FractionA(int n, double q, double a, int terms = 32) {
             if (n > 16384 || !(q >= 0)) {
