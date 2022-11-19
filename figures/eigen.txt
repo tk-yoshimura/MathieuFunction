@@ -1,7 +1,7 @@
 \begin{eqnarray*}
  a-(2 n)^2 =&& \left( \frac{q^2}{a-(2n-2)^2-} \frac{q^2}{a-(2n-4)^2-} \cdots \frac{q^2}{a-2^2-} \frac{2 q^2}{a} \right) \\
             &&- \left( \frac{q^2}{(2n+2)^2-a-}\frac{q^2}{(2n+4)^2-a-} \cdots \right)\\
- \bar{a}   =&& \left( \frac{h}{\bar{a}+(m^2-(m-2)^2)-} \frac{h}{\bar{a}+(m^2-(m-4)^2)-} \cdots \frac{h}{\bar{a}+(m^2-2^2)-} \frac{2 h}{m^2+\bar{a}} \right) \\
+ \bar{a}   =&& \left( \frac{h}{\bar{a}+(m^2-(m-2)^2)-} \frac{h}{\bar{a}+(m^2-(m-4)^2)-} \cdots \frac{h}{\bar{a}+(m^2-2^2)-} \frac{2 h}{\bar{a}+m^2} \right) \\
             &&+ \left( \frac{h}{\bar{a}+(m^2-(m+2)^2)-}\frac{h}{\bar{a}+(m^2-(m+4)^2)-} \cdots \right) \\
             && ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ (a:=a_{2n}(q), \bar{a}:=a-(2n)^2, h:=q^2, m:=2n, n \geq 0)\\
 \end{eqnarray*}
