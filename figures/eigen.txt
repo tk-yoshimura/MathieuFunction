@@ -1,31 +1,31 @@
 \begin{eqnarray*}
  a-(2 n)^2 =&& \left( \frac{q^2}{a-(2n-2)^2-} \frac{q^2}{a-(2n-4)^2-} \cdots \frac{q^2}{a-2^2-} \frac{2 q^2}{a} \right) \\
-            &&- \left( \frac{q^2}{(2n+2)^2-a-}\frac{q^2}{(2n+4)^2-a-} \right) \cdots\\
- \bar{a}   =&& \left( \frac{h}{(2 \cdot 2 m-2^2)+\bar{a}-} \frac{h}{(2 \cdot 4 m-4^2)+\bar{a}-} \cdots \frac{h}{(m^2-4)+\bar{a}-} \frac{2 h}{m^2+\bar{a}} \right) \\
-            &&- \left( \frac{h}{(2 \cdot 2 m+2^2)-\bar{a}-}\frac{h}{(2 \cdot 4 m+4^2)-\bar{a}-} \right) \cdots \\
-            && ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ (a:=a_{2n}(q), \bar{a}:=a-(2n)^2, h:=q^2, m:=2n, n \geq 0)\\
+            &&- \left( \frac{q^2}{(2n+2)^2-a-}\frac{q^2}{(2n+4)^2-a-} \cdots \right)\\
+ \bar{a}   =&& \left( \frac{h}{\bar{a}+(m^2-(m-2)^2)-} \frac{h}{\bar{a}+(m^2-(m-4)^2)-} \cdots \frac{h}{\bar{a}+(m^2-2^2)-} \frac{2 h}{m^2+\bar{a}} \right) \\
+            &&- \left( \frac{h}{-\bar{a}-(m^2-(m+2)^2)-}\frac{h}{-\bar{a}-(m^2-(m+4)^2)-} \cdots \right) \\
+            && ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ (a:=a_{2n}(q), \bar{a}:=a-(2n)^2, h:=q^2, m:=2n, n \geq 0)\\
 \end{eqnarray*}
 
 \begin{eqnarray*}
  b-(2 n)^2 =&& \left( \frac{q^2}{b-(2n-2)^2-} \frac{q^2}{b-(2n-4)^2-} \cdots \frac{q^2}{b-2^2} \right) \\
-            &&- \left( \frac{q^2}{(2n+2)^2-b-}\frac{q^2}{(2n+4)^2-b-} \right) \cdots\\
- \bar{b}   =&& \left( \frac{h}{(2 \cdot 2 m-2^2)+\bar{b}-} \frac{h}{(2 \cdot 4 m-4^2)+\bar{b}-} \cdots \frac{h}{(m^2-4)+\bar{b}} \right) \\
-            &&- \left( \frac{h}{(2 \cdot 2 m+2^2)-\bar{b}-}\frac{h}{(2 \cdot 4 m+4^2)-\bar{b}-} \right) \cdots \\
-            && ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ (b:=b_{2n}(q), \bar{b}:=b-(2n)^2, h:=q^2, m:=2n, n \geq 1)\\
+            &&- \left( \frac{q^2}{(2n+2)^2-b-}\frac{q^2}{(2n+4)^2-b-} \cdots \right)\\
+ \bar{b}   =&& \left( \frac{h}{\bar{b}+(m^2-(m-2)^2)-} \frac{h}{\bar{b}+(m^2-(m-4)^2)-} \cdots \frac{h}{\bar{b}+(m^2-2^2)} \right) \\
+            &&- \left( \frac{h}{-\bar{b}-(m^2-(m+2)^2)-}\frac{h}{-\bar{b}-(m^2-(m+4)^2)-}  \cdots \right) \\
+            && ~~~~~~~~~~~~~~~~~~~~~~~~~~ (b:=b_{2n}(q), \bar{b}:=b-(2n)^2, h:=q^2, m:=2n, n \geq 1)\\
 \end{eqnarray*}
 
 \begin{eqnarray*}
  a-(2 n+1)^2 =&& \left( \frac{q^2}{a-(2n-1)^2-} \frac{q^2}{a-(2n-3)^2-} \cdots \frac{q^2}{a-3^2-} \frac{q^2}{a-1^2-q} \right) \\
-            &&- \left( \frac{q^2}{(2n+3)^2-a-}\frac{q^2}{(2n+5)^2-a-} \right) \cdots\\
- \bar{a}   =&& \left( \frac{h}{(2 \cdot 2 m-1^2+1)+\bar{a}-} \frac{h}{(2 \cdot 4 m-3^2+1)+\bar{a}-} \cdots \frac{h}{(m^2-2m-8)+\bar{a}-} \frac{h}{(m^2+2m)+\bar{a}-q} \right) \\
-            &&- \left( \frac{h}{(2 \cdot 2 m+3^2-1)-\bar{a}-}\frac{h}{(2 \cdot 8 m+5^2-1)-\bar{a}-} \right) \cdots \\
-            && ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ (a:=a_{2n+1}(q), \bar{a}:=a-(2n+1)^2, h:=q^2, m:=2n+1, n \geq 0)\\
+            &&- \left( \frac{q^2}{(2n+3)^2-a-}\frac{q^2}{(2n+5)^2-a-} \cdots \right)\\
+ \bar{a}   =&& \left( \frac{h}{\bar{a}+(m^2-(m-2)^2)-} \frac{h}{\bar{a}+(m^2-(m-4)^2)-} \cdots \frac{h}{\bar{a}+(m^2-3^2)-} \frac{h}{\bar{a}+(m^2-1^2)-q} \right) \\
+            &&- \left( \frac{h}{-\bar{a}-(m^2-(m+2)^2)-}\frac{h}{-\bar{a}-(m^2-(m+4)^2)-} \cdots \right) \\
+            && ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ (a:=a_{2n+1}(q), \bar{a}:=a-(2n+1)^2, h:=q^2, m:=2n+1, n \geq 0)\\
 \end{eqnarray*}
 
 \begin{eqnarray*}
  b-(2 n+1)^2 =&& \left( \frac{q^2}{b-(2n-1)^2-} \frac{q^2}{b-(2n-3)^2-} \cdots \frac{q^2}{b-3^2-} \frac{q^2}{b-1^2+q} \right) \\
-            &&- \left( \frac{q^2}{(2n+3)^2-b-}\frac{q^2}{(2n+5)^2-b-} \right) \cdots\\
- \bar{b}   =&& \left( \frac{h}{(2 \cdot 2 m-1^2+1)+\bar{b}-} \frac{h}{(2 \cdot 4 m-3^2+1)+\bar{b}-} \cdots \frac{h}{(m^2-2m-8)+\bar{b}-} \frac{h}{(m^2+2m)+\bar{b}+q} \right) \\
-            &&- \left( \frac{h}{(2 \cdot 2 m+3^2-1)-\bar{b}-}\frac{h}{(2 \cdot 8 m+5^2-1)-\bar{b}-} \right) \cdots \\
-            && ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ (b:=b_{2n+1}(q), \bar{b}:=b-(2n+1)^2, h:=q^2, m:=2n+1, n \geq 0)\\
+            &&- \left( \frac{q^2}{(2n+3)^2-b-}\frac{q^2}{(2n+5)^2-b-} \cdots \right)\\
+ \bar{b}   =&& \left( \frac{h}{\bar{b}+(m^2-(m-2)^2)-} \frac{h}{\bar{b}+(m^2-(m-4)^2)-} \cdots \frac{h}{\bar{b}+(m^2-3^2)-} \frac{h}{\bar{b}+(m^2-1^2)+q} \right) \\
+            &&- \left( \frac{h}{-\bar{b}-(m^2-(m+2)^2)-}\frac{h}{-\bar{b}-(m^2-(m+4)^2)-} \cdots \right) \\
+            && ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ (b:=b_{2n+1}(q), \bar{b}:=b-(2n+1)^2, h:=q^2, m:=2n+1, n \geq 0)\\
 \end{eqnarray*}
