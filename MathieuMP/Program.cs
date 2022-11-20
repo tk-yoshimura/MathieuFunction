@@ -10,7 +10,14 @@ namespace MathieuMP {
             //}
 
             for (int n = 1; n <= 16; n++) {
-                (double y, double err) = MathieuEigenFP64.SearchFitB(n, Math.ScaleB(1, -400), 0);
+                (double y, double err) = EigenFP64.SearchFit(EigenFunc.B, n, 2, 0);
+            
+                Console.WriteLine(y);
+                Console.WriteLine(err);
+            }
+
+            for (int n = 0; n <= 16; n++) {
+                (double y, double err) = EigenFP64.SearchFit(EigenFunc.A, n, 2, 0);
             
                 Console.WriteLine(y);
                 Console.WriteLine(err);
