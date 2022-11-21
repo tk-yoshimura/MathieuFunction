@@ -86,8 +86,6 @@ namespace MathieuMP {
                     break;
                 }
 
-                Console.WriteLine($"{ah/dh},{d0 - d1},{a0}");
-
                 d0 = Fraction(func, n, q, a0);
 
                 if (d0 == 0) {
@@ -120,16 +118,49 @@ namespace MathieuMP {
         private static double NearZero(EigenFunc func, int n, double q) {
             double h = q * q;
 
-            double y = (func, n) switch {
-                (EigenFunc.A, 0) => h * (-1d / 2),
-                (EigenFunc.A, 1) => q + h * (-1d / 8),
-                (EigenFunc.B, 1) => -q + h * (-1d / 8),
-                (EigenFunc.A, 2) => h * (5d / 12),
-                (EigenFunc.B, 2) => h * (-1d / 12),
-                _ => h / (2 * (n * n - 1))
+            double nz_largen(double h) {
+                double n_sq = n * n, n_sq_m1 = n_sq - 1, n_sq_m4 = n_sq - 4, n_sq_m9 = n_sq - 9;
+
+                double c2 = 1 / (2 * n_sq_m1);
+                double c4 = (7 + n_sq * 5) / (32 * n_sq_m1 * n_sq_m1 * n_sq_m1 * n_sq_m4);
+                double c6 = (29 + n_sq * (58 * n_sq * 9)) / (64 * n_sq_m1 * n_sq_m1 * n_sq_m1 * n_sq_m1 * n_sq_m1 * n_sq_m4 * n_sq_m9);
+
+                return h * (c2 + h * (c4 + h * c6));
+            }
+
+            static double square_frac(int n) {
+                double x = 1;
+                for (int i = 2; i <= n; i++) {
+                    x *= i;
+                }
+                return x * x;
+            }
+
+            double nz_mean = n switch {
+                0 => h * (-1d / 2 + h * (7d / 128 + h * (-29d / 2304 + h * (68687d / 18874368)))),
+                1 => h * (-1d / 8 + h * (-1d / 1536 + h * (49d / 589824 + h * (-83d / 35389440)))),
+                2 => h * (1d / 6 + h * (-379d / 13824 + h * (7829d / 1244160 + h * (-166904701d / 91729428480)))),
+                3 => h * (1d / 16 + h * (13d / 20480 + h * (-1961d / 23592960))),
+                4 => h * (1d / 30 + h * (29d / 432000 + h * (1087d / 1360800000))),
+                5 => h * (1d / 48 + h * (11d / 774144 + h * (37d / 891813888))),
+                6 => h * (1d / 70 + h * (187d / 43904000 + h * (13781d / 2904249600000))),
+                _ => nz_largen(h)
             };
 
-            return y;
+            double nz_sub = n switch {
+                0 => 0d,
+                1 => 1d + h * (-1d / 64 + h * (11d / 36864 + h * (55d / 9437184))),
+                2 => 1d / 4 + h * (-1d / 36 + h * (11141d / 1769472 + h * (-1086647d / 597196800))),
+                3 => 1d / 64 + h * (-5d / 16384 + h * (-609d / 104857600)),
+                4 => 1d / 2304 + h * (-1d / 345600),
+                _ => 1d / Math.ScaleB(square_frac(n - 1), -2 * n + 2)
+            };
+
+            nz_sub *= (n > 0) ? Math.Pow(q, n) : 1d;
+
+            double nz = nz_mean + ((func == EigenFunc.A) ? +nz_sub : -nz_sub);
+
+            return nz;
         }
 
         private static double Asymptotic(EigenFunc func, int n, double q) {
