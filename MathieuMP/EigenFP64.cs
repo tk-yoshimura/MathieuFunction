@@ -1,6 +1,9 @@
 ﻿// Copyright (c) T.Yoshimura 2022
 // https://github.com/tk-yoshimura
 
+using System.Net;
+using System.Runtime.Intrinsics.Arm;
+
 namespace MathieuMP {
     public static class EigenFP64 {
 
@@ -65,7 +68,7 @@ namespace MathieuMP {
         /// <summary>
         /// If a matches the true value, return 0.
         /// </summary>
-        public static double Fraction(EigenFunc func, int n, double q, double a, int terms = 64) {
+        public static double Fraction(EigenFunc func, int n, double q, double a, int terms = 32) {
             return func switch {
                 EigenFunc.A => FractionA(n, q, a, terms),
                 EigenFunc.B => FractionB(n, q, a, terms),
@@ -83,7 +86,7 @@ namespace MathieuMP {
             }
 
             double h = Math.Max(Math.ScaleB(1, -40), Math.ScaleB(Math.Abs(a), -10));
-            double a0 = a, d0 = Fraction(func, n, q, a0), da = double.NaN;
+            double a0 = a, d0 = Fraction(func, n, q, a0), da = 0;
             double an2 = a - h, dn2 = Fraction(func, n, q, an2);
             double ap2 = a + h, dp2 = Fraction(func, n, q, ap2);
                 
@@ -138,26 +141,57 @@ namespace MathieuMP {
 
                     continue;
                 }
-                else if((dn2 * dn1 < 0) || (dp2 * dp1 < 0)){
-                    Console.WriteLine("jump");
+                else if(dn2 * dn1 < 0){
+                    Console.WriteLine("jump - test");
+                                         
+                    double an1p25 = (an2 + an1 * 3) / 4;
+                    double an1p50 = (an2 + an1) / 2;
+                    double an1p75 = (an2 * 3 + an1) / 4;
 
-                    if (dn2 * dn1 < 0) { 
-                        a0 = (an2 + an1) / 2;
+                    double dn1p25 = Fraction(func, n, q, an1p25);
+                    double dn1p50 = Fraction(func, n, q, an1p50);
+                    double dn1p75 = Fraction(func, n, q, an1p75);
+
+                    if ((dn1 <= dn1p25 && dn1p25 <= dn1p50 && dn1p50 <= dn1p75 && dn1p75 <= dn2) ||
+                        (dn1 >= dn1p25 && dn1p25 >= dn1p50 && dn1p50 >= dn1p75 && dn1p75 >= dn2)) {
+                        Console.WriteLine("jump success");
+
+                        a0 = an1p50;
                         d0 = Fraction(func, n, q, a0);
 
                         (ap2, dp2) = (an1, dn1);
+
+                        da = h;
+                        h /= 2;
+
+                        continue;
                     }
-                    if (dp2 * dp1 < 0) { 
-                        a0 = (ap1 + ap2) / 2;
+                }
+                else if(dp2 * dp1 < 0) { 
+                    Console.WriteLine("jump + test");
+
+                    double ap1p25 = (ap2 + ap1 * 3) / 4;
+                    double ap1p50 = (ap2 + ap1) / 2;
+                    double ap1p75 = (ap2 * 3 + ap1) / 4;
+
+                    double dp1p25 = Fraction(func, n, q, ap1p25);
+                    double dp1p50 = Fraction(func, n, q, ap1p50);
+                    double dp1p75 = Fraction(func, n, q, ap1p75);
+
+                    if ((dp1 <= dp1p25 && dp1p25 <= dp1p50 && dp1p50 <= dp1p75 && dp1p75 <= dp2) ||
+                        (dp1 >= dp1p25 && dp1p25 >= dp1p50 && dp1p50 >= dp1p75 && dp1p75 >= dp2)) {
+                        Console.WriteLine("jump success");
+
+                        a0 = ap1p50;
                         d0 = Fraction(func, n, q, a0);
 
                         (an2, dn2) = (ap1, dp1);
+
+                        da = h;
+                        h /= 2;
+
+                        continue;
                     }
-
-                    da = h;
-                    h /= 2;
-
-                    continue;
                 }
 
                 (an2, dn2) = (an1, dn1);
