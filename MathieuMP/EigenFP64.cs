@@ -90,6 +90,8 @@ namespace MathieuMP {
 
                 double dh = d1 - d0;
 
+                //Console.WriteLine($"{d0}, {d1}");
+
                 if (dh == 0) {
                     break;
                 }
