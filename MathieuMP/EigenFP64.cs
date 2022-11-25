@@ -3,6 +3,11 @@
 
 namespace MathieuMP {
     public static class EigenFP64 {
+
+        /// <summary>
+        /// Continue fraction eigen A.
+        /// </summary>
+        /// <remarks>DLMF 28.6</remarks>
         private static double FractionA(int n, double q, double a, int terms) {
             if (n > 16384 || !(q >= 0)) {
                 throw new ArgumentException($"{nameof(n)}, {nameof(q)}");
@@ -28,6 +33,10 @@ namespace MathieuMP {
             return y;
         }
 
+        /// <summary>
+        /// Continue fraction eigen B.
+        /// </summary>
+        /// <remarks>DLMF 28.6</remarks>
         private static double FractionB(int n, double q, double a, int terms) {
             if (n < 1 || n > 16384 || !(q >= 0)) {
                 throw new ArgumentException($"{nameof(n)}, {nameof(q)}");
@@ -53,7 +62,9 @@ namespace MathieuMP {
             return y;
         }
 
-        // If a matches the true value, return 0.
+        /// <summary>
+        /// If a matches the true value, return 0.
+        /// </summary>
         public static double Fraction(EigenFunc func, int n, double q, double a, int terms = 32) {
             return func switch {
                 EigenFunc.A => FractionA(n, q, a, terms),
@@ -62,7 +73,10 @@ namespace MathieuMP {
             };
         }
 
-        // The true value is obtained by the secant method.
+        /// <summary>
+        /// The true value is obtained by the secant method.
+        /// NOTE: a is within the radii of convergence.
+        /// </summary>
         private static (double value, double error) SearchFit(EigenFunc func, int n, double q, double a, int maxiter = 16) {
             if (q == 0) {
                 return (0d, 0d);
@@ -96,12 +110,10 @@ namespace MathieuMP {
             return (a0, da);
         }
 
-        // Initial value for the secant method.
+        /// <summary>
+        /// Initial value for the secant method.
+        /// </summary>
         public static double InitialValue(EigenFunc func, int n, double q) {
-            if (!Enum.IsDefined(func)) {
-                throw new ArgumentException(nameof(func));
-            }
-
             if (func == EigenFunc.A && n < 0) {
                 throw new ArgumentOutOfRangeException(nameof(n));
             }
@@ -109,8 +121,36 @@ namespace MathieuMP {
                 throw new ArgumentOutOfRangeException(nameof(n));
             }
 
-            double y = (q < 2 * Math.Max(1, n * n)) ? NearZero(func, n, q) : Asymptotic(func, n, q);
-            
+            if (q < 1d / 32) {
+                return NearZero(func, n, q);
+            }
+
+            double y = (func, n) switch {
+                (EigenFunc.A, 0 or 1) => (q <= 4) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
+                (EigenFunc.A, 2) => (q <= 3) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
+                (EigenFunc.A, 3) => (q <= 6.25) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
+                (EigenFunc.A, <= 64) => (q <= 0.49 * n * n)
+                                        ? NearPeak(func, n, q)
+                                        : (q <= 0.7225 * n * n)
+                                            ? (NearPeak(func, n, q) + Asymptotic(func, n, q)) / 2
+                                            : Asymptotic(func, n, q),
+                (EigenFunc.A, _) => ((n & 1) == 0)
+                                        ? Value(func, n / 2, q / 2, zero_shift: false).value * 4
+                                        : Value(func, n / 2, q / 2, zero_shift: false).value * (n * n / (double)(n / 2 * n / 2)),
+                (EigenFunc.B, 1) => (q <= 4) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
+                (EigenFunc.B, 2) => (q <= 5) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
+                (EigenFunc.B, 3) => (q <= 6.25) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
+                (EigenFunc.B, <= 64) => (q <= 0.49 * n * n)
+                                        ? NearPeak(func, n, q)
+                                        : (q <= 0.7225 * n * n)
+                                            ? (NearPeak(func, n, q) + Asymptotic(func, n, q)) / 2
+                                            : Asymptotic(func, n, q),
+                (EigenFunc.B, _) => ((n & 1) == 0)
+                                        ? Value(func, n / 2, q / 2, zero_shift: false).value * 4
+                                        : Value(func, n / 2, q / 2, zero_shift: false).value * (n * n / (double)((n / 2) * (n / 2))),
+                _ => throw new ArgumentException(nameof(func))
+            };
+
             return y;
         }
 
@@ -137,16 +177,19 @@ namespace MathieuMP {
             }
         }
 
+        /// <summary>
+        /// Near zero approx eigen values. (q less than 1/32)
+        /// </summary>
         private static double NearZero(EigenFunc func, int n, double q) {
             double h = q * q;
 
             double y = (func, n) switch {
                 (EigenFunc.A, 0) => h * (-1d / 2 + h * (7d / 128)),
                 (EigenFunc.A, 1) => q + h * (-1d / 8 + h * (-1d / 64)),
-                (EigenFunc.B, 1) => -q + h * (-1d / 8 + h * (1d / 64)),
                 (EigenFunc.A, 2) => h * (5d / 12 + h * (-763d / 13824)),
-                (EigenFunc.B, 2) => h * (-1d / 12 + h * (5d / 13824)),
                 (EigenFunc.A, 3) => h * (1d / 16 + q * (1d / 64 + q * (13d / 20480))),
+                (EigenFunc.B, 1) => -q + h * (-1d / 8 + h * (1d / 64)),
+                (EigenFunc.B, 2) => h * (-1d / 12 + h * (5d / 13824)),
                 (EigenFunc.B, 3) => h * (1d / 16 + q * (-1d / 64 + q * (13d / 20480))),
                 _ => h / (2 * (n * n - 1))
             };
@@ -154,6 +197,43 @@ namespace MathieuMP {
             return y;
         }
 
+        /// <summary>
+        /// Near peak (q/(n^2) in less than 1-2)
+        /// </summary>
+        /// <remarks>Fayez A. Alhargan (2000)</remarks>
+        private static double NearPeak(EigenFunc func, int n, double q) {
+            double h = q * q;
+
+            static double nz_largen(int n, double h) {
+                double n_sq = n * n, n_sq_m1 = n_sq - 1, n_sq_m4 = n_sq - 4, n_sq_m9 = n_sq - 9;
+
+                double c2 = 1 / (2 * n_sq_m1);
+                double c4 = (7 + n_sq * 5) / (32 * n_sq_m1 * n_sq_m1 * n_sq_m1 * n_sq_m4);
+                double c6 = (29 + n_sq * (58 + n_sq * 9)) / (64 * n_sq_m1 * n_sq_m1 * n_sq_m1 * n_sq_m1 * n_sq_m1 * n_sq_m4 * n_sq_m9);
+
+                return h * (c2 + h * (c4 + h * c6));
+            }
+
+            double y = (func, n) switch {
+                (EigenFunc.A, 0) => 2 - Math.Sqrt(4 + h * 2),
+                (EigenFunc.A, 1) => 4 + (q - Math.Sqrt(64 + q * (-16 + q * 5))) / 2,
+                (EigenFunc.A, 2) => RootCubic(h * 20, -48 - h * 3, -8),
+                (EigenFunc.A, 3) => RootCubic(h * (8 + q), -128 + q * 16 - h * 2, -q - 8),
+                (EigenFunc.B, 1) => 4 - (q + Math.Sqrt(64 + q * (16 + q * 5))) / 2,
+                (EigenFunc.B, 2) => 6 - Math.Sqrt(36 + h),
+                (EigenFunc.B, 3) => RootCubic(h * (8 - q), -128 - q * 16 - h * 2, q - 8),
+                (EigenFunc.A, _) => nz_largen(n, h),
+                (EigenFunc.B, _) => nz_largen(n + 1, h),
+                _ => throw new ArgumentException(nameof(func))
+            };
+
+            return y;
+        }
+
+        /// <summary>
+        /// Asymptotic eigen values. (q/(n^2) greater than 1-2)
+        /// </summary>
+        /// <remarks>DLMF 28.6</remarks>
         private static double Asymptotic(EigenFunc func, int n, double q) {
             double u = Math.Sqrt(q), v = 1d / u;
             double s = func == EigenFunc.A ? (2 * n + 1) : (2 * n - 1), s_sq = s * s;
@@ -170,6 +250,14 @@ namespace MathieuMP {
             return y;
         }
 
+        /// <summary>
+        /// Compute eigan value
+        /// </summary>
+        /// <param name="func">eigen function</param>
+        /// <param name="n">order</param>
+        /// <param name="q">q</param>
+        /// <param name="zero_shift">remove bias (=n^2)</param>
+        /// <returns></returns>
         public static (double value, double error) Value(EigenFunc func, int n, double q, bool zero_shift = false) {
             double a0 = InitialValue(func, n, q);
             (double value, double error) = SearchFit(func, n, q, a0);
