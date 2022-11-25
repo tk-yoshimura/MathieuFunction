@@ -65,7 +65,7 @@ namespace MathieuMP {
         /// <summary>
         /// If a matches the true value, return 0.
         /// </summary>
-        public static double Fraction(EigenFunc func, int n, double q, double a, int terms = 32) {
+        public static double Fraction(EigenFunc func, int n, double q, double a, int terms = 64) {
             return func switch {
                 EigenFunc.A => FractionA(n, q, a, terms),
                 EigenFunc.B => FractionB(n, q, a, terms),
@@ -74,39 +74,94 @@ namespace MathieuMP {
         }
 
         /// <summary>
-        /// The true value is obtained by the secant method.
+        /// The true value is obtained by the binary search and secant method.
         /// NOTE: a is within the radii of convergence.
         /// </summary>
-        private static (double value, double error) SearchFit(EigenFunc func, int n, double q, double a, int maxiter = 16) {
+        public static (double value, double error) SearchFit(EigenFunc func, int n, double q, double a) {
             if (q == 0) {
                 return (0d, 0d);
             }
 
+            double h = Math.Max(Math.ScaleB(1, -40), Math.ScaleB(Math.Abs(a), -10));
             double a0 = a, d0 = Fraction(func, n, q, a0), da = double.NaN;
+            double an2 = a - h, dn2 = Fraction(func, n, q, an2);
+            double ap2 = a + h, dp2 = Fraction(func, n, q, ap2);
+                
+            while (Math.Abs(h / a) >= 1e-15 && h >= 1e-250) { 
+                h /= 2;
 
-            for (int iter = 0; iter < maxiter; iter++) {
-                double ah = Math.CopySign(Math.Max(Math.ScaleB(1, -40), Math.ScaleB(Math.Abs(a0), -10)), a0);
-                double a1 = a0 + ah, d1 = Fraction(func, n, q, a1);
+                double an1 = a0 - h, dn1 = Fraction(func, n, q, an1);
+                double ap1 = a0 + h, dp1 = Fraction(func, n, q, ap1);
 
-                double dh = d1 - d0;
+                Console.WriteLine($"{h}");
+                Console.WriteLine($"{an2}, {an1}, {a0}, {ap1}, {ap2}");
+                Console.WriteLine($"{dn2}, {dn1}, {d0}, {dp1}, {dp2}");
 
-                //Console.WriteLine($"{d0}, {d1}");
+                if ((dn2 <= dn1 && dn1 <= d0 && d0 <= dp1 && dp1 <= dp2) ||
+                    (dn2 >= dn1 && dn1 >= d0 && d0 >= dp1 && dp1 >= dp2)) {
 
-                if (dh == 0) {
-                    break;
+                    Console.WriteLine("monotone");
+
+                    if ((dn2 * dn1 < 0) || (dn1 * d0 < 0) || (d0 * dp1 < 0) || (dp1 * dp2 < 0)) {
+                        Console.WriteLine("secant");
+
+                        da = h / (dp1 - d0) * d0;
+                        a0 -= da;
+
+                        if (Math.Abs(da / a0) <= 1e-15) {
+                            break;
+                        }
+                    }
+                    else {
+                        Console.WriteLine("sft");
+
+                        if ((0 <= dn2 && dn2 <= dn1) || (0 >= dn2 && dn2 >= dn1)) {
+                            a0 = an2;
+                        }
+                        if ((dp1 <= dp2 && dp2 <= 0) || (dp1 >= dp2 && dp2 >= 0)) {
+                            a0 = ap2;
+                        }
+                    }
+
+                    d0 = Fraction(func, n, q, a0);
+                    if (d0 == 0) {
+                        da = 0;
+                        break;
+                    }
+
+                    h *= 2;
+
+                    an2 = a0 - h;
+                    ap2 = a0 + h;
+                    dn2 = Fraction(func, n, q, an2);
+                    dp2 = Fraction(func, n, q, ap2);
+
+                    continue;
                 }
-                da = ah / dh * d0;
-                a0 -= da;
+                else if((dn2 * dn1 < 0) || (dp2 * dp1 < 0)){
+                    Console.WriteLine("jump");
 
-                if (Math.Abs(da / a0) <= 1e-15) {
-                    break;
+                    if (dn2 * dn1 < 0) { 
+                        a0 = (an2 + an1) / 2;
+                        d0 = Fraction(func, n, q, a0);
+
+                        (ap2, dp2) = (an1, dn1);
+                    }
+                    if (dp2 * dp1 < 0) { 
+                        a0 = (ap1 + ap2) / 2;
+                        d0 = Fraction(func, n, q, a0);
+
+                        (an2, dn2) = (ap1, dp1);
+                    }
+
+                    da = h;
+                    h /= 2;
+
+                    continue;
                 }
 
-                d0 = Fraction(func, n, q, a0);
-
-                if (d0 == 0) {
-                    return (a0, 0d);
-                }
+                (an2, dn2) = (an1, dn1);
+                (ap2, dp2) = (ap1, dp1);
             }
 
             return (a0, da);
@@ -148,8 +203,8 @@ namespace MathieuMP {
                                             ? (NearPeak(func, n, q) + Asymptotic(func, n, q)) / 2
                                             : Asymptotic(func, n, q),
                 (EigenFunc.B, _) => ((n & 1) == 0)
-                                        ? Value(func, n / 2, q / 2, zero_shift: false).value * 4
-                                        : Value(func, n / 2, q / 2, zero_shift: false).value * (n * n / (double)((n / 2) * (n / 2))),
+                                        ? Value(func, n / 2, q / 2, zero_shift: false).value * 2
+                                        : Value(func, n / 2, q / 2, zero_shift: false).value * (n / (double)(n / 2)),
                 _ => throw new ArgumentException(nameof(func))
             };
 

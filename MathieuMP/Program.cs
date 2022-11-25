@@ -11,14 +11,14 @@ namespace MathieuMP {
 
             //EigenFP64.Value(EigenFunc.B, 4, 37.375, zero_shift: true);
 
-            //EigenFP64.Fraction(EigenFunc.B, 4, 37.375, -12);
+            EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -12);
 
-            EigenFP64.Fraction(EigenFunc.B, 4, 37.3753585154754, -12);
+            double a = EigenFP64.Fraction(EigenFunc.B, 4, 37.375, -11.9996337890625);
             
-            for (double a = -11.875; a >= -12.125; a -= 1d / 4096) {
-                double d = EigenFP64.Fraction(EigenFunc.B, 4, 37.40, a);
-                Console.WriteLine($"{a},{d}");
-            }
+            //for (double a = -12 + 1d/64; a >= -12 - 1d/64; a -= 1d / 65536) {
+            //    double d = EigenFP64.Fraction(EigenFunc.B, 4, 37.375, a);
+            //    Console.WriteLine($"{a},{d}");
+            //}
 
             Console.WriteLine("END");
             Console.Read();
