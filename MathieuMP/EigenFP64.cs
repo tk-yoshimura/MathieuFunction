@@ -77,6 +77,24 @@ namespace MathieuMP {
         }
 
         /// <summary>
+        /// Determine if the sequence is linear.
+        /// </summary>
+        public static bool IsLinear(double a, double b, double c, double d, double e) {
+            if (!(a <= b && b <= c && c <= d && d <= e) &&
+                !(a >= b && b >= c && c >= d && d >= e)) {
+
+                return false;
+            }
+
+            double s = Math.Abs(a - e) / 8, t = Math.Abs(a - e) / 4;
+            double p = Math.Abs(b - (a * 3 + e) / 4);
+            double q = Math.Abs(c - (a + e) / 2);
+            double r = Math.Abs(d - (a + e * 3) / 4);
+
+            return (p <= s) && (q <= t) && (r <= s);
+        }
+
+        /// <summary>
         /// The true value is obtained by the binary search and secant method.
         /// NOTE: a is within the radii of convergence.
         /// </summary>
@@ -100,12 +118,11 @@ namespace MathieuMP {
                 Console.WriteLine($"{an2}, {an1}, {a0}, {ap1}, {ap2}");
                 Console.WriteLine($"{dn2}, {dn1}, {d0}, {dp1}, {dp2}");
 
-                if ((dn2 <= dn1 && dn1 <= d0 && d0 <= dp1 && dp1 <= dp2) ||
-                    (dn2 >= dn1 && dn1 >= d0 && d0 >= dp1 && dp1 >= dp2)) {
+                if (IsLinear(dn2, dn1, d0, dp1, dp2)) {
 
                     Console.WriteLine("monotone");
 
-                    if ((dn2 * dn1 < 0) || (dn1 * d0 < 0) || (d0 * dp1 < 0) || (dp1 * dp2 < 0)) {
+                    if (dn2 * dn2 < 0) {
                         Console.WriteLine("secant");
 
                         da = h / (dp1 - d0) * d0;
@@ -114,25 +131,32 @@ namespace MathieuMP {
                         if (Math.Abs(da / a0) <= 1e-15) {
                             break;
                         }
+                        
+                        d0 = Fraction(func, n, q, a0);
+                        if (d0 == 0) {
+                            da = 0;
+                            break;
+                        }
+
+                        h *= 2;
                     }
                     else {
-                        Console.WriteLine("sft");
+                        Console.WriteLine("sft test");
 
                         if ((0 <= dn2 && dn2 <= dn1) || (0 >= dn2 && dn2 >= dn1)) {
-                            a0 = an2;
+                            Console.WriteLine("sft -");
+                            h *= 4;
+                            (a0, d0) = (an2 - h, dn2);
                         }
-                        if ((dp1 <= dp2 && dp2 <= 0) || (dp1 >= dp2 && dp2 >= 0)) {
-                            a0 = ap2;
+                        else if ((dp1 <= dp2 && dp2 <= 0) || (dp1 >= dp2 && dp2 >= 0)) {
+                            Console.WriteLine("sft +");
+                            h *= 4;
+                            (a0, d0) = (ap2 + h, dp2);
+                        }
+                        else {
+                            continue;
                         }
                     }
-
-                    d0 = Fraction(func, n, q, a0);
-                    if (d0 == 0) {
-                        da = 0;
-                        break;
-                    }
-
-                    h *= 2;
 
                     an2 = a0 - h;
                     ap2 = a0 + h;
@@ -152,8 +176,7 @@ namespace MathieuMP {
                     double dn1p50 = Fraction(func, n, q, an1p50);
                     double dn1p75 = Fraction(func, n, q, an1p75);
 
-                    if ((dn1 <= dn1p25 && dn1p25 <= dn1p50 && dn1p50 <= dn1p75 && dn1p75 <= dn2) ||
-                        (dn1 >= dn1p25 && dn1p25 >= dn1p50 && dn1p50 >= dn1p75 && dn1p75 >= dn2)) {
+                    if (IsLinear(dn1, dn1p25, dn1p50, dn1p75, dn2)) {
                         Console.WriteLine("jump success");
 
                         a0 = an1p50;
@@ -178,8 +201,7 @@ namespace MathieuMP {
                     double dp1p50 = Fraction(func, n, q, ap1p50);
                     double dp1p75 = Fraction(func, n, q, ap1p75);
 
-                    if ((dp1 <= dp1p25 && dp1p25 <= dp1p50 && dp1p50 <= dp1p75 && dp1p75 <= dp2) ||
-                        (dp1 >= dp1p25 && dp1p25 >= dp1p50 && dp1p50 >= dp1p75 && dp1p75 >= dp2)) {
+                    if (IsLinear(dp1, dp1p25, dp1p50, dp1p75, dp2)) {
                         Console.WriteLine("jump success");
 
                         a0 = ap1p50;
