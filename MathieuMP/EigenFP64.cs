@@ -1,9 +1,6 @@
 ﻿// Copyright (c) T.Yoshimura 2022
 // https://github.com/tk-yoshimura
 
-using System.Net;
-using System.Runtime.Intrinsics.Arm;
-
 namespace MathieuMP {
     public static class EigenFP64 {
 
@@ -76,10 +73,10 @@ namespace MathieuMP {
             };
         }
 
-        
+
 
         /// <summary>
-        /// The true value is obtained by the binary search and secant method.
+        /// Obtain true value by the binary search and secant method.
         /// NOTE: a is within the radii of convergence.
         /// </summary>
         public static (double value, double error) SearchFit(EigenFunc func, int n, double q, double a) {
@@ -91,12 +88,12 @@ namespace MathieuMP {
             double a0 = a, d0 = Fraction(func, n, q, a0), da = double.NaN;
             double an2 = a - h, dn2 = Fraction(func, n, q, an2);
             double ap2 = a + h, dp2 = Fraction(func, n, q, ap2);
-                
+
             h /= 2;
 
             bool found_acrosszero = false;
-            
-            while (Math.Abs(h / a) >= 1e-15 && h >= 1e-250) { 
+
+            while (Math.Abs(h / a) >= 1e-15 && h >= 1e-250) {
                 double an1 = a0 - h, dn1 = Fraction(func, n, q, an1);
                 double ap1 = a0 + h, dp1 = Fraction(func, n, q, ap1);
 
@@ -132,7 +129,7 @@ namespace MathieuMP {
                             ap2 = a0 + h;
                             dn2 = Fraction(func, n, q, an2);
                             dp2 = Fraction(func, n, q, ap2);
-                            
+
                             h /= 2;
                         }
                         else if (dn2 * dn1 < 0) {
@@ -156,7 +153,7 @@ namespace MathieuMP {
 
                         found_acrosszero = true;
                     }
-                    else if (!found_acrosszero){
+                    else if (!found_acrosszero) {
                         Console.WriteLine("enlarge h");
 
                         h = Math.Min(h0, h * 4);
@@ -170,41 +167,41 @@ namespace MathieuMP {
                     continue;
                 }
 
-                if (dn2 * dn1 < 0) { 
+                if (dn2 * dn1 < 0) {
                     Console.WriteLine("jump - test");
 
                     double an1p25 = (an2 + an1 * 3) / 4;
                     double an1p50 = (an2 + an1) / 2;
                     double an1p75 = (an2 * 3 + an1) / 4;
-                    
+
                     double dn1p25 = Fraction(func, n, q, an1p25);
                     double dn1p50 = Fraction(func, n, q, an1p50);
                     double dn1p75 = Fraction(func, n, q, an1p75);
-                    
+
                     if (SequenceUtil.IsMonotone(dn1, dn1p25, dn1p50, dn1p75, dn2)) {
                         Console.WriteLine("jump success");
                         (ap2, dp2) = (an1, dn1);
-                        
+
                         a0 = (an2 + an1) / 2;
                         d0 = Fraction(func, n, q, a0);
                         h /= 4;
 
                         found_acrosszero = true;
-                        
+
                         continue;
                     }
                 }
-                else if(dp2 * dp1 < 0) { 
+                else if (dp2 * dp1 < 0) {
                     Console.WriteLine("jump + test");
 
                     double ap1p25 = (ap2 + ap1 * 3) / 4;
                     double ap1p50 = (ap2 + ap1) / 2;
                     double ap1p75 = (ap2 * 3 + ap1) / 4;
-                    
+
                     double dp1p25 = Fraction(func, n, q, ap1p25);
                     double dp1p50 = Fraction(func, n, q, ap1p50);
                     double dp1p75 = Fraction(func, n, q, ap1p75);
-                    
+
                     if (SequenceUtil.IsMonotone(dp1, dp1p25, dp1p50, dp1p75, dp2)) {
                         Console.WriteLine("jump success");
                         (an2, dn2) = (ap1, dp1);
@@ -225,6 +222,16 @@ namespace MathieuMP {
             }
 
             return (a0, da);
+        }
+
+        /// <summary>
+        /// Obtain peak value.
+        /// </summary>
+        public static (double value, double error) SearchPeak(EigenFunc func, int n, double q, double a) {
+            double h = Math.Max(Math.ScaleB(1, -36), Math.ScaleB(Math.Abs(a), -8));
+            double a0 = a;
+
+            throw new NotImplementedException();
         }
 
         /// <summary>

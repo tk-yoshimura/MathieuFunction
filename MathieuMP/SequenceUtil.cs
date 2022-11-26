@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MathieuMP {
+﻿namespace MathieuMP {
     public static class SequenceUtil {
         /// <summary>
         /// Determine if the sequence is linear.
@@ -30,10 +24,10 @@ namespace MathieuMP {
         /// Determine if the sequence is 1 / x like.
         /// </summary>
         public static bool IsReciprocal(double a, double b, double c, double d, double e) {
-            return (a <= b && b > c  && c <= d && d <= e) ||
-                   (a <= b && b <= c && c > d  && d <= e) ||
-                   (a >= b && b < c  && c >= d && d >= e) ||
-                   (a >= b && b >= c && c < d  && d >= e);
+            return (a <= b && b > c && c <= d && d <= e) ||
+                   (a <= b && b <= c && c > d && d <= e) ||
+                   (a >= b && b < c && c >= d && d >= e) ||
+                   (a >= b && b >= c && c < d && d >= e);
         }
     }
 }
