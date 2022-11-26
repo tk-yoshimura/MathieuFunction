@@ -84,7 +84,7 @@ namespace MathieuMP {
                 return (0, is_convergence: true);
             }
 
-            double h = Math.ScaleB(1, -10);
+            double h = 1d / 1024;
 
             (double ar, bool ar_convergence) = RootFinder.SecantSearch((a) => Fraction(func, n, q, a), a, h);
 
@@ -92,21 +92,27 @@ namespace MathieuMP {
                 return (ar, is_convergence: true);
             }
 
-            (double ap, bool ap_convergence) = RootFinder.SecantSearch((a) => 1 / Fraction(func, n, q, a), a, h);
+            double ap = a;
+            bool ap_convergence = false;
 
             while (h / (Math.Abs(ap) + double.Epsilon) >= 1e-15) {
-                if (a <= ap) {
-                    (ar, ar_convergence) = RootFinder.SecantSearch((a) => Fraction(func, n, q, a), ap + h * 2.000001, h);
-
-                    if (ar_convergence) {
-                        return (ar, is_convergence: true);
-                    }
+                if (!ap_convergence) {
+                    (ap, ap_convergence) = RootFinder.SecantSearch((a) => 1 / Fraction(func, n, q, a), a, h);
                 }
-                if (a >= ap) {
-                    (ar, ar_convergence) = RootFinder.SecantSearch((a) => Fraction(func, n, q, a), ap - h * 2.000001, h);
+                else{
+                    if (a <= ap) {
+                        (ar, ar_convergence) = RootFinder.SecantSearch((a) => Fraction(func, n, q, a), ap + h * 2.000001, h);
 
-                    if (ar_convergence) {
-                        return (ar, is_convergence: true);
+                        if (ar_convergence) {
+                            return (ar, is_convergence: true);
+                        }
+                    }
+                    if (a >= ap) {
+                        (ar, ar_convergence) = RootFinder.SecantSearch((a) => Fraction(func, n, q, a), ap - h * 2.000001, h);
+
+                        if (ar_convergence) {
+                            return (ar, is_convergence: true);
+                        }
                     }
                 }
 

@@ -1,5 +1,8 @@
 ﻿namespace MathieuMP {
     public static class RootFinder {
+        const double eps = 1e-15;
+        const int max_secant_iter = 8;
+
         public static double StepSearch(Func<double, double> f, double x, double h, int max_counts = 1024) {
             if (!(h >= 0)) {
                 throw new ArgumentOutOfRangeException(nameof(h));
@@ -50,10 +53,11 @@
             }
 
             bool is_convergence = false;
+            int secant_iter = 0;
             (yn2, y0, yp2) = (f(x0 - h), f(x0), f(x0 + h));
 
             h /= 2;
-            while ((yn2 * yp2 <= 0) && (h / (Math.Abs(x0) + double.Epsilon) >= 1e-15)) {
+            while ((yn2 * yp2 <= 0) && (h / (Math.Abs(x0) + double.Epsilon) >= eps)) {
                 (yn1, yp1) = (f(x0 - h), f(x0 + h));
 
                 if (SequenceUtil.IsMonotone(yn2, yn1, y0, yp1, yp2)) {
@@ -62,8 +66,9 @@
                         dx = Math.Max(-h, Math.Min(h, dx));
 
                         x0 -= dx;
+                        secant_iter++;
 
-                        if (Math.Abs(dx / (Math.Abs(x0) + double.Epsilon)) <= 1e-15) {
+                        if ((secant_iter >= max_secant_iter) || (Math.Abs(dx / (Math.Abs(x0) + double.Epsilon)) <= eps)) {
                             is_convergence = true;
                             break;
                         }
