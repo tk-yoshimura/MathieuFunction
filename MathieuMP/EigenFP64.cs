@@ -79,159 +79,41 @@ namespace MathieuMP {
         /// Obtain true value by the binary search and secant method.
         /// NOTE: a is within the radii of convergence.
         /// </summary>
-        public static (double value, double error) SearchFit(EigenFunc func, int n, double q, double a) {
+        public static (double value, bool is_convergence) SearchFit(EigenFunc func, int n, double q, double a) {
             if (q == 0) {
-                return (0d, 0d);
+                return (0, is_convergence: true);
             }
 
-            double h0 = Math.Max(Math.ScaleB(1, -36), Math.ScaleB(Math.Abs(a), -8)), h = h0;
-            double a0 = a, d0 = Fraction(func, n, q, a0), da = double.NaN;
-            double an2 = a - h, dn2 = Fraction(func, n, q, an2);
-            double ap2 = a + h, dp2 = Fraction(func, n, q, ap2);
+            double h = Math.ScaleB(1, -10);
 
-            h /= 2;
+            (double ar, bool ar_convergence) = RootFinder.SecantSearch((a) => Fraction(func, n, q, a), a, h);
 
-            bool found_acrosszero = false;
-
-            while (Math.Abs(h / a) >= 1e-15 && h >= 1e-250) {
-                double an1 = a0 - h, dn1 = Fraction(func, n, q, an1);
-                double ap1 = a0 + h, dp1 = Fraction(func, n, q, ap1);
-
-                Console.WriteLine($"{h}");
-                Console.WriteLine($"{an2}, {an1}, {a0}, {ap1}, {ap2}");
-                Console.WriteLine($"{dn2}, {dn1}, {d0}, {dp1}, {dp2}");
-
-                if (SequenceUtil.IsMonotone(dn2, dn1, d0, dp1, dp2)) {
-                    Console.WriteLine("monotone");
-
-                    if (dn2 * dp2 < 0) {
-                        Console.WriteLine("cross zero");
-
-                        if ((dn1 * dp1 < 0) && (dp1 != dn1) && SequenceUtil.IsLinear(dn2, dn1, d0, dp1, dp2)) {
-                            Console.WriteLine("secant");
-
-                            da = 2 * h / (dp1 - dn1) * d0;
-                            da = Math.Max(-h, Math.Min(h, da));
-
-                            a0 -= da;
-
-                            if (Math.Abs(da / a0) <= 1e-15) {
-                                break;
-                            }
-
-                            d0 = Fraction(func, n, q, a0);
-                            if (d0 == 0) {
-                                da = 0;
-                                break;
-                            }
-
-                            an2 = a0 - h;
-                            ap2 = a0 + h;
-                            dn2 = Fraction(func, n, q, an2);
-                            dp2 = Fraction(func, n, q, ap2);
-
-                            h /= 2;
-                        }
-                        else if (dn2 * dn1 < 0) {
-                            Console.WriteLine("sft -");
-
-                            (a0, d0) = (an1, dn1);
-                            (ap2, dp2) = (ap1, dp1);
-
-                            an2 = a0 - h;
-                            dn2 = Fraction(func, n, q, an2);
-                        }
-                        else if (dp2 * dp1 < 0) {
-                            Console.WriteLine("sft +");
-
-                            (an2, dn2) = (an1, dn1);
-                            (a0, d0) = (ap1, dp1);
-
-                            ap2 = a0 + h;
-                            dp2 = Fraction(func, n, q, ap2);
-                        }
-
-                        found_acrosszero = true;
-                    }
-                    else if (!found_acrosszero) {
-                        Console.WriteLine("enlarge h");
-
-                        h = Math.Min(h0, h * 4);
-
-                        an2 = a0 - h;
-                        ap2 = a0 + h;
-                        dn2 = Fraction(func, n, q, an2);
-                        dp2 = Fraction(func, n, q, ap2);
-                    }
-
-                    continue;
-                }
-
-                if (dn2 * dn1 < 0) {
-                    Console.WriteLine("jump - test");
-
-                    double an1p25 = (an2 + an1 * 3) / 4;
-                    double an1p50 = (an2 + an1) / 2;
-                    double an1p75 = (an2 * 3 + an1) / 4;
-
-                    double dn1p25 = Fraction(func, n, q, an1p25);
-                    double dn1p50 = Fraction(func, n, q, an1p50);
-                    double dn1p75 = Fraction(func, n, q, an1p75);
-
-                    if (SequenceUtil.IsMonotone(dn1, dn1p25, dn1p50, dn1p75, dn2)) {
-                        Console.WriteLine("jump success");
-                        (ap2, dp2) = (an1, dn1);
-
-                        a0 = (an2 + an1) / 2;
-                        d0 = Fraction(func, n, q, a0);
-                        h /= 4;
-
-                        found_acrosszero = true;
-
-                        continue;
-                    }
-                }
-                else if (dp2 * dp1 < 0) {
-                    Console.WriteLine("jump + test");
-
-                    double ap1p25 = (ap2 + ap1 * 3) / 4;
-                    double ap1p50 = (ap2 + ap1) / 2;
-                    double ap1p75 = (ap2 * 3 + ap1) / 4;
-
-                    double dp1p25 = Fraction(func, n, q, ap1p25);
-                    double dp1p50 = Fraction(func, n, q, ap1p50);
-                    double dp1p75 = Fraction(func, n, q, ap1p75);
-
-                    if (SequenceUtil.IsMonotone(dp1, dp1p25, dp1p50, dp1p75, dp2)) {
-                        Console.WriteLine("jump success");
-                        (an2, dn2) = (ap1, dp1);
-
-                        a0 = (ap2 + ap1) / 2;
-                        d0 = Fraction(func, n, q, a0);
-                        h /= 4;
-
-                        found_acrosszero = true;
-
-                        continue;
-                    }
-                }
-
-                (an2, dn2) = (an1, dn1);
-                (ap2, dp2) = (ap1, dp1);
-                h /= 2;
+            if (ar_convergence) {
+                return (ar, is_convergence: true);
             }
 
-            return (a0, da);
-        }
+            (double ap, bool ap_convergence) = RootFinder.SecantSearch((a) => 1 / Fraction(func, n, q, a), a, h);
 
-        /// <summary>
-        /// Obtain peak value.
-        /// </summary>
-        public static (double value, double error) SearchPeak(EigenFunc func, int n, double q, double a) {
-            double h = Math.Max(Math.ScaleB(1, -36), Math.ScaleB(Math.Abs(a), -8));
-            double a0 = a;
+            while (h / (Math.Abs(ap) + double.Epsilon) >= 1e-15) {
+                if (a <= ap) {
+                    (ar, ar_convergence) = RootFinder.SecantSearch((a) => Fraction(func, n, q, a), ap + h * 2.000001, h);
 
-            throw new NotImplementedException();
+                    if (ar_convergence) {
+                        return (ar, is_convergence: true);
+                    }
+                }
+                if (a >= ap) {
+                    (ar, ar_convergence) = RootFinder.SecantSearch((a) => Fraction(func, n, q, a), ap - h * 2.000001, h);
+
+                    if (ar_convergence) {
+                        return (ar, is_convergence: true);
+                    }
+                }
+
+                h /= 16;
+            }
+
+            return (ap, is_convergence: false);
         }
 
         /// <summary>
@@ -382,15 +264,15 @@ namespace MathieuMP {
         /// <param name="q">q</param>
         /// <param name="zero_shift">remove bias (=n^2)</param>
         /// <returns></returns>
-        public static (double value, double error) Value(EigenFunc func, int n, double q, bool zero_shift = false) {
+        public static (double value, bool is_convergence) Value(EigenFunc func, int n, double q, bool zero_shift = false) {
             double a0 = InitialValue(func, n, q);
-            (double value, double error) = SearchFit(func, n, q, a0);
+            (double value, bool is_convergence) = SearchFit(func, n, q, a0);
 
             if (!zero_shift) {
                 value += n * n;
             }
 
-            return (value, error);
+            return (value, is_convergence);
         }
     }
 }
