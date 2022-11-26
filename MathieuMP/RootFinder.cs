@@ -3,7 +3,7 @@
         const double eps = 1e-15;
         const int max_secant_iter = 8;
 
-        public static double StepSearch(Func<double, double> f, double x, double h, int max_counts = 1024) {
+        public static double StepSearch(Func<double, double> f, double x, double h, int max_counts = 32) {
             if (!(h >= 0)) {
                 throw new ArgumentOutOfRangeException(nameof(h));
             }

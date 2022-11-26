@@ -84,14 +84,21 @@ namespace MathieuMP {
                 return (0, is_convergence: true);
             }
 
-            double h = 1d / 1024;
+            double h = 1d / 256;
+            double ar = a;
+            bool ar_convergence = false;
 
-            (double ar, bool ar_convergence) = RootFinder.SecantSearch((a) => Fraction(func, n, q, a), a, h);
+            while (h / (Math.Abs(ar) + double.Epsilon) >= 1e-15) {
+                (ar, ar_convergence) = RootFinder.SecantSearch((a) => Fraction(func, n, q, a), a, h);
 
-            if (ar_convergence) {
-                return (ar, is_convergence: true);
+                if (ar_convergence) {
+                    return (ar, is_convergence: true);
+                }
+
+                h /= 16;
             }
 
+            h = 1d / 32;
             double ap = a;
             bool ap_convergence = false;
 
