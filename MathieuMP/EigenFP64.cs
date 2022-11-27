@@ -66,11 +66,13 @@ namespace MathieuMP {
         /// If a matches the true value, return 0.
         /// </summary>
         public static double Fraction(EigenFunc func, int n, double q, double a, int terms = 32) {
-            return func switch {
+            double y = func switch {
                 EigenFunc.A => FractionA(n, q, a, terms),
                 EigenFunc.B => FractionB(n, q, a, terms),
                 _ => throw new ArgumentException(nameof(func)),
             };
+
+            return y;
         }
 
 
@@ -84,49 +86,31 @@ namespace MathieuMP {
                 return (0, is_convergence: true);
             }
 
-            double h = 1d / 256;
-            double ar = a;
-            bool ar_convergence = false;
+            const double h = 1d / 1024;
 
-            while (h / (Math.Abs(ar) + double.Epsilon) >= 1e-15) {
-                (ar, ar_convergence) = RootFinder.SecantSearch((a) => Fraction(func, n, q, a), a, h);
+            (double ar, bool ar_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a), a, h);
+            (double ap, bool ap_convergence) = RootFinder.Search((a) => 1 / Fraction(func, n, q, a), a, h);
+            
+            double a_likelihood = ar_convergence ? ar : double.NaN;
+            
+            if (ap_convergence) {
+                (double apm, bool apm_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a), Math.BitDecrement(ap), h, SearchDirection.Minus);
+                (double app, bool app_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a), Math.BitIncrement(ap), h, SearchDirection.Plus);
 
-                if (ar_convergence) {
-                    return (ar, is_convergence: true);
+                if (apm_convergence) {
+                    a_likelihood = Math.Abs(a - a_likelihood) < Math.Abs(a - apm) ? a_likelihood : apm;
                 }
-
-                h /= 16;
+                if (app_convergence) {
+                    a_likelihood = Math.Abs(a - a_likelihood) < Math.Abs(a - app) ? a_likelihood : app;
+                }
             }
 
-            h = 1d / 32;
-            double ap = a;
-            bool ap_convergence = false;
-
-            while (h / (Math.Abs(ap) + double.Epsilon) >= 1e-15) {
-                if (!ap_convergence) {
-                    (ap, ap_convergence) = RootFinder.SecantSearch((a) => 1 / Fraction(func, n, q, a), a, h);
-                }
-                else{
-                    if (a <= ap) {
-                        (ar, ar_convergence) = RootFinder.SecantSearch((a) => Fraction(func, n, q, a), ap + h * 2.000001, h);
-
-                        if (ar_convergence) {
-                            return (ar, is_convergence: true);
-                        }
-                    }
-                    if (a >= ap) {
-                        (ar, ar_convergence) = RootFinder.SecantSearch((a) => Fraction(func, n, q, a), ap - h * 2.000001, h);
-
-                        if (ar_convergence) {
-                            return (ar, is_convergence: true);
-                        }
-                    }
-                }
-
-                h /= 16;
+            bool is_convergence = !double.IsNaN(a_likelihood);
+            if (!is_convergence) {
+                a_likelihood = ap;
             }
 
-            return (ap, is_convergence: false);
+            return (a_likelihood, is_convergence);
         }
 
         /// <summary>
