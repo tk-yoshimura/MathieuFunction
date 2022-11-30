@@ -1,10 +1,24 @@
-﻿namespace MathieuMP {
+﻿using System.Xml.Serialization;
+
+namespace MathieuMP {
     class Program {
         static void Main() {
-            for (double q = 0; q <= 64; q += 1d / 64) {                
-                double a = EigenFP64.InitialValue(EigenFunc.B, 8, q);
-                double b = EigenFP64.Value(EigenFunc.B, 8, q, zero_shift: true).value;
-                Console.WriteLine($"{q},{a},{b}");
+            //for (double q = 0; q <= 64; q += 1d / 64) {
+            //    double a = EigenFP64.InitialValue(EigenFunc.B, 8, q);
+            //    double b = EigenFP64.Value(EigenFunc.B, 8, q, zero_shift: true).value;
+            //    Console.WriteLine($"{q},{a},{b}");
+            //}
+
+            static double f(double x) {
+                return 1 / x + 1 / (x + 1d/4);
+            }
+
+            for (double x = -16; x <= 16; x += 1d / 32) {
+                double y = f(x);
+
+                bool b = SequenceUtil.IsReciprocalCurve(f(x - 3d / 32), f(x - 2d / 32), f(x - 1d / 32), f(x), f(x + 1d / 32), f(x + 2d / 32), f(x + 3d / 32));
+
+                Console.WriteLine($"{x},{y},{(b ? 1 : 0)}");
             }
             
             //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -12);

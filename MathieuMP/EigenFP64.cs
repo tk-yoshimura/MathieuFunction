@@ -86,7 +86,7 @@ namespace MathieuMP {
                 return (0, is_convergence: true);
             }
 
-            const double h = 1d / 1024;
+            double h = 1d / 1024;
 
             (double ar, bool ar_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a), a, h);
             (double ap, bool ap_convergence) = RootFinder.Search((a) => 1 / Fraction(func, n, q, a), a, h);
@@ -94,14 +94,22 @@ namespace MathieuMP {
             double a_likelihood = ar_convergence ? ar : double.NaN;
             
             if (ap_convergence) {
-                (double apm, bool apm_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a), Math.BitDecrement(ap), h, SearchDirection.Minus);
-                (double app, bool app_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a), Math.BitIncrement(ap), h, SearchDirection.Plus);
+                while (Math.Abs(h / (Math.Abs(ap) + double.Epsilon)) >= 1e-15) {
+                    (double apm, bool apm_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a), Math.BitDecrement(ap), h, SearchDirection.Minus);
+                    (double app, bool app_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a), Math.BitIncrement(ap), h, SearchDirection.Plus);
 
-                if (apm_convergence) {
-                    a_likelihood = Math.Abs(a - a_likelihood) < Math.Abs(a - apm) ? a_likelihood : apm;
-                }
-                if (app_convergence) {
-                    a_likelihood = Math.Abs(a - a_likelihood) < Math.Abs(a - app) ? a_likelihood : app;
+                    if (apm_convergence) {
+                        a_likelihood = Math.Abs(a - a_likelihood) < Math.Abs(a - apm) ? a_likelihood : apm;
+                    }
+                    if (app_convergence) {
+                        a_likelihood = Math.Abs(a - a_likelihood) < Math.Abs(a - app) ? a_likelihood : app;
+                    }
+
+                    if (app_convergence || apm_convergence) {
+                        break;
+                    }
+
+                    h /= 16;
                 }
             }
 
