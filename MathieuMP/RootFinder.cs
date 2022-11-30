@@ -133,29 +133,37 @@
             return (x0, false);
         }
 
-        public static (double v, bool is_convergence) AdvancedSearch(Func<double, double> f, double x, double h) {
-            if (!(h >= 0)) {
-                throw new ArgumentOutOfRangeException(nameof(h));
+        public static (double v, bool is_convergence) AdvancedSearch(Func<double, double> f, double x0, double h0) {
+            if (!(h0 >= 0)) {
+                throw new ArgumentOutOfRangeException(nameof(h0));
             }
 
-            double x0 = x, y0 = f(x0);
-            bool is_convergenced = false;
+            double h = h0, x = x0, y = f(x0);
+            bool is_convergenced = false, is_clamp;
 
-            while (Math.Abs(h / (Math.Abs(x0) + double.Epsilon)) >= eps) {
+            while (Math.Abs(h / (Math.Abs(x) + double.Epsilon)) >= eps) {
                 (double yn3, double yn2, double yn1, double yp1, double yp2, double yp3) = 
-                    (f(x0 - h * 3), f(x0 - h * 2), f(x0 - h), f(x0 + h), f(x0 + h * 2), f(x0 + h * 3));
+                    (f(x - h * 3), f(x - h * 2), f(x - h), f(x + h), f(x + h * 2), f(x + h * 3));
 
-                if (SequenceUtil.IsReciprocalCurve(yn3, yn2, yn1, y0, yp1, yp2, yp3)) {
-                    double dx = (yp2 == yn2) ? 0 : 2 * h / (yp1 - yn1) * y0;
-                    dx = Math.Max(-h * 1024, Math.Min(h * 1024, dx));
+                if (SequenceUtil.IsReciprocalCurve(yn3, yn2, yn1, y, yp1, yp2, yp3)) {
+                    double dx = (yp2 == yn2) ? 0 : 2 * h / (yp1 - yn1) * y;
+                    double dx_clamp = Math.Max(-h * 32, Math.Min(h * 32, dx));
 
-                    double x0_next = x0 - dx, y0_next = f(x0_next);
+                    (dx, is_clamp) = (dx_clamp, dx != dx_clamp);
+                    double x_next = x - dx, y_next = f(x_next);
 
-                    if (yn3 * yp3 <= 0 || SequenceUtil.IsMonotone(y0_next, f(x0 - dx * 3 / 4), f(x0 - dx / 2), f(x0 - dx / 4), y0)){
-                        (x0, y0) = (x0_next, y0_next);
+                    if (yn3 * yp3 <= 0 || SequenceUtil.IsMonotone(y_next, f(x - dx * 3 / 4), f(x - dx / 2), f(x - dx / 4), y)){
+                        (x, y) = (x_next, y_next);
 
-                        if (Math.Abs(dx / (Math.Abs(x0) + double.Epsilon)) <= eps) {
-                            if (y0 == 0 || is_convergenced) {
+                        if (is_clamp) {
+                            h = Math.Min(h * 2, h0);
+                        }
+                        else if (yn1 * yp1 <= 0) {
+                            h /= 4;
+                        }
+
+                        if (Math.Abs(dx / (Math.Abs(x) + double.Epsilon)) <= eps) {
+                            if (y == 0 || is_convergenced) {
                                 is_convergenced = true;
                                 break;
                             }
@@ -170,7 +178,7 @@
                 h /= 4;
             }
 
-            return (x0, is_convergenced);
+            return (x, is_convergenced);
         }
 
         public static (double v, bool is_convergence) Search(Func<double, double> f, double x, double h, SearchDirection direction = SearchDirection.Both) {

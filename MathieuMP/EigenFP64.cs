@@ -86,7 +86,7 @@ namespace MathieuMP {
                 return (0, is_convergence: true);
             }
 
-            double h = 1d / 1024;
+            double h = 1d / 32;
 
             (double ar, bool ar_convergence) = RootFinder.AdvancedSearch((a) => Fraction(func, n, q, a), a, h);
             (double ap, bool ap_convergence) = RootFinder.AdvancedSearch((a) => 1 / Fraction(func, n, q, a), a, h);
