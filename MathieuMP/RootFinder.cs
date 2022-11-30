@@ -147,9 +147,11 @@
 
                 if (SequenceUtil.IsReciprocalCurve(yn3, yn2, yn1, y0, yp1, yp2, yp3)) {
                     double dx = (yp2 == yn2) ? 0 : 2 * h / (yp1 - yn1) * y0;
+                    dx = Math.Max(-h * 1024, Math.Min(h * 1024, dx));
+
                     double x0_next = x0 - dx, y0_next = f(x0_next);
 
-                    if (SequenceUtil.IsMonotone(y0_next, f(x0 - dx * 3 / 4), f(x0 - dx / 2), f(x0 - dx / 4), y0)){
+                    if (yn3 * yp3 <= 0 || SequenceUtil.IsMonotone(y0_next, f(x0 - dx * 3 / 4), f(x0 - dx / 2), f(x0 - dx / 4), y0)){
                         (x0, y0) = (x0_next, y0_next);
 
                         if (Math.Abs(dx / (Math.Abs(x0) + double.Epsilon)) <= eps) {
