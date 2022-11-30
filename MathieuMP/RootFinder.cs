@@ -133,7 +133,7 @@
             return (x0, false);
         }
 
-        private static (double v, bool is_convergence) AdvancedSearch(Func<double, double> f, double x, double h) {
+        public static (double v, bool is_convergence) AdvancedSearch(Func<double, double> f, double x, double h) {
             if (!(h >= 0)) {
                 throw new ArgumentOutOfRangeException(nameof(h));
             }
@@ -141,30 +141,34 @@
             double x0 = x, y0 = f(x0);
             bool is_convergenced = false;
 
-            for (int secant_iter = 0; secant_iter < max_secant_iter; secant_iter++) {
-                (double yn2, double yn1, double yp1, double yp2) = (f(x0 - h * 2), f(x0 - h), f(x0 + h), f(x0 + h * 2));
+            while (Math.Abs(h / (Math.Abs(x0) + double.Epsilon)) >= eps) {
+                (double yn3, double yn2, double yn1, double yp1, double yp2, double yp3) = 
+                    (f(x0 - h * 3), f(x0 - h * 2), f(x0 - h), f(x0 + h), f(x0 + h * 2), f(x0 + h * 3));
 
-                if (SequenceUtil.IsMonotone(yn2, yn1, y0, yp1, yp2)) {
-                    double dx = (yp2 == yn2) ? 0 : 4 * h / (yp2 - yn2) * y0;
-                    dx = Math.Max(-h * 2, Math.Min(h * 2, dx));
+                if (SequenceUtil.IsReciprocalCurve(yn3, yn2, yn1, y0, yp1, yp2, yp3)) {
+                    double dx = (yp2 == yn2) ? 0 : 2 * h / (yp1 - yn1) * y0;
+                    double x0_next = x0 - dx, y0_next = f(x0_next);
 
-                    x0 -= dx;
-                    y0 = f(x0);
+                    if (SequenceUtil.IsMonotone(y0_next, f(x0 - dx * 3 / 4), f(x0 - dx / 2), f(x0 - dx / 4), y0)){
+                        (x0, y0) = (x0_next, y0_next);
 
-                    if (Math.Abs(dx / (Math.Abs(x0) + double.Epsilon)) <= eps) {
-                        if (y0 == 0 || is_convergenced) {
-                            return (x0, true);
+                        if (Math.Abs(dx / (Math.Abs(x0) + double.Epsilon)) <= eps) {
+                            if (y0 == 0 || is_convergenced) {
+                                is_convergenced = true;
+                                break;
+                            }
+
+                            is_convergenced = true;
                         }
 
-                        is_convergenced = true;
+                        continue;
                     }
-
-                    continue;
                 }
 
+                h /= 4;
             }
 
-            return (x0, false);
+            return (x0, is_convergenced);
         }
 
         public static (double v, bool is_convergence) Search(Func<double, double> f, double x, double h, SearchDirection direction = SearchDirection.Both) {

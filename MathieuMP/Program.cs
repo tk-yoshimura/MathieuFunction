@@ -9,21 +9,21 @@ namespace MathieuMP {
             //    Console.WriteLine($"{q},{a},{b}");
             //}
 
-            static double f(double x) {
-                return 1 / x + 1 / (x + 1d/4);
-            }
-
-            for (double x = -16; x <= 16; x += 1d / 32) {
-                double y = f(x);
-
-                bool b = SequenceUtil.IsReciprocalCurve(f(x - 3d / 32), f(x - 2d / 32), f(x - 1d / 32), f(x), f(x + 1d / 32), f(x + 2d / 32), f(x + 3d / 32));
-
-                Console.WriteLine($"{x},{y},{(b ? 1 : 0)}");
-            }
+            //static double f(double x) {
+            //    return EigenFP64.Fraction(EigenFunc.B, 4, 37.3754, x);
+            //}
+            //
+            //for (double x = -24; x <= 16; x += 1d / 32) {
+            //    double y = f(x);
+            //
+            //    bool b = SequenceUtil.IsReciprocalCurve(f(x - 3d / 64), f(x - 2d / 64), f(x - 1d / 64), f(x), f(x + 1d / 64), f(x + 2d / 64), f(x + 3d / 64));
+            //
+            //    Console.WriteLine($"{x},{y},{(b ? 1 : 0)}");
+            //}
             
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -12);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.3754, -12.001);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.3753585154754, -12);
+            EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -12);
+            EigenFP64.SearchFit(EigenFunc.B, 4, 37.3754, -12.001);
+            EigenFP64.SearchFit(EigenFunc.B, 4, 37.3753585154754, -12);
 
             //double a = EigenFP64.Fraction(EigenFunc.B, 4, 37.3754, -12.00003504803275);
 

@@ -88,8 +88,8 @@ namespace MathieuMP {
 
             double h = 1d / 1024;
 
-            (double ar, bool ar_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a), a, h);
-            (double ap, bool ap_convergence) = RootFinder.Search((a) => 1 / Fraction(func, n, q, a), a, h);
+            (double ar, bool ar_convergence) = RootFinder.AdvancedSearch((a) => Fraction(func, n, q, a), a, h);
+            (double ap, bool ap_convergence) = RootFinder.AdvancedSearch((a) => 1 / Fraction(func, n, q, a), a, h);
             
             double a_likelihood = ar_convergence ? ar : double.NaN;
             
