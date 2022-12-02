@@ -31,8 +31,8 @@ namespace MathieuMP {
 
             //double a = EigenFP64.Fraction(EigenFunc.B, 4, 37.3754, -12.00003504803275);
 
-           //for (double a = -12 - Math.ScaleB(1, -8); a <= -12 + Math.ScaleB(1, -8); a += Math.ScaleB(1, -16)) {
-           //    double d = EigenFP64.Fraction(EigenFunc.B, 4, 37.375, a);
+           //for (double a = -24; a <= 12; a += Math.ScaleB(1, -4)) {
+           //    double d = EigenFP64.Fraction(EigenFunc.B, 8, 37.375, a);
            //    Console.WriteLine($"{a},{d}");
            //}
 

@@ -1,4 +1,6 @@
-﻿namespace MathieuMP {
+﻿using System.Xml.Linq;
+
+namespace MathieuMP {
     public static class RootFinder {
         const double eps = 4e-15;
         const double truncation_thr = 256; 
@@ -74,20 +76,20 @@
             } while (s < h0);
 
             while (h < double.PositiveInfinity) {
-                (double yn1, double yn2, double yn3, double yn4) =
-                    (f(x - h * 3), f(x - h * 6), f(x - h * 9), f(x - h * 12));
-
-                if (y * yn4 <= 0 || !SequenceUtil.IsMonotone(y, yn1, yn2, yn3, yn4)) {
+                if (y * f(x - h * 12) <= 0) {
                     x -= h * 3;
                     y = f(x);
                     break;
                 }
 
-                h *= 2;
+                h = Math.Max(Math.BitIncrement(h), h * 1.25);
             }
 
             if (!double.IsFinite(x) || !double.IsFinite(h)) {
                 return (double.NaN, false);
+            }
+            if (Math.Abs(h / (Math.Abs(x) + double.Epsilon)) < eps) {
+                return (x, true);
             }
 
             h = Math.Min(h, h0);
@@ -157,20 +159,20 @@
             } while (s < h0);
 
             while (h < double.PositiveInfinity) {
-                (double yp1, double yp2, double yp3, double yp4) =
-                    (f(x + h * 3), f(x + h * 6), f(x + h * 9), f(x + h * 12));
-
-                if (y * yp4 <= 0 || !SequenceUtil.IsMonotone(y, yp1, yp2, yp3, yp4)) {
+                if (y * f(x + h * 12) <= 0) {
                     x += h * 3;
                     y = f(x);
                     break;
                 }
 
-                h *= 2;
+                h = Math.Max(Math.BitIncrement(h), h * 1.25);
             }
 
             if (!double.IsFinite(x) || !double.IsFinite(h)) {
                 return (double.NaN, false);
+            }
+            if (Math.Abs(h / (Math.Abs(x) + double.Epsilon)) < eps) {
+                return (x, true);
             }
 
             h = Math.Min(h, h0);
