@@ -1,6 +1,8 @@
 ﻿// Copyright (c) T.Yoshimura 2022
 // https://github.com/tk-yoshimura
 
+using System.Diagnostics;
+
 namespace MathieuMP {
     public static class EigenFP64 {
 
@@ -88,29 +90,25 @@ namespace MathieuMP {
 
             double h = 1d / 32;
 
-            (double ar, bool ar_convergence) = RootFinder.AdvancedSearch((a) => Fraction(func, n, q, a), a, h);
-            (double ap, bool ap_convergence) = RootFinder.AdvancedSearch((a) => 1 / Fraction(func, n, q, a), a, h);
+            (double ar, bool ar_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a), a, h);
+            (double ap, bool ap_convergence) = RootFinder.Search((a) => 1 / Fraction(func, n, q, a), a, h);
             
             double a_likelihood = ar_convergence ? ar : double.NaN;
-            
+
             if (ap_convergence) {
-                while (Math.Abs(h / (Math.Abs(ap) + double.Epsilon)) >= 1e-15) {
-                    (double apm, bool apm_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a), Math.BitDecrement(ap), h, SearchDirection.Minus);
-                    (double app, bool app_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a), Math.BitIncrement(ap), h, SearchDirection.Plus);
+                (double apm, bool apm_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a), Math.BitDecrement(ap), h, SearchDirection.Minus);
+                (double app, bool app_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a), Math.BitIncrement(ap), h, SearchDirection.Plus);
 
-                    if (apm_convergence) {
-                        a_likelihood = Math.Abs(a - a_likelihood) < Math.Abs(a - apm) ? a_likelihood : apm;
-                    }
-                    if (app_convergence) {
-                        a_likelihood = Math.Abs(a - a_likelihood) < Math.Abs(a - app) ? a_likelihood : app;
-                    }
-
-                    if (app_convergence || apm_convergence) {
-                        break;
-                    }
-
-                    h /= 16;
+                if (apm_convergence) {
+                    a_likelihood = Math.Abs(a - a_likelihood) < Math.Abs(a - apm) ? a_likelihood : apm;
                 }
+                if (app_convergence) {
+                    a_likelihood = Math.Abs(a - a_likelihood) < Math.Abs(a - app) ? a_likelihood : app;
+                }
+            }
+
+            if (Math.Abs(a - a_likelihood) > 16 && Math.Abs(ar - ap) < Math.Abs(ar) * 1e-15 && !ar_convergence && ap_convergence) {
+                return (ar, false);
             }
 
             bool is_convergence = !double.IsNaN(a_likelihood);
@@ -136,6 +134,19 @@ namespace MathieuMP {
                 return NearZero(func, n, q);
             }
 
+            static double lerp(double x, double s, double t, double a, double b) {
+                if (x < s) {
+                    return a;
+                }
+                if (x > t) {
+                    return b;
+                }
+
+                double c = (x - s) / (t - s);
+
+                return a * (1 - c) + b * c;
+            }
+
             double y = (func, n) switch {
                 (EigenFunc.A, 0 or 1) => (q <= 4) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
                 (EigenFunc.A, 2) => (q <= 3) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
@@ -143,7 +154,7 @@ namespace MathieuMP {
                 (EigenFunc.A, <= 64) => (q <= 0.49 * n * n)
                                         ? NearPeak(func, n, q)
                                         : (q <= 0.7225 * n * n)
-                                            ? (NearPeak(func, n, q) + Asymptotic(func, n, q)) / 2
+                                            ? lerp(q / (n * n), 0.49, 0.7225, NearPeak(func, n, q), Asymptotic(func, n, q))
                                             : Asymptotic(func, n, q),
                 (EigenFunc.A, _) => ((n & 1) == 0)
                                         ? Value(func, n / 2, q / 2, zero_shift: false).value * 4
@@ -154,7 +165,7 @@ namespace MathieuMP {
                 (EigenFunc.B, <= 64) => (q <= 0.49 * n * n)
                                         ? NearPeak(func, n, q)
                                         : (q <= 0.7225 * n * n)
-                                            ? (NearPeak(func, n, q) + Asymptotic(func, n, q)) / 2
+                                            ? lerp(q / (n * n), 0.49, 0.7225, NearPeak(func, n, q), Asymptotic(func, n, q))
                                             : Asymptotic(func, n, q),
                 (EigenFunc.B, _) => ((n & 1) == 0)
                                         ? Value(func, n / 2, q / 2, zero_shift: false).value * 2
