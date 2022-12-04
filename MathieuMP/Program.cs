@@ -3,57 +3,82 @@
 namespace MathieuMP {
     class Program {
         static void Main() {
-            //for (double q = 0; q <= 64; q += 1d / 64) {
-            //    double a = EigenFP64.InitialValue(EigenFunc.B, 6, q);
-            //    double b = EigenFP64.Value(EigenFunc.B, 6, q, zero_shift: true).value;
-            //    Console.WriteLine($"{q},{a},{b}");
-            //}
+            foreach (EigenFunc func in new[] { EigenFunc.A, EigenFunc.B }) {
+                using StreamWriter sw = new($"../../../../results/eigen_{func}_approx.csv");
 
-            for (double q = 0; q <= 64; q += 1d / 64) {
-                double a = EigenFP64.InitialValueTest(EigenFunc.B, 6, q, 0.3, 0.8);
-                Console.WriteLine($"{q},{a}");
+                SortedDictionary<int, (decimal s, decimal t)> table = new();
+
+                for (int n = func == EigenFunc.A ? 0: 1; n <= 32; n++) {
+                    double min_sd = double.PositiveInfinity;
+                    decimal min_s = 0.1m, min_t = 0.5m, d = 1m;
+                    (decimal min, decimal max) range_s = (0.5m, 8.5m), range_t = (0.5m, 16.5m);
+
+                    while (d >= 1 / 128m) {
+                        for (decimal s = range_s.min; s <= range_s.max; s += d) {
+                            for (decimal t = range_t.min; t <= range_t.max; t += d) {
+
+                                if (s > t) {
+                                    continue;
+                                }
+
+                                double sd = 0;
+                                List<double> xs = new(), ys = new();
+                                for (double q = 0; q <= 8 * Math.Max(1, n * n); q += Math.Max(1, n * n) / 128d) {
+                                    double x = EigenFP64.InitialValueTest(func, n, q, (double)s, (double)t);
+                                    double y = EigenFP64.SearchFit(func, n, q, x).value;
+
+                                    xs.Add(x);
+                                    ys.Add(y);
+
+                                    sd += Math.Abs(x - y);
+
+                                    if (!(sd < min_sd)) {
+                                        break;
+                                    }
+                                    //Console.WriteLine($"{q},{x}");
+                                }
+
+                                //double sd = 0;
+                                //for (int i = 1; i < xs.Count - 1; i++) {
+                                //    double d = Math.Abs(xs[i - 1] + xs[i + 1] - 2 * xs[i]);
+                                //    sd += d;
+                                //}
+
+                                if (double.IsFinite(sd) && sd < min_sd) {
+                                    (min_sd, min_s, min_t) = (sd, s, t);
+                                }
+
+                                Console.Write('.');
+                            }
+                        }
+
+                        Console.WriteLine($"\ns={min_s}, t={min_t}: {min_sd}");
+
+                        range_s = (Math.Max(0, min_s - d), min_s + d);
+                        range_t = (Math.Max(0, min_t - d), min_t + d);
+                        d /= 2;
+                    }
+
+                    Console.WriteLine($"n={n}, s={min_s}, t={min_t}");
+                    sw.WriteLine($"n={n}, s={min_s}, t={min_t}");
+
+                    for (double q = 0; q <= 8 * Math.Max(1, n * n); q += Math.Max(1, n * n) / 16d) {
+                        double x = EigenFP64.InitialValueTest(func, n, q, (double)min_s, (double)min_t);
+                        double y = EigenFP64.SearchFit(func, n, q, x).value;
+
+                        sw.WriteLine($"{q},{x},{y}");
+                    }
+
+                    sw.Flush();
+
+                    table.Add(n, (min_s, min_t));
+                }
+
+                sw.WriteLine("n,s,t");
+                foreach (var item in table) {
+                    sw.WriteLine($"{item.Key},{item.Value.s},{item.Value.t}");
+                }
             }
-
-            //static double f(double x) {
-            //    return EigenFP64.Fraction(EigenFunc.B, 4, 37.3754, x);
-            //}
-            //
-            //for (double x = -24; x <= 16; x += 1d / 32) {
-            //    double y = f(x);
-            //
-            //    bool b = SequenceUtil.IsReciprocalCurve(f(x - 3d / 64), f(x - 2d / 64), f(x - 1d / 64), f(x), f(x + 1d / 64), f(x + 2d / 64), f(x + 3d / 64));
-            //
-            //    Console.WriteLine($"{x},{y},{(b ? 1 : 0)}");
-            //}
-
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535851547, -12);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.3753585154754, -12);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535851548, -12);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -11.05);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -12.05);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -12);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.3754, -12.001);
-
-            //double a = EigenFP64.Fraction(EigenFunc.B, 4, 37.3754, -12.00003504803275);
-
-            //for (double a = -24; a <= 12; a += Math.ScaleB(1, -6)) {
-            //    double d = EigenFP64.Fraction(EigenFunc.B, 8, 36.015625, a);
-            //    Console.WriteLine($"{a},{d}");
-            //}
-
-            //bool islinear = EigenFP64.IsLinear(0, 1, 2, 3.8, 4);
-
-            //for (double p = 0.1; p <= 2.0; p += 0.1) {
-            //    (double x, double error) = RootFinder.SecantSearch((x) => Math.Cos(x) - 0.4, p, 0.1);
-            //
-            //    Console.WriteLine($"{x}, {error}\n");
-            //}
-            //
-            //for (double p = 0.1; p <= 2.0; p += 0.1) {
-            //    (double x, double error) = RootFinder.SecantSearch((x) => Math.Sin(x) - 0.4, p, 0.1);
-            //
-            //    Console.WriteLine($"{x}, {error}\n");
-            //}
 
             Console.WriteLine("END");
             Console.Read();
