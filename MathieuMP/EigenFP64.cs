@@ -1,6 +1,7 @@
 ﻿// Copyright (c) T.Yoshimura 2022
 // https://github.com/tk-yoshimura
 
+using System;
 using System.Diagnostics;
 
 namespace MathieuMP {
@@ -134,27 +135,29 @@ namespace MathieuMP {
                 return NearZero(func, n, q);
             }
 
-            static double lerp(double x, double s, double t, double a, double b) {
-                if (x < s) {
+            static double bump(double x, double s, double t, double a, double b) {
+                double c = (x - s) / (t - s);
+            
+                if (c < 0.001) {
                     return a;
                 }
-                if (x > t) {
+                if (c > 0.988) {
                     return b;
                 }
 
-                double c = (x - s) / (t - s);
+                double w = 1d / (Math.Exp(1d / c - 1d / (1d - c)) + 1d);
 
-                return a * (1 - c) + b * c;
+                return a * (1d - w) + b * w;
             }
 
             double y = (func, n) switch {
                 (EigenFunc.A, 0 or 1) => (q <= 4) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
                 (EigenFunc.A, 2) => (q <= 3) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
                 (EigenFunc.A, 3) => (q <= 6.25) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
-                (EigenFunc.A, <= 64) => (q <= 0.49 * n * n)
+                (EigenFunc.A, <= 64) => (q <= 0.3 * n * n)
                                         ? NearPeak(func, n, q)
-                                        : (q <= 0.7225 * n * n)
-                                            ? lerp(q / (n * n), 0.49, 0.7225, NearPeak(func, n, q), Asymptotic(func, n, q))
+                                        : (q <= 0.8 * n * n)
+                                            ? bump(q / (n * n), 0.3, 0.8, NearPeak(func, n, q), Asymptotic(func, n, q))
                                             : Asymptotic(func, n, q),
                 (EigenFunc.A, _) => ((n & 1) == 0)
                                         ? Value(func, n / 2, q / 2, zero_shift: false).value * 4
@@ -162,16 +165,50 @@ namespace MathieuMP {
                 (EigenFunc.B, 1) => (q <= 4) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
                 (EigenFunc.B, 2) => (q <= 5) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
                 (EigenFunc.B, 3) => (q <= 6.25) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
-                (EigenFunc.B, <= 64) => (q <= 0.49 * n * n)
+                (EigenFunc.B, <= 64) => (q <= 0.3 * n * n)
                                         ? NearPeak(func, n, q)
-                                        : (q <= 0.7225 * n * n)
-                                            ? lerp(q / (n * n), 0.49, 0.7225, NearPeak(func, n, q), Asymptotic(func, n, q))
+                                        : (q <= 0.8 * n * n)
+                                            ? bump(q / (n * n), 0.3, 0.8, NearPeak(func, n, q), Asymptotic(func, n, q))
                                             : Asymptotic(func, n, q),
                 (EigenFunc.B, _) => ((n & 1) == 0)
                                         ? Value(func, n / 2, q / 2, zero_shift: false).value * 2
                                         : Value(func, n / 2, q / 2, zero_shift: false).value * (n / (double)(n / 2)),
                 _ => throw new ArgumentException(nameof(func))
             };
+
+            return y;
+        }
+
+        public static double InitialValueTest(EigenFunc func, int n, double q, double s, double t) {
+            if (func == EigenFunc.A && n < 0) {
+                throw new ArgumentOutOfRangeException(nameof(n));
+            }
+            if (func == EigenFunc.B && n < 1) {
+                throw new ArgumentOutOfRangeException(nameof(n));
+            }
+
+            if (q < 1d / 32) {
+                return NearZero(func, n, q);
+            }
+
+            static double bump(double x, double s, double t, double a, double b) {
+                double c = (x - s) / (t - s);
+            
+                if (c < 0.001) {
+                    return a;
+                }
+                if (c > 0.988) {
+                    return b;
+                }
+
+                double w = 1d / (Math.Exp(1d / c - 1d / (1d - c)) + 1d);
+
+                return a * (1d - w) + b * w;
+            }
+
+            double r = 1d / Math.Max(1, n * n);
+
+            double y = bump(q * r, s, t, NearPeak(func, n, q), Asymptotic(func, n, q));
 
             return y;
         }
@@ -244,9 +281,7 @@ namespace MathieuMP {
                 (EigenFunc.B, 1) => 4 - (q + Math.Sqrt(64 + q * (16 + q * 5))) / 2,
                 (EigenFunc.B, 2) => 6 - Math.Sqrt(36 + h),
                 (EigenFunc.B, 3) => RootCubic(h * (8 - q), -128 - q * 16 - h * 2, q - 8),
-                (EigenFunc.A, _) => nz_largen(n, h),
-                (EigenFunc.B, _) => nz_largen(n + 1, h),
-                _ => throw new ArgumentException(nameof(func))
+                _ => nz_largen(n, h)
             };
 
             return y;

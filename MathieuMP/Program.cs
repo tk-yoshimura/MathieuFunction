@@ -3,10 +3,15 @@
 namespace MathieuMP {
     class Program {
         static void Main() {
+            //for (double q = 0; q <= 64; q += 1d / 64) {
+            //    double a = EigenFP64.InitialValue(EigenFunc.B, 6, q);
+            //    double b = EigenFP64.Value(EigenFunc.B, 6, q, zero_shift: true).value;
+            //    Console.WriteLine($"{q},{a},{b}");
+            //}
+
             for (double q = 0; q <= 64; q += 1d / 64) {
-                double a = EigenFP64.InitialValue(EigenFunc.B, 4, q);
-                double b = EigenFP64.Value(EigenFunc.B, 4, q, zero_shift: true).value;
-                Console.WriteLine($"{q},{a},{b}");
+                double a = EigenFP64.InitialValueTest(EigenFunc.B, 6, q, 0.3, 0.8);
+                Console.WriteLine($"{q},{a}");
             }
 
             //static double f(double x) {
