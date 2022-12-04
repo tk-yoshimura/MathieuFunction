@@ -4,8 +4,8 @@ namespace MathieuMP {
     class Program {
         static void Main() {
             for (double q = 0; q <= 64; q += 1d / 64) {
-                double a = EigenFP64.InitialValue(EigenFunc.B, 8, q);
-                double b = EigenFP64.Value(EigenFunc.B, 8, q, zero_shift: true).value;
+                double a = EigenFP64.InitialValue(EigenFunc.B, 4, q);
+                double b = EigenFP64.Value(EigenFunc.B, 4, q, zero_shift: true).value;
                 Console.WriteLine($"{q},{a},{b}");
             }
 
@@ -31,10 +31,10 @@ namespace MathieuMP {
 
             //double a = EigenFP64.Fraction(EigenFunc.B, 4, 37.3754, -12.00003504803275);
 
-           //for (double a = -24; a <= 12; a += Math.ScaleB(1, -6)) {
-           //    double d = EigenFP64.Fraction(EigenFunc.B, 8, 37.875, a);
-           //    Console.WriteLine($"{a},{d}");
-           //}
+            //for (double a = -24; a <= 12; a += Math.ScaleB(1, -6)) {
+            //    double d = EigenFP64.Fraction(EigenFunc.B, 8, 36.015625, a);
+            //    Console.WriteLine($"{a},{d}");
+            //}
 
             //bool islinear = EigenFP64.IsLinear(0, 1, 2, 3.8, 4);
 

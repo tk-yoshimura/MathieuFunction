@@ -3,7 +3,8 @@
 namespace MathieuMP {
     public static class RootFinder {
         const double eps = 4e-15;
-        const double truncation_thr = 256; 
+        const double truncation_thr = 256;
+        const int max_secant_iters = 16;
 
         public static (double v, bool is_convergence) BothSearch(Func<double, double> f, double x0, double h0) {
             if (!(h0 >= 0)) {
@@ -12,6 +13,7 @@ namespace MathieuMP {
 
             double h = h0, x = x0, y = f(x0);
             bool is_convergenced = false, is_clamp;
+            int secant_iters = 0;
 
             while (Math.Abs(h / (Math.Abs(x) + double.Epsilon)) >= eps) {
                 (double yn3, double yn2, double yn1, double yp1, double yp2, double yp3) =
@@ -31,10 +33,11 @@ namespace MathieuMP {
                             h = Math.Min(h * 2, h0);
                         }
                         else if (yn1 * yp1 <= 0) {
+                            secant_iters++;
                             h /= 4;
                         }
 
-                        if (Math.Abs(dx / (Math.Abs(x) + double.Epsilon)) <= eps) {
+                        if (Math.Abs(dx / (Math.Abs(x) + double.Epsilon)) <= eps || secant_iters >= max_secant_iters) {
                             if (y == 0 || is_convergenced) {
                                 is_convergenced = true;
                                 break;
@@ -100,6 +103,7 @@ namespace MathieuMP {
             h = Math.Min(h, h0);
 
             bool is_convergenced = false, is_clamp;
+            int secant_iters = 0;
 
             while (Math.Abs(h / (Math.Abs(x) + double.Epsilon)) >= eps) {
                 (double yn3, double yn2, double yn1, double yp1, double yp2, double yp3) =
@@ -119,10 +123,11 @@ namespace MathieuMP {
                             h = Math.Min(h * 2, h0);
                         }
                         else if (yn1 * yp1 <= 0) {
+                            secant_iters++;
                             h /= 4;
                         }
 
-                        if (Math.Abs(dx / (Math.Abs(x) + double.Epsilon)) <= eps) {
+                        if (Math.Abs(dx / (Math.Abs(x) + double.Epsilon)) <= eps || secant_iters >= max_secant_iters) {
                             if (y == 0 || is_convergenced) {
                                 is_convergenced = true;
                                 break;
@@ -188,6 +193,7 @@ namespace MathieuMP {
             h = Math.Min(h, h0);
 
             bool is_convergenced = false, is_clamp;
+            int secant_iters = 0;
 
             while (Math.Abs(h / (Math.Abs(x) + double.Epsilon)) >= eps) {
                 (double yn3, double yn2, double yn1, double yp1, double yp2, double yp3) =
@@ -207,10 +213,11 @@ namespace MathieuMP {
                             h = Math.Min(h * 2, h0);
                         }
                         else if (yn1 * yp1 <= 0) {
+                            secant_iters++;
                             h /= 4;
                         }
 
-                        if (Math.Abs(dx / (Math.Abs(x) + double.Epsilon)) <= eps) {
+                        if (Math.Abs(dx / (Math.Abs(x) + double.Epsilon)) <= eps || secant_iters >= max_secant_iters) {
                             if (y == 0 || is_convergenced) {
                                 is_convergenced = true;
                                 break;
