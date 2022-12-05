@@ -3,9 +3,9 @@
 namespace MathieuMP {
     class Program {
         static void Main() {
-             for (double q = 0; q <= 1024; q += 1) {
-                double a = EigenFP64.InitialValue(EigenFunc.B, 20, q);
-                double b = EigenFP64.Value(EigenFunc.B, 20, q, zero_shift: true).value;
+             for (double q = 0; q <= 2048; q += 1) {
+                double a = EigenFP64.InitialValue(EigenFunc.B, 34, q);
+                double b = EigenFP64.Value(EigenFunc.B, 34, q, zero_shift: true).value;
                 Console.WriteLine($"{q},{a},{b}");
              }
 

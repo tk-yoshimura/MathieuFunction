@@ -159,7 +159,7 @@ namespace MathieuMP {
                                              0.2208 + 6.881e-3 * n, 
                                              1.1708 - 9.002e-3 * n, 
                                              NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.A, _) => Value(func, n / 2, q / 2, zero_shift: true).value * (n * n / (double)(n / 2 * n / 2)),
+                (EigenFunc.A, _) => bump(q / (n * n), 0.44, 0.88, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, 1) => bump(q, 0.601, 5.734, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, 2) => bump(q, 1.375, 9.250, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, 3) => bump(q, 2.390, 13.78, NearPeak(func, n, q), Asymptotic(func, n, q)),
@@ -167,7 +167,7 @@ namespace MathieuMP {
                                              -7.0301e-2 + 6.1381e-2 * n - 1.6467e-3 * n * n, 
                                              1.0729 - 4.214e-2 * n + 8.5620e-4 * n * n, 
                                              NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.B, _) => Value(func, n / 2, q / 2, zero_shift: true).value * (n / (double)(n / 2)),
+                (EigenFunc.B, _) => bump(q / (n * n), 0.49, 0.62, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 _ => throw new ArgumentException(nameof(func))
             };
 
