@@ -68,7 +68,9 @@ namespace MathieuMP {
         /// <summary>
         /// If a matches the true value, return 0.
         /// </summary>
-        public static double Fraction(EigenFunc func, int n, double q, double a, int terms) {
+        public static double Fraction(EigenFunc func, int n, double q, double a, int terms = -1) {
+            terms = (terms < 0) ? FracTerms(func, n, q) : terms;
+
             double y = func switch {
                 EigenFunc.A => FractionA(n, q, a, terms),
                 EigenFunc.B => FractionB(n, q, a, terms),
@@ -82,10 +84,12 @@ namespace MathieuMP {
         /// Obtain true value by the binary search and secant method.
         /// NOTE: a is within the radii of convergence.
         /// </summary>
-        public static (double value, bool is_convergence) SearchFit(EigenFunc func, int n, double q, double a, int frac_terms) {
+        public static (double value, bool is_convergence) SearchFit(EigenFunc func, int n, double q, double a, int frac_terms = -1) {
             if (q == 0) {
                 return (0, is_convergence: true);
             }
+
+            frac_terms = (frac_terms < 0) ? FracTerms(func, n, q) : frac_terms;
 
             double h = Math.Max(1, n * n) / 32d;
 
@@ -308,7 +312,9 @@ namespace MathieuMP {
         /// <param name="q">q</param>
         /// <param name="zero_shift">remove bias (=n^2)</param>
         /// <returns></returns>
-        public static (double value, bool is_convergence) Value(EigenFunc func, int n, double q, int frac_terms = 64, bool zero_shift = false) {
+        public static (double value, bool is_convergence) Value(EigenFunc func, int n, double q, int frac_terms = -1, bool zero_shift = false) {
+            frac_terms = (frac_terms < 0) ? FracTerms(func, n, q) : frac_terms;
+
             double a0 = InitialValue(func, n, q);
             (double value, bool is_convergence) = SearchFit(func, n, q, a0, frac_terms);
 
@@ -338,6 +344,19 @@ namespace MathieuMP {
             }
 
             return (double.NaN, -1);
+        }
+
+        public static int FracTerms(EigenFunc func, int n, double q) {
+            if (!(q >= 0)) {
+                throw new ArgumentOutOfRangeException(nameof(q));
+            }
+
+            double intercept = 2.13317 + Math.Sqrt(n + 1) * 0.104619;
+            double slope = 0.239519 * Math.Pow(n + 1, 0.0192171);
+
+            int terms = Math.Max(32, (int)Math.Ceiling(Math.Pow(2, intercept + slope * Math.Log2(q))));
+
+            return terms;
         }
     }
 }
