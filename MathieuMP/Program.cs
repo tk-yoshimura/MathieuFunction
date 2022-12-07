@@ -1,13 +1,36 @@
-﻿using System.Xml.Serialization;
+﻿using System;
+using System.Xml.Serialization;
 
 namespace MathieuMP {
     class Program {
         static void Main() {
-             for (double q = 0; q <= 2048; q += 1) {
-                double a = EigenFP64.InitialValue(EigenFunc.B, 34, q);
-                double b = EigenFP64.Value(EigenFunc.B, 34, q, zero_shift: true).value;
-                Console.WriteLine($"{q},{a},{b}");
-             }
+            foreach (EigenFunc func in new[] { EigenFunc.A, EigenFunc.B }) {
+                for (int n = func == EigenFunc.A ? 0 : 1; n <= 128; n++) {
+                    Console.WriteLine($"{func}{n}");
+            
+                    using StreamWriter sw = new($"../../../../results/needs_frac_{func}_{n}.csv");
+
+                    int terms = 1;
+
+                    for (double q = Math.Max(1, n * n) / 4d; q <= 8192 * Math.Max(1, n * n); q += Math.Max(1, n * n) / 4d) {
+                        (double a, terms) = EigenFP64.ConvergenceFracTerms(func, n, q, Math.Max(1, terms - 2));
+                        
+                        //Console.WriteLine($"{q},{a},{terms}");
+                        sw.WriteLine($"{q},{a},{terms}");
+                    }
+                }
+            }
+
+            //EigenFunc func = EigenFunc.A;
+            //int n = 32;
+            //
+            //double v = EigenFP64.InitialValue(func, n, 7000);
+            //
+            //for (double q = 0; q <= 8 * Math.Max(1, n * n); q += Math.Max(1, n * n) / 128d) {
+            //    double a = EigenFP64.InitialValue(func, n, q);
+            //    double b = EigenFP64.Value(func, n, q, zero_shift: true).value;
+            //    Console.WriteLine($"{q},{a},{b}");
+            //}
 
             //foreach (EigenFunc func in new[] { EigenFunc.A, EigenFunc.B }) {
             //    using StreamWriter sw = new($"../../../../results/eigen_{func}_approx.csv");

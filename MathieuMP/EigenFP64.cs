@@ -68,7 +68,7 @@ namespace MathieuMP {
         /// <summary>
         /// If a matches the true value, return 0.
         /// </summary>
-        public static double Fraction(EigenFunc func, int n, double q, double a, int terms = 32) {
+        public static double Fraction(EigenFunc func, int n, double q, double a, int terms) {
             double y = func switch {
                 EigenFunc.A => FractionA(n, q, a, terms),
                 EigenFunc.B => FractionB(n, q, a, terms),
@@ -78,27 +78,25 @@ namespace MathieuMP {
             return y;
         }
 
-
-
         /// <summary>
         /// Obtain true value by the binary search and secant method.
         /// NOTE: a is within the radii of convergence.
         /// </summary>
-        public static (double value, bool is_convergence) SearchFit(EigenFunc func, int n, double q, double a) {
+        public static (double value, bool is_convergence) SearchFit(EigenFunc func, int n, double q, double a, int frac_terms) {
             if (q == 0) {
                 return (0, is_convergence: true);
             }
 
             double h = Math.Max(1, n * n) / 32d;
 
-            (double ar, bool ar_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a), a, h);
-            (double ap, bool ap_convergence) = RootFinder.Search((a) => 1 / Fraction(func, n, q, a), a, h);
+            (double ar, bool ar_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), a, h);
+            (double ap, bool ap_convergence) = RootFinder.Search((a) => 1 / Fraction(func, n, q, a, frac_terms), a, h);
             
             double a_likelihood = ar_convergence ? ar : double.NaN;
 
             if (ap_convergence) {
-                (double apm, bool apm_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a), Math.BitDecrement(ap), h, SearchDirection.Minus);
-                (double app, bool app_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a), Math.BitIncrement(ap), h, SearchDirection.Plus);
+                (double apm, bool apm_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitDecrement(ap), h, SearchDirection.Minus);
+                (double app, bool app_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitIncrement(ap), h, SearchDirection.Plus);
 
                 if (apm_convergence) {
                     a_likelihood = Math.Abs(a - a_likelihood) < Math.Abs(a - apm) ? a_likelihood : apm;
@@ -310,15 +308,36 @@ namespace MathieuMP {
         /// <param name="q">q</param>
         /// <param name="zero_shift">remove bias (=n^2)</param>
         /// <returns></returns>
-        public static (double value, bool is_convergence) Value(EigenFunc func, int n, double q, bool zero_shift = false) {
+        public static (double value, bool is_convergence) Value(EigenFunc func, int n, double q, int frac_terms = 64, bool zero_shift = false) {
             double a0 = InitialValue(func, n, q);
-            (double value, bool is_convergence) = SearchFit(func, n, q, a0);
+            (double value, bool is_convergence) = SearchFit(func, n, q, a0, frac_terms);
 
             if (!zero_shift) {
                 value += n * n;
             }
 
             return (value, is_convergence);
+        }
+
+        public static (double value, int terms) ConvergenceFracTerms(EigenFunc func, int n, double q, int init_terms) {
+            double a0 = Value(func, n, q, frac_terms: init_terms, zero_shift: true).value;
+            double a1 = Value(func, n, q, frac_terms: init_terms + 1, zero_shift: true).value;
+            double err01 = Math.Abs(a0 - a1);
+
+            for (int frac_terms = init_terms; frac_terms <= 4096; frac_terms += 2) { 
+                double a2 = Value(func, n, q, frac_terms + 2, zero_shift: true).value;
+                double err12 = Math.Abs(a1 - a2);
+
+                double relative_err = err01 / (Math.Abs(a0) + double.Epsilon);
+
+                if ((relative_err < 1e-14) && (err01 <= err12) && ((a0 >= a1 && a1 <= a2) || (a0 <= a1 && a1 >= a2))) {
+                    return (a2, frac_terms);
+                }
+
+                (a0, a1, err01) = (a1, a2, err12);
+            }
+
+            return (double.NaN, -1);
         }
     }
 }
