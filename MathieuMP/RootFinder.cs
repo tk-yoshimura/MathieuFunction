@@ -3,10 +3,9 @@
 namespace MathieuMP {
     public static class RootFinder {
         const double eps = 4e-15;
-        const double truncation_thr = 256;
         const int max_secant_iters = 16;
 
-        public static (double v, bool is_convergence) BothSearch(Func<double, double> f, double x0, double h0) {
+        public static (double v, bool is_convergence) BothSearch(Func<double, double> f, double x0, double h0, double truncation_thr) {
             if (!(h0 >= 0)) {
                 throw new ArgumentOutOfRangeException(nameof(h0));
             }
@@ -60,7 +59,7 @@ namespace MathieuMP {
             return (x, is_convergenced);
         }
 
-        public static (double v, bool is_convergence) MinusSearch(Func<double, double> f, double x0, double h0) {
+        public static (double v, bool is_convergence) MinusSearch(Func<double, double> f, double x0, double h0, double truncation_thr) {
             if (!(h0 >= 0)) {
                 throw new ArgumentOutOfRangeException(nameof(h0));
             }
@@ -150,7 +149,7 @@ namespace MathieuMP {
             return (x, is_convergenced);
         }
 
-        public static (double v, bool is_convergence) PlusSearch(Func<double, double> f, double x0, double h0) {
+        public static (double v, bool is_convergence) PlusSearch(Func<double, double> f, double x0, double h0, double truncation_thr) {
             if (!(h0 >= 0)) {
                 throw new ArgumentOutOfRangeException(nameof(h0));
             }
@@ -269,11 +268,11 @@ namespace MathieuMP {
             return sign;
         }
 
-        public static (double v, bool is_convergence) Search(Func<double, double> f, double x, double h, SearchDirection direction = SearchDirection.Both) {
+        public static (double v, bool is_convergence) Search(Func<double, double> f, double x, double h, double truncation_thr, SearchDirection direction = SearchDirection.Both) {
             return direction switch {
-                SearchDirection.Minus => MinusSearch(f, x, h),
-                SearchDirection.Plus => PlusSearch(f, x, h),
-                _ => BothSearch(f, x, h),
+                SearchDirection.Minus => MinusSearch(f, x, h, truncation_thr),
+                SearchDirection.Plus => PlusSearch(f, x, h, truncation_thr),
+                _ => BothSearch(f, x, h, truncation_thr),
             };
         }
     }

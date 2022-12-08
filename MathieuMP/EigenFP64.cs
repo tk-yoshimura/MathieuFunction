@@ -92,15 +92,16 @@ namespace MathieuMP {
             frac_terms = (frac_terms < 0) ? FracTerms(func, n, q) : frac_terms;
 
             double h = Math.Max(1, n * n) / 32d;
+            double truncation_thr = 2 + Math.Max(1, n * n) * 0.1;
 
-            (double ar, bool ar_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), a, h);
-            (double ap, bool ap_convergence) = RootFinder.Search((a) => 1 / Fraction(func, n, q, a, frac_terms), a, h);
-            
+            (double ar, bool ar_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
+            (double ap, bool ap_convergence) = RootFinder.Search((a) => 1 / Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
+
             double a_likelihood = ar_convergence ? ar : double.NaN;
 
             if (ap_convergence) {
-                (double apm, bool apm_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitDecrement(ap), h, SearchDirection.Minus);
-                (double app, bool app_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitIncrement(ap), h, SearchDirection.Plus);
+                (double apm, bool apm_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitDecrement(ap), h, truncation_thr, SearchDirection.Minus);
+                (double app, bool app_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitIncrement(ap), h, truncation_thr, SearchDirection.Plus);
 
                 if (apm_convergence) {
                     a_likelihood = Math.Abs(a - a_likelihood) < Math.Abs(a - apm) ? a_likelihood : apm;
@@ -139,7 +140,7 @@ namespace MathieuMP {
 
             static double bump(double x, double s, double t, double a, double b) {
                 double c = (x - s) / (t - s);
-            
+
                 if (c < 0.001) {
                     return a;
                 }
@@ -157,20 +158,24 @@ namespace MathieuMP {
                 (EigenFunc.A, 1) => (q <= 4.00) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
                 (EigenFunc.A, 2) => (q <= 6.72) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
                 (EigenFunc.A, 3) => (q <= 10.3) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
-                (EigenFunc.A, <= 32) => bump(q / (n * n), 
-                                             0.2208 + 6.881e-3 * n, 
-                                             1.1708 - 9.002e-3 * n, 
+                (EigenFunc.A, <= 32) => bump(q / (n * n),
+                                             0.2208 + 6.881e-3 * n,
+                                             1.1708 - 9.002e-3 * n,
                                              NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.A, _) => bump(q / (n * n), 0.44, 0.88, NearPeak(func, n, q), Asymptotic(func, n, q)),
+                (EigenFunc.A, <= 64) => bump(q / (n * n), 0.44, 0.88, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, 1) => bump(q, 0.601, 5.734, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, 2) => bump(q, 1.375, 9.250, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, 3) => bump(q, 2.390, 13.78, NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.B, <= 16) => bump(q / (n * n), 
-                                             -7.0301e-2 + 6.1381e-2 * n - 1.6467e-3 * n * n, 
-                                             1.0729 - 4.214e-2 * n + 8.5620e-4 * n * n, 
+                (EigenFunc.B, <= 16) => bump(q / (n * n),
+                                             -7.0301e-2 + 6.1381e-2 * n - 1.6467e-3 * n * n,
+                                             1.0729 - 4.214e-2 * n + 8.5620e-4 * n * n,
                                              NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.B, _) => bump(q / (n * n), 0.49, 0.62, NearPeak(func, n, q), Asymptotic(func, n, q)),
-                _ => throw new ArgumentException(nameof(func))
+                (EigenFunc.B, <= 32) => bump(q / (n * n), 0.49, 0.62, NearPeak(func, n, q), Asymptotic(func, n, q)),
+                (_) => (q < (n * n) * 0.5)
+                        ? NearPeak(func, n, q)
+                        : (q < (n * n) * 0.85)
+                            ? Value(func, n / 2, q * ((n / 2) * (n / 2)) / (n * n), zero_shift: true).value / ((n / 2) * (n / 2)) * (n * n)
+                            : Asymptotic(func, n, q),
             };
 
             return y;
@@ -190,7 +195,7 @@ namespace MathieuMP {
 
             static double bump(double x, double s, double t, double a, double b) {
                 double c = (x - s) / (t - s);
-            
+
                 if (c < 0.001) {
                     return a;
                 }
@@ -330,7 +335,7 @@ namespace MathieuMP {
             double a1 = Value(func, n, q, frac_terms: init_terms + 1, zero_shift: true).value;
             double err01 = Math.Abs(a0 - a1);
 
-            for (int frac_terms = init_terms; frac_terms <= 4096; frac_terms += 2) { 
+            for (int frac_terms = init_terms; frac_terms <= 4096; frac_terms += 2) {
                 double a2 = Value(func, n, q, frac_terms + 2, zero_shift: true).value;
                 double err12 = Math.Abs(a1 - a2);
 
@@ -347,6 +352,9 @@ namespace MathieuMP {
         }
 
         public static int FracTerms(EigenFunc func, int n, double q) {
+            if (!(n >= 0)) {
+                throw new ArgumentOutOfRangeException(nameof(n));
+            }
             if (!(q >= 0)) {
                 throw new ArgumentOutOfRangeException(nameof(q));
             }
@@ -354,7 +362,7 @@ namespace MathieuMP {
             double intercept = 2.13317 + Math.Sqrt(n + 1) * 0.104619;
             double slope = 0.239519 * Math.Pow(n + 1, 0.0192171);
 
-            int terms = Math.Max(32, (int)Math.Ceiling(Math.Pow(2, intercept + slope * Math.Log2(q))));
+            int terms = Math.Max(n, (int)Math.Ceiling(Math.Pow(2, intercept + slope * Math.Log2(q))));
 
             return terms;
         }
