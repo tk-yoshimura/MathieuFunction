@@ -29,7 +29,7 @@ namespace MathieuMP {
                         (x, y) = (x_next, y_next);
 
                         if (is_clamp) {
-                            h = Math.Min(h * 2, h0);
+                            h = Math.Min(h * 2.5, h0);
                         }
                         else if (yn1 * yp1 <= 0) {
                             secant_iters++;
@@ -119,7 +119,7 @@ namespace MathieuMP {
                         (x, y) = (x_next, y_next);
 
                         if (is_clamp) {
-                            h = Math.Min(h * 2, h0);
+                            h = Math.Min(h * 2.5, h0);
                         }
                         else if (yn1 * yp1 <= 0) {
                             secant_iters++;
@@ -209,7 +209,7 @@ namespace MathieuMP {
                         (x, y) = (x_next, y_next);
 
                         if (is_clamp) {
-                            h = Math.Min(h * 2, h0);
+                            h = Math.Min(h * 2.5, h0);
                         }
                         else if (yn1 * yp1 <= 0) {
                             secant_iters++;
