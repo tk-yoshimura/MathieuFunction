@@ -157,25 +157,14 @@ namespace MathieuMP {
                 (EigenFunc.A, 0) => (q <= 2.08) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
                 (EigenFunc.A, 1) => (q <= 4.00) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
                 (EigenFunc.A, 2) => (q <= 6.72) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
-                (EigenFunc.A, 3) => (q <= 10.3) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
-                (EigenFunc.A, <= 32) => bump(q / (n * n),
-                                             0.2208 + 6.881e-3 * n,
-                                             1.1708 - 9.002e-3 * n,
-                                             NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.A, <= 64) => bump(q / (n * n), 0.44, 0.88, NearPeak(func, n, q), Asymptotic(func, n, q)),
+                (EigenFunc.A, 3) => (q <= 10.0) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
                 (EigenFunc.B, 1) => bump(q, 0.601, 5.734, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, 2) => bump(q, 1.375, 9.250, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, 3) => bump(q, 2.390, 13.78, NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.B, <= 16) => bump(q / (n * n),
-                                             -7.0301e-2 + 6.1381e-2 * n - 1.6467e-3 * n * n,
-                                             1.0729 - 4.214e-2 * n + 8.5620e-4 * n * n,
-                                             NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.B, <= 32) => bump(q / (n * n), 0.49, 0.62, NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (_) => (q < (n * n) * 0.5)
-                        ? NearPeak(func, n, q)
-                        : (q < (n * n) * 0.85)
-                            ? Value(func, n / 2, q * ((n / 2) * (n / 2)) / (n * n), zero_shift: true).value / ((n / 2) * (n / 2)) * (n * n)
-                            : Asymptotic(func, n, q),
+                (EigenFunc.B, 4) => bump(q, 1.950, 14.93, NearPeak(func, n, q), Asymptotic(func, n, q)),
+                (EigenFunc.B, 5) => bump(q, 4.671, 22.65, NearPeak(func, n, q), Asymptotic(func, n, q)),
+                (EigenFunc.B, 6) => bump(q, 8.582, 31.48, NearPeak(func, n, q), Asymptotic(func, n, q)),
+                _ => bump(q / (n * n), 0.455, 0.837, NearPeak(func, n, q), Asymptotic(func, n, q)),
             };
 
             return y;
@@ -304,7 +293,11 @@ namespace MathieuMP {
             double c4 = -Math.ScaleB(486 + s_sq * (2943 + s_sq * (1260 + s_sq * 63)), -20);
             double c5 = -Math.ScaleB(s * (41607 + s_sq * (69001 + s_sq * (15617 + s_sq * 527))), -25);
 
-            double y = (2 * (-q + s * u) - n * n) + c0 + v * (c1 + v * (c2 + v * (c3 + v * (c4 + v * c5))));
+            double c6 = func == EigenFunc.A
+                ? (-7.50115145e-6 * Math.Pow(s, 7.96061705))
+                : (-7.45224979e-6 * Math.Pow(s, 7.96102166));
+
+            double y = (2 * (-q + s * u) - n * n) + c0 + v * (c1 + v * (c2 + v * (c3 + v * (c4 + v * (c5 + v * c6)))));
 
             return y;
         }
