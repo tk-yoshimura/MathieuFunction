@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using MultiPrecision;
+using System.Xml.Linq;
 
 namespace MathieuMP {
     public static class RootFinder {
@@ -268,12 +269,53 @@ namespace MathieuMP {
             return sign;
         }
 
-        public static (double v, bool is_convergence) Search(Func<double, double> f, double x, double h, double truncation_thr, SearchDirection direction = SearchDirection.Both) {
-            return direction switch {
+        public static double LinearityScore(Func<double, double> f, double x) { 
+            double h = Math.Max(Math.ScaleB(1, -256), Math.BitIncrement(x) - x);
+
+            if (!double.IsFinite(h) || h == 0) {
+                throw new ArgumentOutOfRangeException(nameof(x));
+            }
+
+            double sw = 0, sxx = 0, snxy = 0, snyy = 0, sixy = 0, siyy = 0;
+
+            for (int i = 1, w = 2 << 16; i <= 16; i++, w /= 2) {
+                double my = f(x - h), py = f(x + h);
+
+                if (!double.IsFinite(my) || !double.IsFinite(py) || my == 0 || py == 0) {
+                    break;
+                }
+
+                sw += w;
+
+                sxx += 2 * w * h * h;
+                
+                snxy += w * h * (py - my);
+                snyy += w * my * my + py * py;
+
+                sixy += w * h * (1d / py - 1d / my);
+                siyy += w * (1d / (my * my) + 1d / (py * py));
+
+                h *= 2;
+            }
+
+            double rn = Math.Abs(snxy / Math.Max(double.Epsilon, Math.Sqrt(sxx * snyy)));
+            double ri = Math.Abs(sixy / Math.Max(double.Epsilon, Math.Sqrt(sxx * siyy)));
+
+            double score = (double.IsFinite(rn) ? rn : 0) - (double.IsFinite(ri) ? ri : 0);
+
+            return score;
+        }
+
+        public static (double v, bool is_convergence, double score) Search(Func<double, double> f, double x, double h, double truncation_thr, SearchDirection direction = SearchDirection.Both) {
+            (double v, bool is_convergence) = direction switch {
                 SearchDirection.Minus => MinusSearch(f, x, h, truncation_thr),
                 SearchDirection.Plus => PlusSearch(f, x, h, truncation_thr),
                 _ => BothSearch(f, x, h, truncation_thr),
             };
+
+            double score = is_convergence ? LinearityScore(f, v) : double.NegativeInfinity;
+
+            return (v, is_convergence, score);
         }
     }
 }

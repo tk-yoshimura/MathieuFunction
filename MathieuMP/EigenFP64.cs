@@ -94,19 +94,19 @@ namespace MathieuMP {
             double h = Math.Max(1, n * n) / 32d;
             double truncation_thr = 2 + Math.Max(1, n * n) * 0.1;
 
-            (double ar, bool ar_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
-            (double ap, bool ap_convergence) = RootFinder.Search((a) => 1 / Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
+            (double ar, bool ar_convergence, double ar_score) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
+            (double ap, bool ap_convergence, _) = RootFinder.Search((a) => 1 / Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
 
             double a_likelihood = ar_convergence ? ar : double.NaN;
 
             if (ap_convergence) {
-                (double apm, bool apm_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitDecrement(ap), h, truncation_thr, SearchDirection.Minus);
-                (double app, bool app_convergence) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitIncrement(ap), h, truncation_thr, SearchDirection.Plus);
+                (double apm, bool apm_convergence, double apm_score) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitDecrement(ap), h, truncation_thr, SearchDirection.Minus);
+                (double app, bool app_convergence, double app_score) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitIncrement(ap), h, truncation_thr, SearchDirection.Plus);
 
-                if (apm_convergence) {
+                if (apm_convergence && apm_score > ar_score * 0.5) {
                     a_likelihood = Math.Abs(a - a_likelihood) < Math.Abs(a - apm) ? a_likelihood : apm;
                 }
-                if (app_convergence) {
+                if (app_convergence && app_score > ar_score * 0.5) {
                     a_likelihood = Math.Abs(a - a_likelihood) < Math.Abs(a - app) ? a_likelihood : app;
                 }
             }
