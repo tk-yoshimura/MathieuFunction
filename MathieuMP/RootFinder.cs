@@ -276,30 +276,38 @@ namespace MathieuMP {
                 throw new ArgumentOutOfRangeException(nameof(x));
             }
 
-            double sw = 0, sxx = 0, snxy = 0, snyy = 0, sixy = 0, siyy = 0;
+            double ny = f(x), iy = 1d / ny;
+            double snxx = 0, snxy = 0, snyy = 0, sixx = 0, sixy = 0, siyy = 0;
 
             for (int i = 1, w = 2 << 16; i <= 16; i++, w /= 2) {
                 double my = f(x - h), py = f(x + h);
 
-                if (!double.IsFinite(my) || !double.IsFinite(py) || my == 0 || py == 0) {
-                    break;
+                double mny = my - ny, pny = py - ny;
+                double miy = 1d / my - iy, piy = 1d / py - iy;
+
+                if (double.IsFinite(mny) && double.IsFinite(pny)) {
+                    snxx += 2 * w * h * h;
+                    snxy += w * h * (pny - mny);
+                    snyy += w * (mny * mny + pny * pny);
                 }
 
-                sw += w;
-
-                sxx += 2 * w * h * h;
-                
-                snxy += w * h * (py - my);
-                snyy += w * my * my + py * py;
-
-                sixy += w * h * (1d / py - 1d / my);
-                siyy += w * (1d / (my * my) + 1d / (py * py));
+                if (double.IsFinite(miy) && double.IsFinite(piy)) {
+                    sixx += 2 * w * h * h;
+                    sixy += w * h * (piy - miy);
+                    siyy += w * (miy * miy + piy * piy);
+                }
 
                 h *= 2;
             }
 
-            double rn = Math.Abs(snxy / Math.Max(double.Epsilon, Math.Sqrt(sxx * snyy)));
-            double ri = Math.Abs(sixy / Math.Max(double.Epsilon, Math.Sqrt(sxx * siyy)));
+            double n = double.IsFinite(snxy) && double.IsFinite(sixy)
+                ? Math.Min(Math.Abs(snxy), Math.Abs(sixy))
+                : double.IsFinite(snxy) ? Math.Abs(snxy)
+                : double.IsFinite(sixy) ? Math.Abs(sixy)
+                : 0;
+
+            double rn = Math.Abs(snxy / Math.Max(double.Epsilon, Math.Sqrt(snxx * snyy))) * Math.Exp(n - Math.Abs(snxy));
+            double ri = Math.Abs(sixy / Math.Max(double.Epsilon, Math.Sqrt(sixx * siyy))) * Math.Exp(n - Math.Abs(sixy));
 
             double score = (double.IsFinite(rn) ? rn : 0) - (double.IsFinite(ri) ? ri : 0);
 
@@ -313,7 +321,11 @@ namespace MathieuMP {
                 _ => BothSearch(f, x, h, truncation_thr),
             };
 
-            double score = is_convergence ? LinearityScore(f, v) : double.NegativeInfinity;
+            double score = is_convergence ? LinearityScore(f, v) : -1;
+
+            if (score < 0d) {
+                is_convergence = false;
+            }
 
             return (v, is_convergence, score);
         }

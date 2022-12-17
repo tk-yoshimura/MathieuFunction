@@ -84,9 +84,9 @@ namespace MathieuMP {
         /// Obtain true value by the binary search and secant method.
         /// NOTE: a is within the radii of convergence.
         /// </summary>
-        public static (double value, bool is_convergence) SearchFit(EigenFunc func, int n, double q, double a, int frac_terms = -1) {
+        public static (double value, double score, bool is_convergence) SearchFit(EigenFunc func, int n, double q, double a, int frac_terms = -1) {
             if (q == 0) {
-                return (0, is_convergence: true);
+                return (0, 1, is_convergence: true);
             }
 
             frac_terms = (frac_terms < 0) ? FracTerms(func, n, q) : frac_terms;
@@ -97,22 +97,22 @@ namespace MathieuMP {
             (double ar, bool ar_convergence, double ar_score) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
             (double ap, bool ap_convergence, _) = RootFinder.Search((a) => 1 / Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
 
-            double a_likelihood = ar_convergence ? ar : double.NaN;
+            (double a_likelihood, double score_likelihood) = ar_convergence ? (ar, ar_score) : (double.NaN, -1);
 
             if (ap_convergence) {
                 (double apm, bool apm_convergence, double apm_score) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitDecrement(ap), h, truncation_thr, SearchDirection.Minus);
                 (double app, bool app_convergence, double app_score) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitIncrement(ap), h, truncation_thr, SearchDirection.Plus);
 
                 if (apm_convergence && apm_score > ar_score * 0.5) {
-                    a_likelihood = Math.Abs(a - a_likelihood) < Math.Abs(a - apm) ? a_likelihood : apm;
+                    (a_likelihood, score_likelihood) = Math.Abs(a - a_likelihood) < Math.Abs(a - apm) ? (a_likelihood, score_likelihood) : (apm, apm_score);
                 }
                 if (app_convergence && app_score > ar_score * 0.5) {
-                    a_likelihood = Math.Abs(a - a_likelihood) < Math.Abs(a - app) ? a_likelihood : app;
+                    (a_likelihood, score_likelihood) = Math.Abs(a - a_likelihood) < Math.Abs(a - app) ? (a_likelihood, score_likelihood) : (app, app_score);
                 }
             }
 
             if (Math.Abs(a - a_likelihood) > 16 && Math.Abs(ar - ap) < Math.Abs(ar) * 1e-15 && !ar_convergence && ap_convergence) {
-                return (ar, false);
+                return (ar, -1, false);
             }
 
             bool is_convergence = !double.IsNaN(a_likelihood);
@@ -120,7 +120,7 @@ namespace MathieuMP {
                 a_likelihood = ap;
             }
 
-            return (a_likelihood, is_convergence);
+            return (a_likelihood, score_likelihood, is_convergence);
         }
 
         /// <summary>
@@ -310,17 +310,17 @@ namespace MathieuMP {
         /// <param name="q">q</param>
         /// <param name="zero_shift">remove bias (=n^2)</param>
         /// <returns></returns>
-        public static (double value, bool is_convergence) Value(EigenFunc func, int n, double q, int frac_terms = -1, bool zero_shift = false) {
+        public static (double value, double score, bool is_convergence) Value(EigenFunc func, int n, double q, int frac_terms = -1, bool zero_shift = false) {
             frac_terms = (frac_terms < 0) ? FracTerms(func, n, q) : frac_terms;
 
             double a0 = InitialValue(func, n, q);
-            (double value, bool is_convergence) = SearchFit(func, n, q, a0, frac_terms);
+            (double value, double score, bool is_convergence) = SearchFit(func, n, q, a0, frac_terms);
 
             if (!zero_shift) {
                 value += n * n;
             }
 
-            return (value, is_convergence);
+            return (value, score, is_convergence);
         }
 
         public static (double value, int terms) ConvergenceFracTerms(EigenFunc func, int n, double q, int init_terms) {
