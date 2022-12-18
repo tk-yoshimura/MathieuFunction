@@ -67,13 +67,12 @@ namespace MathieuMP {
 
             double s = Math.Max(double.Epsilon, x0 - Math.BitDecrement(x0));
             double h = s, x, y;
-            int sign = NeighborSign(f, x0, SearchDirection.Minus);
 
             do {
                 x = x0 - s;
                 y = f(x);
 
-                if (double.IsFinite(y) && Math.Sign(y) == sign) {
+                if (double.IsFinite(y) && y < 0) {
                     break;
                 }
                 s *= 2;
@@ -157,13 +156,12 @@ namespace MathieuMP {
 
             double s = Math.Max(double.Epsilon, Math.BitIncrement(x0) - x0);
             double h = s, x, y;
-            int sign = NeighborSign(f, x0, SearchDirection.Plus);
 
             do {
                 x = x0 + s;
                 y = f(x);
 
-                if (double.IsFinite(y) && Math.Sign(y) == sign) {
+                if (double.IsFinite(y) && y > 0) {
                     break;
                 }
                 s *= 2;
@@ -238,35 +236,6 @@ namespace MathieuMP {
             }
 
             return (x, is_convergenced);
-        }
-
-        public static int NeighborSign(Func<double, double> f, double x, SearchDirection direction) {
-            if (direction != SearchDirection.Minus && direction != SearchDirection.Plus) {
-                throw new ArgumentException(nameof(direction));
-            }
-
-            double h = ((direction == SearchDirection.Minus) ? Math.BitDecrement(x) : Math.BitIncrement(x)) - x;
-
-            if (!double.IsFinite(h) || h == 0) {
-                throw new ArgumentOutOfRangeException(nameof(x));
-            }
-
-            int signw = 0;
-
-            for (int i = 1, w = 8; i <= 8; i++, w--) {
-                double y = f(x + h);
-                h *= 2;
-
-                if (!double.IsFinite(y)) {
-                    continue;
-                }
-
-                signw += w * Math.Sign(y);
-            }
-
-            int sign = (signw == 0) ? 0 : (signw > 0) ? +1 : -1;
-
-            return sign;
         }
 
         public static double LinearityScore(Func<double, double> f, double x) { 

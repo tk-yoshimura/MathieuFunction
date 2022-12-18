@@ -5,57 +5,57 @@ namespace MathieuMP {
     class Program {
         static void Main() {
 
-            EigenFP64.SearchFit(EigenFunc.B, 4, 37.375358, -12);
-            EigenFP64.SearchFit(EigenFunc.B, 4, 37.375359, -12);
-            EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535851, -12);
-            EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535852, -12);
-            EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535851547, -12);
-            EigenFP64.SearchFit(EigenFunc.B, 4, 37.3753585154754, -12);
-            EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535851548, -12);
-            EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -11.05);
-            EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -12.05);
-            EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -12);
-            EigenFP64.SearchFit(EigenFunc.B, 4, 37.3754, -12.001);
+            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375358, -12);
+            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375359, -12);
+            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535851, -12);
+            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535852, -12);
+            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535851547, -12);
+            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.3753585154754, -12);
+            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535851548, -12);
+            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -11.05);
+            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -12.05);
+            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -12);
+            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.3754, -12.001);
 
-            //foreach (EigenFunc func in new[] { EigenFunc.A, EigenFunc.B }) {
-            //
-            //    for (int n = func == EigenFunc.A ? 0: 1; n <= 256; n++) {
-            //        Console.WriteLine($"{func}{n}");
-            //
-            //        using StreamWriter sw = new($"../../../../results/eigen_{func}_{n}_approx.csv");
-            //        
-            //        sw.WriteLine("q,approx,convergence,score");
-            //
-            //        bool is_nan = false;
-            //
-            //        for (double q = 0; q <= 8 * Math.Max(1, n * n); q += Math.Max(1, n * n) / 4096d) {
-            //            double x = EigenFP64.InitialValue(func, n, q);
-            //            (double y, double score, _) = EigenFP64.SearchFit(func, n, q, x);
-            //
-            //            if (double.IsNaN(y)) {
-            //                is_nan = true;
-            //            }
-            //
-            //            sw.WriteLine($"{q},{x},{y},{score}");
-            //        }
-            //
-            //        if (is_nan) {
-            //            Console.WriteLine("detected nan");
-            //        }
-            //    }
-            //}
+            foreach (EigenFunc func in new[] { EigenFunc.A, EigenFunc.B }) {
+            
+                for (int n = func == EigenFunc.A ? 0: 1; n <= 256; n++) {
+                    Console.WriteLine($"{func}{n}");
+            
+                    using StreamWriter sw = new($"../../../../results/eigen_{func}_{n}_approx.csv");
+                    
+                    sw.WriteLine("q,approx,convergence,score");
+            
+                    bool is_nan = false;
+            
+                    for (double q = 0; q <= 8 * Math.Max(1, n * n); q += Math.Max(1, n * n) / 4096d) {
+                        double x = EigenFP64.InitialValue(func, n, q);
+                        (double y, double score, _) = EigenFP64.SearchFit(func, n, q, x);
+            
+                        if (double.IsNaN(y)) {
+                            is_nan = true;
+                        }
+            
+                        sw.WriteLine($"{q},{x},{y},{score}");
+                    }
+            
+                    if (is_nan) {
+                        Console.WriteLine("detected nan");
+                    }
+                }
+            }
 
             //EigenFunc func = EigenFunc.A;
-            //int n = 3;
-            //double q = 31.040771484375;
+            //int n = 57;
+            //double q = 1637.19140625;
             //
             //double x = EigenFP64.InitialValue(func, n, q);
             //double y = EigenFP64.SearchFit(func, n, q, x).value;
-            ////
-            ////for (double a = -1d / 128; a <= 1d / 128; a += Math.ScaleB(1, -17)) {
-            ////    double d = EigenFP64.Fraction(func, n, q, a);
-            ////    Console.WriteLine($"{a},{d}");
-            ////}
+            //
+            //for (double a = 250; a <= 500; a += Math.ScaleB(1, -4)) {
+            //    double d = EigenFP64.Fraction(func, n, q, a);
+            //    Console.WriteLine($"{a},{d}");
+            //}
             //
             //double score6 = RootFinder.LinearityScore((x) => 1 / x, 0);
             //double score1 = RootFinder.LinearityScore((x) => 2 * x, 0);
