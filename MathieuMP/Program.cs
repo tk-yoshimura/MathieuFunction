@@ -45,14 +45,14 @@ namespace MathieuMP {
                 }
             }
 
-            //EigenFunc func = EigenFunc.A;
-            //int n = 57;
-            //double q = 1637.19140625;
+            //EigenFunc func = EigenFunc.B;
+            //int n = 162;
+            //double q = 20791.4501953125;
             //
             //double x = EigenFP64.InitialValue(func, n, q);
             //double y = EigenFP64.SearchFit(func, n, q, x).value;
             //
-            //for (double a = 250; a <= 500; a += Math.ScaleB(1, -4)) {
+            //for (double a = 9000; a <= 10000; a += Math.ScaleB(1, -2)) {
             //    double d = EigenFP64.Fraction(func, n, q, a);
             //    Console.WriteLine($"{a},{d}");
             //}

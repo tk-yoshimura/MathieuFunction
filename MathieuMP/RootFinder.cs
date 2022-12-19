@@ -239,52 +239,61 @@ namespace MathieuMP {
         }
 
         public static double LinearityScore(Func<double, double> f, double x) { 
-            double h = Math.Max(Math.ScaleB(1, -256), Math.BitIncrement(x) - x);
+            double h0 = Math.Max(Math.ScaleB(1, -256), Math.BitIncrement(x) - x);
 
-            if (!double.IsFinite(h) || h == 0) {
+            if (!double.IsFinite(h0) || h0 == 0) {
                 throw new ArgumentOutOfRangeException(nameof(x));
             }
 
+            double score = 0;
             double ny = f(x), iy = 1d / ny;
-            double sw = 0, snw = 0, siw = 0, snxx = 0, snxy = 0, snyy = 0, sixx = 0, sixy = 0, siyy = 0;
 
-            for (int i = 1, w = 2 << 16; i <= 16; i++, w /= 2) {
-                double my = f(x - h), py = f(x + h);
+            for (int n = 16; n >= 2; n--) {
+                double h = h0;
+                double sw = 0, snw = 0, siw = 0, snxx = 0, snxy = 0, snyy = 0, sixx = 0, sixy = 0, siyy = 0;
 
-                double mny = my - ny, pny = py - ny;
-                double miy = 1d / my - iy, piy = 1d / py - iy;
+                for (int i = 1, w = 2 << n; i <= n; i++, w /= 2) {
+                    double my = f(x - h), py = f(x + h);
 
-                sw += w;
+                    double mny = my - ny, pny = py - ny;
+                    double miy = 1d / my - iy, piy = 1d / py - iy;
 
-                if (double.IsFinite(mny) && double.IsFinite(pny)) {
-                    snw += w;
-                    snxx += 2 * w * h * h;
-                    snxy += w * h * (pny - mny);
-                    snyy += w * (mny * mny + pny * pny);
+                    sw += w;
+
+                    if (double.IsFinite(mny) && double.IsFinite(pny)) {
+                        snw += w;
+                        snxx += 2 * w * h * h;
+                        snxy += w * h * (pny - mny);
+                        snyy += w * (mny * mny + pny * pny);
+                    }
+
+                    if (double.IsFinite(miy) && double.IsFinite(piy)) {
+                        siw += w;
+                        sixx += 2 * w * h * h;
+                        sixy += w * h * (piy - miy);
+                        siyy += w * (miy * miy + piy * piy);
+                    }
+
+                    h *= 2;
                 }
 
-                if (double.IsFinite(miy) && double.IsFinite(piy)) {
-                    siw += w;
-                    sixx += 2 * w * h * h;
-                    sixy += w * h * (piy - miy);
-                    siyy += w * (miy * miy + piy * piy);
-                }
+                double snxypw = snxy / snw, sixypw = sixy / siw;
 
-                h *= 2;
+                double r = double.IsFinite(snxypw) && double.IsFinite(sixypw)
+                    ? Math.Min(Math.Abs(snxypw), Math.Abs(sixypw))
+                    : double.IsFinite(snxypw) ? Math.Abs(snxypw)
+                    : double.IsFinite(sixypw) ? Math.Abs(sixypw)
+                    : 0d;
+
+                double rn = Math.Abs(snxy / Math.Max(double.Epsilon, Math.Sqrt(snxx * snyy))) * Math.Exp((r - Math.Abs(snxypw)) * sw);
+                double ri = Math.Abs(sixy / Math.Max(double.Epsilon, Math.Sqrt(sixx * siyy))) * Math.Exp((r - Math.Abs(sixypw)) * sw);
+
+                score = (double.IsFinite(rn) ? rn : 0) - (double.IsFinite(ri) ? ri : 0);
+
+                if (Math.Abs(score) > 0.5) {
+                    return score;
+                }
             }
-
-            double snxypw = snxy / snw, sixypw = sixy / siw;
-
-            double n = double.IsFinite(snxypw) && double.IsFinite(sixypw)
-                ? Math.Min(Math.Abs(snxypw), Math.Abs(sixypw))
-                : double.IsFinite(snxypw) ? Math.Abs(snxypw)
-                : double.IsFinite(sixypw) ? Math.Abs(sixypw)
-                : 0d;
-
-            double rn = Math.Abs(snxy / Math.Max(double.Epsilon, Math.Sqrt(snxx * snyy))) * Math.Exp((n - Math.Abs(snxypw)) * sw);
-            double ri = Math.Abs(sixy / Math.Max(double.Epsilon, Math.Sqrt(sixx * siyy))) * Math.Exp((n - Math.Abs(sixypw)) * sw);
-
-            double score = (double.IsFinite(rn) ? rn : 0) - (double.IsFinite(ri) ? ri : 0);
 
             return score;
         }

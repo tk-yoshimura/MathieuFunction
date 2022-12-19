@@ -93,30 +93,27 @@ namespace MathieuMP {
 
             double h = Math.Max(1, n * n) / 32d;
             double truncation_thr = 2 + Math.Max(1, n * n) * 0.1;
+            double heuristics_err = Math.Max(a * 1e-2, func == EigenFunc.A ? 7.011805e-3 * n * n + 4 : 7.4130104e-3 * n * n + 6);
 
             (double ar, bool ar_convergence, double ar_score) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
             (double ap, bool ap_convergence, _) = RootFinder.Search((a) => 1 / Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
 
-            (double a_likelihood, double score_likelihood) = ar_convergence ? (ar, ar_score) : (double.NaN, -1);
+            (double a_likelihood, double score_likelihood) = (ar_convergence && Math.Abs(a - ar) < heuristics_err) ? (ar, ar_score) : (double.NaN, 0);
 
             if (ap_convergence) {
                 (double apm, bool apm_convergence, double apm_score) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitDecrement(ap), h, truncation_thr, SearchDirection.Minus);
                 (double app, bool app_convergence, double app_score) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitIncrement(ap), h, truncation_thr, SearchDirection.Plus);
 
-                if (apm_convergence && apm_score > ar_score * 0.5) {
+                if (apm_convergence && apm_score > ar_score * 0.5 && Math.Abs(a - apm) < heuristics_err) {
                     (a_likelihood, score_likelihood) = Math.Abs(a - a_likelihood) < Math.Abs(a - apm) ? (a_likelihood, score_likelihood) : (apm, apm_score);
                 }
-                if (app_convergence && app_score > ar_score * 0.5) {
+                if (app_convergence && app_score > ar_score * 0.5 && Math.Abs(a - app) < heuristics_err) {
                     (a_likelihood, score_likelihood) = Math.Abs(a - a_likelihood) < Math.Abs(a - app) ? (a_likelihood, score_likelihood) : (app, app_score);
                 }
             }
 
-            if (Math.Abs(a - a_likelihood) > 16 && Math.Abs(ar - ap) < Math.Abs(ar) * 1e-15 && !ar_convergence && ap_convergence) {
-                return (ar, -1, false);
-            }
-
             bool is_convergence = !double.IsNaN(a_likelihood);
-            if (!is_convergence) {
+            if (!is_convergence && Math.Abs(a - ap) < heuristics_err) {
                 a_likelihood = ap;
             }
 
