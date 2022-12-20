@@ -161,7 +161,15 @@ namespace MathieuMP {
                 (EigenFunc.B, 4) => bump(q, 1.950, 14.93, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, 5) => bump(q, 4.671, 22.65, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, 6) => bump(q, 8.582, 31.48, NearPeak(func, n, q), Asymptotic(func, n, q)),
-                _ => bump(q / (n * n), 0.455, 0.837, NearPeak(func, n, q), Asymptotic(func, n, q)),
+                (EigenFunc.A, _) => bump(q / (n * n), 
+                                         Math.Max(0.25, 0.500 - 8.492 * Math.Pow(n, -1.307)), 
+                                         Math.Min(1.00, 0.763 + 4.734 * Math.Pow(n, -1.173)), 
+                                         NearPeak(func, n, q), Asymptotic(func, n, q)),
+                (EigenFunc.B, _) => bump(q / (n * n), 
+                                         Math.Min(0.60, 0.442 + 9.609e+3 * Math.Pow(n, -3.299)), 
+                                         Math.Max(0.80, 0.817 - 9.282e+2 * Math.Pow(n, -2.573)),
+                                         NearPeak(func, n, q), Asymptotic(func, n, q)),
+                _ => throw new ArgumentException(nameof(func))
             };
 
             return y;
@@ -290,9 +298,11 @@ namespace MathieuMP {
             double c4 = -Math.ScaleB(486 + s_sq * (2943 + s_sq * (1260 + s_sq * 63)), -20);
             double c5 = -Math.ScaleB(s * (41607 + s_sq * (69001 + s_sq * (15617 + s_sq * 527))), -25);
 
-            double c6 = func == EigenFunc.A
-                ? (-7.50115145e-6 * Math.Pow(s, 7.96061705))
-                : (-7.45224979e-6 * Math.Pow(s, 7.96102166));
+            double c6 = (n < 4)
+                ? 0d
+                : func == EigenFunc.A
+                    ? (-5.682576740891 * Math.Pow(n, 4.7) - 0.005055889635 * Math.Pow(n, 7.9))
+                    : (+0.517862332643 * Math.Pow(n, 5.5) - 0.002906986648 * Math.Pow(n, 8.0));
 
             double y = (2 * (-q + s * u) - n * n) + c0 + v * (c1 + v * (c2 + v * (c3 + v * (c4 + v * (c5 + v * c6)))));
 
