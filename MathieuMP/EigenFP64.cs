@@ -93,7 +93,7 @@ namespace MathieuMP {
 
             double h = Math.Max(1, n * n) / 32d;
             double truncation_thr = 2 + Math.Max(1, n * n) * 0.1;
-            double heuristics_err = Math.Max(a * 1e-2, func == EigenFunc.A ? 7.011805e-3 * n * n + 4 : 7.4130104e-3 * n * n + 6);
+            double heuristics_err = Math.Max(a * 1e-2, func == EigenFunc.A ? 4.427e-3 * n * n + 2 : 3.797e-3 * n * n + 6);
 
             (double ar, bool ar_convergence, double ar_score) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
             (double ap, bool ap_convergence, _) = RootFinder.Search((a) => 1 / Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
