@@ -16,13 +16,19 @@ namespace MathieuMP {
             //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -12.05);
             //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -12);
             //EigenFP64.SearchFit(EigenFunc.B, 4, 37.3754, -12.001);
+            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375359, -11.85);
+            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535852, -11.85);
+            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.3753585154754, -11.85);
+            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375359, -12.15);
+            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535852, -12.15);
+            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.3753585154754, -12.15);
 
             foreach (EigenFunc func in new[] { EigenFunc.A, EigenFunc.B }) {
             
-                for (int n = func == EigenFunc.A ? 0: 1; n <= 256; n++) {
+                for (int n = 256; n >= (func == EigenFunc.A ? 0: 1); n--) {
                     Console.WriteLine($"{func}{n}");
             
-                    using StreamWriter sw = new($"../../../../results/eigen_{func}_{n}_approx.csv");
+                    using StreamWriter sw = new($"../../../../sandbox/eigen_{func}_{n}_approx.csv");
                     
                     sw.WriteLine("q,approx,convergence,score");
             

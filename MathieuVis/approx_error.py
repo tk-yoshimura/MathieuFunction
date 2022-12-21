@@ -12,7 +12,7 @@ for func in ['A', 'B']:
 
         print('plot %s %d' % (func, n))
 
-        data = pd.read_csv('../results/eigen_%s_%d_approx.csv' % (func, n), delimiter=',')
+        data = pd.read_csv('../sandbox/eigen_%s_%d_approx.csv' % (func, n), delimiter=',')
 
         approx, convergence = data['approx'], data['convergence']
 
@@ -24,11 +24,11 @@ for func in ['A', 'B']:
         max_errors.append(max_error)
 
     approx_res = pd.DataFrame([ns, max_errors], index=['n', 'max_error']).T
-    approx_res.to_csv('../results/approx_error_%s.csv' % (func), index=False)
+    approx_res.to_csv('../sandbox/approx_error_%s.csv' % (func), index=False)
 
     plt.clf()
     plt.plot(ns, max_errors)
     plt.xlabel('n')
     plt.xlabel('max_error')
 
-    plt.savefig('../figures/approx_error_%s.png' % (func))
+    plt.savefig('../sandbox/approx_error_%s.png' % (func))

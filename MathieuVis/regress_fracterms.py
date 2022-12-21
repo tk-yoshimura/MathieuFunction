@@ -17,7 +17,7 @@ for func in ['A', 'B']:
         
         plt.clf()
 
-        data = np.loadtxt('../results/needs_frac_%s_%d.csv' % (func, n), delimiter=',')
+        data = np.loadtxt('../sandbox/needs_frac_%s_%d.csv' % (func, n), delimiter=',')
 
         q, terms = data[:, 0], data[:, 2]
 
@@ -52,7 +52,7 @@ for func in ['A', 'B']:
         plt.xlabel('q')
         plt.ylabel('c.frac terms')
 
-        plt.savefig('../figures/needs_frac_%s_%d.png' % (func, n))
+        plt.savefig('../sandbox/needs_frac_%s_%d.png' % (func, n))
 
     plt.clf()
     
@@ -62,7 +62,7 @@ for func in ['A', 'B']:
 
         print('plot %s %d' % (func, n))
     
-        data = np.loadtxt('../results/needs_frac_%s_%d.csv' % (func, n), delimiter=',')
+        data = np.loadtxt('../sandbox/needs_frac_%s_%d.csv' % (func, n), delimiter=',')
 
         q, terms = data[:, 0], data[:, 2]
 
@@ -82,7 +82,7 @@ for func in ['A', 'B']:
     plt.xlabel('q')
     plt.ylabel('c.frac terms')
 
-    plt.savefig('../figures/needs_frac_%s.png' % (func))
+    plt.savefig('../sandbox/needs_frac_%s.png' % (func))
 
     plt.clf()
     plt.plot(ns, intercepts, label='intercept', linewidth='1')
@@ -90,7 +90,7 @@ for func in ['A', 'B']:
     
     plt.xlabel('n')
 
-    plt.savefig('../figures/needs_frac_intercept_%s.png' % (func))
+    plt.savefig('../sandbox/needs_frac_intercept_%s.png' % (func))
 
     plt.clf()
     plt.plot(ns, slopes, label='slopes', linewidth='1')
@@ -98,7 +98,7 @@ for func in ['A', 'B']:
     
     plt.xlabel('n')
 
-    plt.savefig('../figures/needs_frac_slope_%s.png' % (func))
+    plt.savefig('../sandbox/needs_frac_slope_%s.png' % (func))
 
     approx_res = pd.DataFrame([ns, slopes, intercepts], index=['n', 'slope', 'intercept']).T
-    approx_res.to_csv('../results/needs_frac_%s.csv' % (func), index=False)
+    approx_res.to_csv('../sandbox/needs_frac_%s.csv' % (func), index=False)

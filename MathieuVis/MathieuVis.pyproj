@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>9efaa275-3ee1-4fab-b149-15909f208fe9</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>nearzero_order4_r7.py</StartupFile>
+    <StartupFile>results_eachnf.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,16 +21,13 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="nearzero_order4.py" />
-    <Compile Include="nearzero_order4_r7.py" />
-    <Compile Include="nearzero_order4_r6.py" />
-    <Compile Include="nearzero_order4_r5.py" />
-    <Compile Include="nearzero_order4_r4.py" />
-    <Compile Include="nearzero_order4_r3.py" />
-    <Compile Include="nearzero_order4_r2.py" />
+    <Compile Include="results_eachnf.py" />
+    <Compile Include="regress_asymp_c6.py" />
+    <Compile Include="estimate_bump_st.py" />
+    <Compile Include="plot_bump.py" />
+    <Compile Include="estimate_asymp_c6.py" />
     <Compile Include="approx_error.py" />
-    <Compile Include="fracterms.py" />
-    <Compile Include="approx.py" />
+    <Compile Include="regress_fracterms.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

@@ -9,7 +9,7 @@ for func in ['A', 'B']:
 
         print('plot %s %d' % (func, n))
 
-        data = pd.read_csv('../results/eigen_%s_%d_approx.csv' % (func, n), delimiter=',')
+        data = pd.read_csv('../sandbox/eigen_%s_%d_approx.csv' % (func, n), delimiter=',')
 
         q, approx, convergence = data['q'], data['approx'], data['convergence']
 
@@ -18,11 +18,11 @@ for func in ['A', 'B']:
         plt.plot(q, convergence, label='convergence', linewidth='1')
         plt.legend(loc='upper right')
 
-        plt.savefig('../figures/eigen_%s_%d_approx.png' % (func, n))
+        plt.savefig('../sandbox/eigen_%s_%d_approx.png' % (func, n))
 
         plt.clf()
         plt.plot(q[:len(q)//4], approx[:len(approx)//4], label='approx')
         plt.plot(q[:len(q)//4], convergence[:len(convergence)//4], label='convergence', linewidth='1')
         plt.legend(loc='upper right')
 
-        plt.savefig('../figures/eigen_%s_%d_approx_short.png' % (func, n))
+        plt.savefig('../sandbox/eigen_%s_%d_approx_short.png' % (func, n))
