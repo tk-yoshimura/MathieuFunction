@@ -55,5 +55,6 @@ Resource.aps
 /**/*.nuspec
 /**/*.nupkg
 *.csv#
+sandbox
 
 # Safelist
