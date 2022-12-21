@@ -54,5 +54,6 @@ nugetpack.bat
 Resource.aps
 /**/*.nuspec
 /**/*.nupkg
+*.csv#
 
 # Safelist
