@@ -34,7 +34,7 @@ namespace MathieuMP {
             
                     bool is_nan = false;
             
-                    for (double q = 0; q <= 8 * Math.Max(1, n * n); q += Math.Max(1, n * n) / 4096d) {
+                    for (double q = 0; q <= 12 * Math.Max(1, n * n); q += Math.Max(1, n * n) / 4096d) {
                         double x = EigenFP64.InitialValue(func, n, q);
                         (double y, double score, _) = EigenFP64.SearchFit(func, n, q, x);
             
