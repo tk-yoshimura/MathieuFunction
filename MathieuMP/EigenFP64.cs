@@ -93,7 +93,7 @@ namespace MathieuMP {
 
             double h = Math.Max(1, n * n) / 32d;
             double truncation_thr = 2 + Math.Max(1, n * n) * 0.1;
-            double heuristics_err = Math.Max(a * 1e-2, func == EigenFunc.A ? 4.427e-3 * n * n + 2 : 3.797e-3 * n * n + 6);
+            double heuristics_err = Math.Max(a * 1e-2, func == EigenFunc.A ? 4.02731e-3 * n * n + 2.0 : 3.80915e-3 * n * n + 2.5);
 
             (double ar, bool ar_convergence, double ar_score) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
             (double ap, bool ap_convergence, _) = RootFinder.Search((a) => 1 / Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
@@ -154,17 +154,13 @@ namespace MathieuMP {
                 (EigenFunc.A, 0) => (q <= 2.08) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
                 (EigenFunc.A, 1) => (q <= 4.00) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
                 (EigenFunc.A, 2) => (q <= 6.72) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
-                (EigenFunc.A, 3) => (q <= 10.0) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
+                (EigenFunc.A, 3) => (q <= 10.27) ? NearPeak(func, n, q) : Asymptotic(func, n, q),
                 (EigenFunc.A, 4) => bump(q, 5.280, 13.92, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.A, 5) => bump(q, 14.50, 21.50, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.A, 6) => bump(q, 16.20, 29.16, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.A, 7) => bump(q, 15.68, 47.53, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.A, 8) => bump(q, 16.00, 68.48, NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.A, 9) => bump(q, 18.63, 87.48, NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.A, 10) => bump(q, 24.00, 107.00, NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.A, 11) => bump(q, 26.62, 129.47, NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.A, 12) => bump(q, 44.64, 146.88, NearPeak(func, n, q), Asymptotic(func, n, q)),
-
+                
                 (EigenFunc.B, 1) => bump(q, 0.601, 5.734, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, 2) => bump(q, 1.375, 9.250, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, 3) => bump(q, 2.390, 13.78, NearPeak(func, n, q), Asymptotic(func, n, q)),
@@ -173,24 +169,26 @@ namespace MathieuMP {
                 (EigenFunc.B, 6) => bump(q, 8.280, 29.52, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, 7) => bump(q, 13.72, 39.69, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, 8) => bump(q, 20.48, 51.20, NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.B, 9) => bump(q, 27.54, 63.99, NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.B, 10) => bump(q, 37.00, 78.00, NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.B, 11) => bump(q, 46.75, 92.97, NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.B, 12) => bump(q, 57.60, 109.44, NearPeak(func, n, q), Asymptotic(func, n, q)),
 
-                (EigenFunc.B, < 32) => bump(q / (n * n), 
-                                         Math.Min(0.50, 0.269 + 1.179e-2 * n),
-                                         0.817 - 6.244e-3 * n, 
+                (EigenFunc.A, < 11) => bump(q / (n * n), 
+                                         0.21628 + (10 - n) * (10 - n) * 1.36207e-2,
+                                         1.01724 - (10 - n) * (10 - n) * 1.69540e-2, 
                                          NearPeak(func, n, q), Asymptotic(func, n, q)),
+                (EigenFunc.A, < 50) => bump(q / (n * n), 
+                                         0.43546 - (50 - n) * (50 - n) * 1.13079e-4,
+                                         0.82488 + (50 - n) * (50 - n) * 1.41561e-4, 
+                                         NearPeak(func, n, q), Asymptotic(func, n, q)),
+                (EigenFunc.A, _) => bump(q / (n * n), 0.43546, 0.82488, NearPeak(func, n, q), Asymptotic(func, n, q)),
 
-                (EigenFunc.A, _) => bump(q / (n * n), 
-                                         Math.Max(0.25, 0.500 - 8.492 * Math.Pow(n, -1.307)), 
-                                         Math.Min(1.00, 0.763 + 4.734 * Math.Pow(n, -1.173)), 
+                (EigenFunc.B, < 30) => bump(q / (n * n), 
+                                         0.51191 - (30 - n) * (30 - n) * (30 - n) * 1.89525e-5,
+                                         0.65511 + (30 - n) * (30 - n) * 3.02459e-4, 
                                          NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.B, _) => bump(q / (n * n), 
-                                         Math.Min(0.60, 0.442 + 9.609e+3 * Math.Pow(n, -3.299)), 
-                                         Math.Max(0.80, 0.817 - 9.282e+2 * Math.Pow(n, -2.573)),
+                (EigenFunc.B, < 50) => bump(q / (n * n), 
+                                         0.42715 + (50 - n) * 1.91587e-3,
+                                         0.81275 - (50 - n) * (50 - n) * 3.69580e-4, 
                                          NearPeak(func, n, q), Asymptotic(func, n, q)),
+                (EigenFunc.B, _) => bump(q / (n * n), 0.42715, 0.81275, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 _ => throw new ArgumentException(nameof(func))
             };
 

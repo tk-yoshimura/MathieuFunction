@@ -25,7 +25,7 @@ namespace MathieuMP {
 
             foreach (EigenFunc func in new[] { EigenFunc.A, EigenFunc.B }) {
             
-                for (int n = 256; n >= (func == EigenFunc.A ? 0: 1); n--) {
+                for (int n = (func == EigenFunc.A ? 0: 1); n <= 256; n++) {
                     Console.WriteLine($"{func}{n}");
             
                     using StreamWriter sw = new($"../../../../sandbox/eigen_{func}_{n}_approx.csv");
