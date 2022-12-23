@@ -84,37 +84,68 @@ namespace MathieuMP {
         /// Obtain true value by the binary search and secant method.
         /// NOTE: a is within the radii of convergence.
         /// </summary>
-        public static (double value, double score, bool is_convergence) SearchFit(EigenFunc func, int n, double q, double a, int frac_terms = -1) {
+        public static (double value, double score, bool is_convergence) SearchRoot(
+            EigenFunc func, int n, double q, double a,
+            int frac_terms = -1, double heuristics_err = 0, bool lowscore_interpolate = true) {
+
             if (q == 0) {
                 return (0, 1, is_convergence: true);
             }
 
             frac_terms = (frac_terms < 0) ? FracTerms(func, n, q) : frac_terms;
 
-            double h = Math.Max(1, n * n) / 32d;
-            double truncation_thr = 2 + Math.Max(1, n * n) * 0.1;
-            double heuristics_err = Math.Max(
-                a * 1e-4, 
+            heuristics_err = (heuristics_err > 0) ? heuristics_err : Math.Max(
+                a * 1e-4,
                 func == EigenFunc.A
                     ? Math.Max(3.421312e-3 * n * n + 2.5, 4.110716e-3 * n * n - 18.6)
                     : 3.80915e-3 * n * n + 2.5
             );
 
-            (double ar, bool ar_convergence, double ar_score) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
-            (double ap, bool ap_convergence, _) = RootFinder.Search((a) => 1 / Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
+            double h = Math.Max(1, n * n) / 32d;
+            double truncation_thr = 2 + Math.Max(1, n * n) * 0.1;
 
-            (double a_likelihood, double score_likelihood) = (ar_convergence && Math.Abs(a - ar) < heuristics_err) ? (ar, ar_score) : (double.NaN, 0);
+            (double ar, bool ar_convergence, double ar_score) =
+                RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
+            (double ap, bool ap_convergence, _) =
+                RootFinder.Search((a) => 1 / Fraction(func, n, q, a, frac_terms), a, h, truncation_thr);
+
+            (double a_likelihood, double score_likelihood) =
+                (ar_convergence && Math.Abs(a - ar) < heuristics_err) ? (ar, ar_score) : (double.NaN, 0);
 
             if (ap_convergence) {
-                (double apm, bool apm_convergence, double apm_score) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitDecrement(ap), h, truncation_thr, SearchDirection.Minus);
-                (double app, bool app_convergence, double app_score) = RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitIncrement(ap), h, truncation_thr, SearchDirection.Plus);
+                (double apm, bool apm_convergence, double apm_score) =
+                    RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitDecrement(ap), h, truncation_thr, SearchDirection.Minus);
+                (double app, bool app_convergence, double app_score) =
+                    RootFinder.Search((a) => Fraction(func, n, q, a, frac_terms), Math.BitIncrement(ap), h, truncation_thr, SearchDirection.Plus);
 
                 if (apm_convergence && apm_score > ar_score * 0.5 && Math.Abs(a - apm) < heuristics_err) {
-                    (a_likelihood, score_likelihood) = Math.Abs(a - a_likelihood) < Math.Abs(a - apm) ? (a_likelihood, score_likelihood) : (apm, apm_score);
+                    (a_likelihood, score_likelihood) =
+                        Math.Abs(a - a_likelihood) < Math.Abs(a - apm) ? (a_likelihood, score_likelihood) : (apm, apm_score);
                 }
                 if (app_convergence && app_score > ar_score * 0.5 && Math.Abs(a - app) < heuristics_err) {
-                    (a_likelihood, score_likelihood) = Math.Abs(a - a_likelihood) < Math.Abs(a - app) ? (a_likelihood, score_likelihood) : (app, app_score);
+                    (a_likelihood, score_likelihood) =
+                        Math.Abs(a - a_likelihood) < Math.Abs(a - app) ? (a_likelihood, score_likelihood) : (app, app_score);
                 }
+            }
+
+            if (score_likelihood < 0.5 && lowscore_interpolate) {
+                double h_interpolate = Math.ScaleB(Math.Max(1, n * n), -24);
+                double q_m = Math.Min(q, h_interpolate), q_p = h_interpolate;
+                (double value_m, double score_m, _) = SearchRoot(func, n, q - q_m, InitialValue(func, n, q - q_m), lowscore_interpolate: false);
+                (double value_p, double score_p, _) = SearchRoot(func, n, q + q_p, InitialValue(func, n, q + q_p), lowscore_interpolate: false);
+
+                while (score_m < 0.75) {
+                    q_m = Math.Min(q, q_m + h_interpolate);
+                    (value_m, score_m, _) = SearchRoot(func, n, q - q_m, InitialValue(func, n, q - q_m), lowscore_interpolate: false);
+                }
+                while (score_p < 0.75) {
+                    q_p += h_interpolate;
+                    (value_p, score_p, _) = SearchRoot(func, n, q + q_p, InitialValue(func, n, q + q_p), lowscore_interpolate: false);
+                }
+
+                double a_interpolate = (value_p * q_m + value_m * q_p) / (q_m + q_p);
+
+                return (a_interpolate, 0.5, is_convergence: false);
             }
 
             bool is_convergence = !double.IsNaN(a_likelihood);
@@ -165,7 +196,7 @@ namespace MathieuMP {
                 (EigenFunc.A, 6) => bump(q, 16.20, 29.16, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.A, 7) => bump(q, 15.68, 47.53, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.A, 8) => bump(q, 16.00, 68.48, NearPeak(func, n, q), Asymptotic(func, n, q)),
-                
+
                 (EigenFunc.B, 1) => bump(q, 0.601, 5.734, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, 2) => bump(q, 1.375, 9.250, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, 3) => bump(q, 2.390, 13.78, NearPeak(func, n, q), Asymptotic(func, n, q)),
@@ -175,23 +206,23 @@ namespace MathieuMP {
                 (EigenFunc.B, 7) => bump(q, 13.72, 39.69, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, 8) => bump(q, 20.48, 51.20, NearPeak(func, n, q), Asymptotic(func, n, q)),
 
-                (EigenFunc.A, < 11) => bump(q / (n * n), 
+                (EigenFunc.A, < 11) => bump(q / (n * n),
                                          0.21628 + (10 - n) * (10 - n) * 1.36207e-2,
-                                         1.01724 - (10 - n) * (10 - n) * 1.69540e-2, 
+                                         1.01724 - (10 - n) * (10 - n) * 1.69540e-2,
                                          NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.A, < 50) => bump(q / (n * n), 
+                (EigenFunc.A, < 50) => bump(q / (n * n),
                                          0.43546 - (50 - n) * (50 - n) * 1.13079e-4,
-                                         0.82488 + (50 - n) * (50 - n) * 1.41561e-4, 
+                                         0.82488 + (50 - n) * (50 - n) * 1.41561e-4,
                                          NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.A, _) => bump(q / (n * n), 0.43546, 0.82488, NearPeak(func, n, q), Asymptotic(func, n, q)),
 
-                (EigenFunc.B, < 30) => bump(q / (n * n), 
+                (EigenFunc.B, < 30) => bump(q / (n * n),
                                          0.51191 - (30 - n) * (30 - n) * (30 - n) * 1.89525e-5,
-                                         0.65511 + (30 - n) * (30 - n) * 3.02459e-4, 
+                                         0.65511 + (30 - n) * (30 - n) * 3.02459e-4,
                                          NearPeak(func, n, q), Asymptotic(func, n, q)),
-                (EigenFunc.B, < 50) => bump(q / (n * n), 
+                (EigenFunc.B, < 50) => bump(q / (n * n),
                                          0.42715 + (50 - n) * 1.91587e-3,
-                                         0.81275 - (50 - n) * (50 - n) * 3.69580e-4, 
+                                         0.81275 - (50 - n) * (50 - n) * 3.69580e-4,
                                          NearPeak(func, n, q), Asymptotic(func, n, q)),
                 (EigenFunc.B, _) => bump(q / (n * n), 0.42715, 0.81275, NearPeak(func, n, q), Asymptotic(func, n, q)),
                 _ => throw new ArgumentException(nameof(func))
@@ -348,7 +379,7 @@ namespace MathieuMP {
             frac_terms = (frac_terms < 0) ? FracTerms(func, n, q) : frac_terms;
 
             double a0 = InitialValue(func, n, q);
-            (double value, double score, bool is_convergence) = SearchFit(func, n, q, a0, frac_terms);
+            (double value, double score, bool is_convergence) = SearchRoot(func, n, q, a0, frac_terms);
 
             if (!zero_shift) {
                 value += n * n;
