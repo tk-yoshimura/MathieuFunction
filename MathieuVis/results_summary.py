@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 plt.clf()
 plt.figure(figsize=(12, 6))
 
-for n in range(0, 4 + 1):
-    for func in ['B', 'A']:
+for func in ['A', 'B']:
+    for n in range(0, 4 + 1):
         if func == 'B' and n == 0:
             continue
 
@@ -16,9 +16,13 @@ for n in range(0, 4 + 1):
 
         q, y = data['q'], data['convergence'] + n * n
 
-        plt.plot(q, y, label='${}_{}$'.format(func.lower(), str(n)))
+        color = (1, n * 0.15, n * 0.15) if func == 'A' else (n * 0.15, n * 0.15, 1)
+
+        plt.plot(q, y, label='${}_{}$'.format(func.lower(), str(n)), color=color)
 
 plt.legend(loc='lower left', ncol=2)
+
+plt.minorticks_on()
 
 plt.xlabel('q')
 plt.xlim([0, 16])

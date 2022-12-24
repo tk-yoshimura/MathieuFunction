@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>9efaa275-3ee1-4fab-b149-15909f208fe9</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>results_sub_log.py</StartupFile>
+    <StartupFile>results_summary.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
