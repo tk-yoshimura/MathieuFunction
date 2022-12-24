@@ -9,7 +9,7 @@ for func in ['A', 'B']:
 
         print('plot %s %d' % (func, n))
 
-        data = pd.read_csv('../sandbox/eigen_%s_%d_approx.csv' % (func, n), delimiter=',')
+        data = pd.read_csv('../sandbox/eigen_%s_%d_approx_ver2.csv' % (func, n), delimiter=',')
 
         q, approx, convergence = data['q'], data['approx'], data['convergence']
 

@@ -14,3 +14,7 @@
 ![b even](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_b_even.svg)  
 ![a odd](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_a_odd.svg)  
 ![b odd](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_b_odd.svg)  
+
+## Normalized
+
+![eigen normalized](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_normalized.svg)  

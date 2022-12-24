@@ -96,18 +96,18 @@ def ffuncB(x, s, t):
 
     return y
 
-for func in ['A', 'B']:
+for func in ['B', 'A']:
     ffunc = ffuncA if func == 'A' else ffuncB
 
     pss, pts, nss = [], [], []
 
-    for n in range(13, 40 + 1):
+    for n in range(19, 30 + 1):
         if func == 'B' and n == 0:
             continue
 
         print('read %s %d' % (func, n))
 
-        data = pd.read_csv('../sandbox/eigen_%s_%d_approx.csv' % (func, n), delimiter=',')
+        data = pd.read_csv('../sandbox/eigen_%s_%d_approx_ver2.csv' % (func, n), delimiter=',')
 
         q, raw, expected = data['q'].astype(float), data['approx'], data['convergence']
 
@@ -116,7 +116,7 @@ for func in ['A', 'B']:
         min_error = float('inf')
         best_s, best_t = 0.5, 0.75
 
-        for s, t in itertools.product(np.linspace(0.05, 0.65, 61), np.linspace(0.45, 1.25, 81)):
+        for s, t in itertools.product(np.linspace(0.20, 0.70, 26), np.linspace(0.50, 1.50, 51)):
             if t - s <= 0.1:
                 continue
 
@@ -153,4 +153,4 @@ for func in ['A', 'B']:
         plt.savefig('../sandbox/eigen_%s_%d_approx_asymp_st.png' % (func, n))
 
     approx_res = pd.DataFrame([nss, pss, pts], index=['n', 's', 't']).T
-    approx_res.to_csv('../sandbox/asymp_st_%s_r4.csv' % (func), index=False)
+    approx_res.to_csv('../sandbox/asymp_st_%s_r7.csv' % (func), index=False)

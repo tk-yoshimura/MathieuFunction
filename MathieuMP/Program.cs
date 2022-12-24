@@ -5,30 +5,30 @@ namespace MathieuMP {
     class Program {
         static void Main() {
 
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375358, -12);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375359, -12);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535851, -12);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535852, -12);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535851547, -12);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.3753585154754, -12);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535851548, -12);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -11.05);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -12.05);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375, -12);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.3754, -12.001);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375359, -11.85);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535852, -11.85);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.3753585154754, -11.85);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.375359, -12.15);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.37535852, -12.15);
-            //EigenFP64.SearchFit(EigenFunc.B, 4, 37.3753585154754, -12.15);
+            //double a00 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.375358, -12).value;
+            //double a01 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.375359, -12).value;
+            //double a02 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.37535851, -12).value;
+            //double a03 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.37535852, -12).value;
+            //double a04 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.37535851547, -12).value;
+            //double a05 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.3753585154754, -12).value;
+            //double a06 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.37535851548, -12).value;
+            //double a07 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.375, -11.05).value;
+            //double a08 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.375, -12.05).value;
+            //double a09 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.375, -12).value;
+            //double a10 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.3754, -12.001).value;
+            //double a11 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.375359, -11.85).value;
+            //double a12 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.37535852, -11.85).value;
+            //double a13 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.3753585154754, -11.85).value;
+            //double a14 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.375359, -12.15).value;
+            //double a15 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.37535852, -12.15).value;
+            //double a16 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.3753585154754, -12.15).value;
 
             foreach (EigenFunc func in new[] { EigenFunc.A, EigenFunc.B }) {
             
                 for (int n = (func == EigenFunc.A ? 0: 1); n <= 256; n++) {
                     Console.WriteLine($"{func}{n}");
             
-                    using StreamWriter sw = new($"../../../../sandbox/eigen_{func}_{n}_approx.csv");
+                    using StreamWriter sw = new($"../../../../sandbox/eigen_{func}_{n}_approx_ver2.csv");
                     
                     sw.WriteLine("q,approx,convergence,score");
             
@@ -36,7 +36,7 @@ namespace MathieuMP {
             
                     for (double q = 0; q <= 12 * Math.Max(1, n * n); q += Math.Max(1, n * n) / 4096d) {
                         double x = EigenFP64.InitialValue(func, n, q);
-                        (double y, double score, _) = EigenFP64.SearchFit(func, n, q, x);
+                        (double y, double score, _) = EigenFP64.SearchRoot(func, n, q, x);
             
                         if (double.IsNaN(y)) {
                             is_nan = true;
@@ -52,11 +52,11 @@ namespace MathieuMP {
             }
 
             //EigenFunc func = EigenFunc.B;
-            //int n = 162;
-            //double q = 20791.4501953125;
+            //int n = 80;
+            //double q = 13592.1875;
             //
             //double x = EigenFP64.InitialValue(func, n, q);
-            //double y = EigenFP64.SearchFit(func, n, q, x).value;
+            //double y = EigenFP64.SearchRoot(func, n, q, x).value;
             //
             //for (double a = 9000; a <= 10000; a += Math.ScaleB(1, -2)) {
             //    double d = EigenFP64.Fraction(func, n, q, a);

@@ -132,7 +132,7 @@ for func in ['A', 'B']:
 
         print('read %s %d' % (func, n))
 
-        data = pd.read_csv('../sandbox/eigen_%s_%d_approx.csv' % (func, n), delimiter=',')
+        data = pd.read_csv('../sandbox/eigen_%s_%d_approx_ver2.csv' % (func, n), delimiter=',')
 
         q, raw, expected = data['q'].astype(float), data['approx'], data['convergence']
 

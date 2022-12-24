@@ -25,6 +25,9 @@ def nearzero(func, n, q):
     elif n == 3:
         mean = h * (1 / 16 + h * (13 / 20480 + h * (-1961 / 23592960)))
         sub = q**3 * (1 / 64)
+    elif n == 4:
+        mean = h * (1 / 30 + h * (29 / 432000 + h * (1087 / 1360800000)))
+        sub = q**4 * (1 / 2304)
     else:
         n = float(n)
 
@@ -96,34 +99,51 @@ def ffuncB(x, s, t):
 for func in ['A', 'B']:
     ffunc = ffuncA if func == 'A' else ffuncB
 
-    pss, pts, ss = [], [], []
+    pss, pts, nss, max_errors = [], [], [], []
 
-    for n in range(4, 256 + 1):
+    for n in range(9, 256 + 1):
         if func == 'B' and n == 0:
             continue
 
         print('read %s %d' % (func, n))
 
-        data = pd.read_csv('../sandbox/eigen_%s_%d_approx.csv' % (func, n), delimiter=',')
+        data = pd.read_csv('../sandbox/eigen_%s_%d_approx_ver2.csv' % (func, n), delimiter=',')
 
         q, raw, expected = data['q'].astype(float), data['approx'], data['convergence']
 
         ns = np.broadcast_to(n, len(q)).astype(float)
         
         if func == 'A':
-            s = max(0.25, 0.500 - 8.492 * (n**-1.307))
-            t = min(1.00, 0.763 + 4.734 * (n**-1.173)) 
+            if n < 11:
+                s = 0.21628 + (10 - n) * (10 - n) * 1.36207e-2
+                t = 1.01724 - (10 - n) * (10 - n) * 1.69540e-2
+            elif n < 50:
+                s = 0.43546 - (50 - n) * (50 - n) * 1.13079e-4
+                t = 0.82488 + (50 - n) * (50 - n) * 1.41561e-4
+            else:
+                s = 0.43546
+                t = 0.82488
         else:
-            s = min(0.60, 0.442 + 9.609e+3 * (n**-3.299))
-            t = max(0.80, 0.817 - 9.282e+2 * (n**-2.573))
+            if n < 30:
+                s = 0.51191 - (30 - n) * (30 - n) * (30 - n) * 1.89525e-5
+                t = 0.65511 + (30 - n) * (30 - n) * 3.02459e-4
+            elif n < 50:
+                s = 0.42715 + (50 - n) * 1.91587e-3
+                t = 0.81275 - (50 - n) * (50 - n) * 3.69580e-4
+            else:
+                s = 0.42715
+                t = 0.81275
 
         approx = ffunc((ns, q), s, t)
 
-        sn = (2 * n + 1) if func == 'A' else (2 * n - 1)
-
+        error = np.abs(approx - expected)
+        error = error[error==error]
+        max_error = np.max(error)
+        
         pss.append(s)
         pts.append(t)
-        ss.append(sn)
+        nss.append(n)
+        max_errors.append(max_error)
 
         plt.clf()
         plt.plot(q[:len(q)//4], expected[:len(q)//4], label='expected', linewidth = 1, alpha=0.5)
@@ -138,5 +158,5 @@ for func in ['A', 'B']:
 
         plt.savefig('../sandbox/eigen_%s_%d_approx_asymp.png' % (func, n))
 
-    approx_res = pd.DataFrame([ss, pss, pts], index=['s', 'ps', 'pt']).T
+    approx_res = pd.DataFrame([nss, pss, pts, max_errors], index=['n', 's', 't', 'max_error']).T
     approx_res.to_csv('../sandbox/asymp_st_%s_r2.csv' % (func), index=False)
