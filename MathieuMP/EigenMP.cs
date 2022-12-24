@@ -155,7 +155,7 @@ namespace MathieuMP {
         public static MultiPrecision<N> InitialValue(EigenFunc func, int n, MultiPrecision<N> q) {
             double y = EigenFP64.Value(func, n, (double)q, zero_shift: true).value;
 
-            return y; 
+            return y;
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace MathieuMP {
         /// <param name="zero_shift">remove bias (=n^2)</param>
         /// <returns></returns>
         public static (MultiPrecision<N> value, MultiPrecision<N> score, bool is_convergence) Value(
-            EigenFunc func, int n, MultiPrecision<N> q, 
+            EigenFunc func, int n, MultiPrecision<N> q,
             int frac_terms = -1, bool zero_shift = false, bool lowscore_interpolate = true) {
 
             frac_terms = (frac_terms < 0) ? FracTerms(func, n, q) : frac_terms;
@@ -181,7 +181,7 @@ namespace MathieuMP {
 
             return (value, score, is_convergence);
         }
-        
+
         public static (MultiPrecision<N> value, int terms) ConvergenceFracTerms(EigenFunc func, int n, MultiPrecision<N> q, int init_terms) {
             MultiPrecision<N> a0 = Value(func, n, q, frac_terms: init_terms, zero_shift: true, lowscore_interpolate: false).value;
             MultiPrecision<N> a1 = Value(func, n, q, frac_terms: init_terms + 1, zero_shift: true, lowscore_interpolate: false).value;
