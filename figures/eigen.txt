@@ -29,3 +29,12 @@
             &&+ \left( \frac{h}{\bar{b}+(m^2-(m+2)^2)-}\frac{h}{\bar{b}+(m^2-(m+4)^2)-} \cdots \right) \\
             && ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ (b:=b_{2n+1}(q), \bar{b}:=b-(2n+1)^2, h:=q^2, m:=2n+1, n \geq 0)\\
 \end{eqnarray*}
+
+\begin{eqnarray*}
+  \frac{a_n(q)+b_n(q)}{2} &=& n^2 + \sum_{m=1}^{\infty} C_{n,m} q^{2m} \\
+  \frac{a_n(q)-b_n(q)}{2} &=& q^n \sum_{m=0}^{\infty} D_{n,m} q^{2m}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+  C_{1,1}&=&-\frac{1}{8}, C_{n>1,1}=\frac{1}{2(n^2-1)}, D_{n,0}=\frac{1}{4^{n-1}{(n-1)!}^2}
+\end{eqnarray*}

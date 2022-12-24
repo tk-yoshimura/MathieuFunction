@@ -21,6 +21,9 @@
 
 ### Average and Difference
 
+![eigen mean sub](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_mean_sub.svg)  
+![eigen mean sub coef](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_mean_sub_coef.svg)  
+
 ![eigen mean raw](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_mean_raw.svg)  
 ![eigen mean](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_mean.svg)  
 
