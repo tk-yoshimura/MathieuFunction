@@ -29,3 +29,4 @@
 
 ![eigen sub raw](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_sub_raw.svg)  
 ![eigen sub](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_sub.svg)  
+![eigen sub log](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_sub_log.svg)  
