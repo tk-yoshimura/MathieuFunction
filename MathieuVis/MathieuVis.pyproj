@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>9efaa275-3ee1-4fab-b149-15909f208fe9</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>results_normalized.py</StartupFile>
+    <StartupFile>results_sub_raw.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -23,6 +23,10 @@
   <ItemGroup>
     <Compile Include="lowscore_linearity.py" />
     <Compile Include="results_eachnf_curvature.py" />
+    <Compile Include="results_sub_raw.py" />
+    <Compile Include="results_sub.py" />
+    <Compile Include="results_mean_raw.py" />
+    <Compile Include="results_mean.py" />
     <Compile Include="results_normalized.py" />
     <Compile Include="results_summary.py" />
     <Compile Include="results_eachnf.py" />

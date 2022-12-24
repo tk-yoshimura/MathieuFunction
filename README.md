@@ -15,6 +15,14 @@
 ![a odd](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_a_odd.svg)  
 ![b odd](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_b_odd.svg)  
 
-## Normalized
+### Normalized
 
 ![eigen normalized](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_normalized.svg)  
+
+### Average and Difference
+
+![eigen mean raw](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_mean_raw.svg)  
+![eigen mean](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_mean.svg)  
+
+![eigen sub raw](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_sub_raw.svg)  
+![eigen sub](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_sub.svg)  
