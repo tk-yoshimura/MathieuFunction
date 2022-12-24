@@ -1,79 +1,43 @@
-﻿using System;
-using System.Xml.Serialization;
+﻿using MultiPrecision;
+using System;
 
 namespace MathieuMP {
     class Program {
         static void Main() {
-
-            //double a00 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.375358, -12).value;
-            //double a01 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.375359, -12).value;
-            //double a02 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.37535851, -12).value;
-            //double a03 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.37535852, -12).value;
-            //double a04 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.37535851547, -12).value;
-            //double a05 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.3753585154754, -12).value;
-            //double a06 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.37535851548, -12).value;
-            //double a07 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.375, -11.05).value;
-            //double a08 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.375, -12.05).value;
-            //double a09 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.375, -12).value;
-            //double a10 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.3754, -12.001).value;
-            //double a11 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.375359, -11.85).value;
-            //double a12 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.37535852, -11.85).value;
-            //double a13 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.3753585154754, -11.85).value;
-            //double a14 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.375359, -12.15).value;
-            //double a15 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.37535852, -12.15).value;
-            //double a16 = EigenFP64.SearchRoot(EigenFunc.B, 4, 37.3753585154754, -12.15).value;
-
             foreach (EigenFunc func in new[] { EigenFunc.A, EigenFunc.B }) {
-            
-                for (int n = (func == EigenFunc.A ? 0: 1); n <= 256; n++) {
+                for (int n = func == EigenFunc.A ? 0 : 1; n <= 256; n++) {
                     Console.WriteLine($"{func}{n}");
             
-                    using StreamWriter sw = new($"../../../../sandbox/eigen_{func}_{n}_approx_ver2.csv");
-                    
-                    sw.WriteLine("q,approx,convergence,score");
+                    using StreamWriter sw = new($"../../../../results/needs_frac_mp4_{func}_{n}.csv");
             
-                    bool is_nan = false;
+                    int terms = 1;
             
-                    for (double q = 0; q <= 12 * Math.Max(1, n * n); q += Math.Max(1, n * n) / 4096d) {
-                        double x = EigenFP64.InitialValue(func, n, q);
-                        (double y, double score, _) = EigenFP64.SearchRoot(func, n, q, x);
-            
-                        if (double.IsNaN(y)) {
-                            is_nan = true;
-                        }
-            
-                        sw.WriteLine($"{q},{x},{y},{score}");
+                    for (MultiPrecision<Pow2.N4> q = Math.Max(1, n * n); q <= 64 * Math.Max(1, n * n); q += Math.Max(1, n * n)) {
+                        (MultiPrecision<Pow2.N4> a, terms) = EigenMP<Pow2.N4>.ConvergenceFracTerms(func, n, q, Math.Max(1, terms - 2));
+                        
+                        Console.WriteLine($"{q},{a},{terms}");
+                        sw.WriteLine($"{q},{a},{terms}");
                     }
+                }
+            }
             
-                    if (is_nan) {
-                        Console.WriteLine("detected nan");
+            foreach (EigenFunc func in new[] { EigenFunc.A, EigenFunc.B }) {
+                for (int n = func == EigenFunc.A ? 0 : 1; n <= 256; n++) {
+                    Console.WriteLine($"{func}{n}");
+            
+                    using StreamWriter sw = new($"../../../../results/needs_frac_mp8_{func}_{n}.csv");
+            
+                    int terms = 1;
+            
+                    for (MultiPrecision<Pow2.N8> q = Math.Max(1, n * n); q <= 64 * Math.Max(1, n * n); q += Math.Max(1, n * n)) {
+                        (MultiPrecision<Pow2.N8> a, terms) = EigenMP<Pow2.N8>.ConvergenceFracTerms(func, n, q, Math.Max(1, terms - 2));
+                        
+                        //Console.WriteLine($"{q},{a},{terms}");
+                        sw.WriteLine($"{q},{a},{terms}");
                     }
                 }
             }
 
-            //EigenFunc func = EigenFunc.B;
-            //int n = 80;
-            //double q = 13592.1875;
-            //
-            //double x = EigenFP64.InitialValue(func, n, q);
-            //double y = EigenFP64.SearchRoot(func, n, q, x).value;
-            //
-            //for (double a = 9000; a <= 10000; a += Math.ScaleB(1, -2)) {
-            //    double d = EigenFP64.Fraction(func, n, q, a);
-            //    Console.WriteLine($"{a},{d}");
-            //}
-            //
-            //double score6 = RootFinder.LinearityScore((x) => 1 / x, 0);
-            //double score1 = RootFinder.LinearityScore((x) => 2 * x, 0);
-            //double score2 = RootFinder.LinearityScore((x) => x, 0);
-            //double score3 = RootFinder.LinearityScore((x) => x - 2, 2);
-            //double score4 = RootFinder.LinearityScore((x) => x / 256, 0);
-            //double score5 = RootFinder.LinearityScore((x) => x * x, 0);
-            //double score7 = RootFinder.LinearityScore((x) => x - 2 + 1e-12, 2);
-            //double score8 = RootFinder.LinearityScore((x) => 1 / (x - 2) + 1e-12, 2);
-            //double score9 = RootFinder.LinearityScore((x) => 1 / (x - 2) + 1e-12, 1.99999999);
-            //double score10 = RootFinder.LinearityScore((x) => 1 / (x - 2) + 1e-12, 1.99999999999999);
-            
             Console.WriteLine("END");
             Console.Read();
         }

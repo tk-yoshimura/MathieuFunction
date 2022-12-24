@@ -1,7 +1,4 @@
-﻿using MultiPrecision;
-using System.Xml.Linq;
-
-namespace MathieuMP {
+﻿namespace MathieuMP {
     public static class RootFinder {
         const double eps = 4e-15;
         const int max_secant_iters = 16;
@@ -78,7 +75,7 @@ namespace MathieuMP {
                 s *= 2;
             } while (s < h0);
 
-            if (s >= h0) { 
+            if (s >= h0) {
                 return (double.NaN, false);
             }
 
@@ -167,7 +164,7 @@ namespace MathieuMP {
                 s *= 2;
             } while (s < h0);
 
-            if (s >= h0) { 
+            if (s >= h0) {
                 return (double.NaN, false);
             }
 
@@ -238,7 +235,7 @@ namespace MathieuMP {
             return (x, is_convergenced);
         }
 
-        public static double LinearityScore(Func<double, double> f, double x) { 
+        public static double LinearityScore(Func<double, double> f, double x) {
             double h0 = Math.Max(Math.ScaleB(1, -256), Math.BitIncrement(x) - x);
 
             if (!double.IsFinite(h0) || h0 == 0) {

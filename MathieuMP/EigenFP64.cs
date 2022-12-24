@@ -1,9 +1,6 @@
 ﻿// Copyright (c) T.Yoshimura 2022
 // https://github.com/tk-yoshimura
 
-using System;
-using System.Diagnostics;
-
 namespace MathieuMP {
     public static class EigenFP64 {
 
