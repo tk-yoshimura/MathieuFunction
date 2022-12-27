@@ -30,3 +30,12 @@
 ![eigen sub raw](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_sub_raw.svg)  
 ![eigen sub](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_sub.svg)  
 ![eigen sub log](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_sub_log.svg)  
+
+### Continued Fraction Terms
+
+128bit  
+![eigen cfrac 128bit](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/needs_frac_log2_mp4.svg)  
+256bit  
+![eigen cfrac 256bit](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/needs_frac_log2_mp8.svg)  
+512bit  
+![eigen cfrac 128bit](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/needs_frac_log2_mp16.svg)  
