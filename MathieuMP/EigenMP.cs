@@ -187,7 +187,7 @@ namespace MathieuMP {
             MultiPrecision<N> a1 = Value(func, n, q, frac_terms: init_terms + 1, zero_shift: true, lowscore_interpolate: false).value;
             MultiPrecision<N> err01 = MultiPrecision<N>.Abs(a0 - a1);
 
-            for (int frac_terms = init_terms; frac_terms <= 4096; frac_terms += 2) {
+            for (int frac_terms = init_terms; frac_terms <= 4096; frac_terms++) {
                 MultiPrecision<N> a2 = Value(func, n, q, frac_terms + 2, zero_shift: true, lowscore_interpolate: false).value;
                 MultiPrecision<N> err12 = MultiPrecision<N>.Abs(a1 - a2);
 
