@@ -67,7 +67,7 @@ namespace MathieuMP {
         /// If a matches the true value, return 0.
         /// </summary>
         public static MultiPrecision<N> Fraction(EigenFunc func, int n, MultiPrecision<N> q, MultiPrecision<N> a, int terms = -1) {
-            terms = (terms < 0) ? FracTerms(func, n, q) : terms;
+            terms = (terms < 0) ? FracTerms((double)q) : terms;
 
             MultiPrecision<N> y = func switch {
                 EigenFunc.A => FractionA(n, q, a, terms),
@@ -90,7 +90,7 @@ namespace MathieuMP {
                 return (0, 1, is_convergence: true);
             }
 
-            frac_terms = (frac_terms < 0) ? FracTerms(func, n, q) : frac_terms;
+            frac_terms = (frac_terms < 0) ? FracTerms((double)q) : frac_terms;
 
             MultiPrecision<N> heuristics_err = MultiPrecision<N>.Max(1, MultiPrecision<N>.Abs(a)) * 1e-6;
 
@@ -170,7 +170,7 @@ namespace MathieuMP {
             EigenFunc func, int n, MultiPrecision<N> q,
             int frac_terms = -1, bool zero_shift = false, bool lowscore_interpolate = true) {
 
-            frac_terms = (frac_terms < 0) ? FracTerms(func, n, q) : frac_terms;
+            frac_terms = (frac_terms < 0) ? FracTerms((double)q) : frac_terms;
 
             MultiPrecision<N> a0 = InitialValue(func, n, q);
             (MultiPrecision<N> value, MultiPrecision<N> score, bool is_convergence) = SearchRoot(func, n, q, a0, frac_terms, lowscore_interpolate);
@@ -201,20 +201,37 @@ namespace MathieuMP {
             return (MultiPrecision<N>.NaN, -1);
         }
 
-        public static int FracTerms(EigenFunc func, int n, MultiPrecision<N> q) {
-            if (!(n >= 0)) {
-                throw new ArgumentOutOfRangeException(nameof(n));
-            }
+        public static int FracTerms(double q) {
             if (!(q >= 0)) {
                 throw new ArgumentOutOfRangeException(nameof(q));
             }
 
-            double intercept = 2.13317 + Math.Sqrt(n + 1) * 0.104619;
-            double slope = 0.239519 * Math.Pow(n + 1, 0.0192171);
+            int mp_length = MultiPrecision<N>.Length;
 
-            int terms = Math.Max(n, (int)Math.Ceiling(Math.Pow(2, intercept + slope * Math.Log2((double)q))));
+            double logq = Math.Log2(q);
+            
+            if (mp_length <= 4) {
+                return (q < 1e-3)
+                    ? 6
+                    : (int)Math.Ceiling(Math.Pow(2, 3.3479 + 1.6171e-1 * logq + 6.4659e-3 * logq * logq));
+            }
+            if (mp_length <= 8) {
+                return (q < 1e-3)
+                    ? 10
+                    : (int)Math.Ceiling(Math.Pow(2, 4.0646 + 1.3941e-1 * logq + 5.9064e-3 * logq * logq));
+            }
+            if (mp_length <= 16) {
+                return (q < 1e-3)
+                    ? 18
+                    : (int)Math.Ceiling(Math.Pow(2, 4.8178 + 1.2211e-1 * logq + 5.2052e-3 * logq * logq));
+            }
+            if (mp_length <= 32) {
+                return (q < 1e-3)
+                    ? 29
+                    : (int)Math.Ceiling(Math.Pow(2, 5.6300 + 1.1971e-1 * logq + 4.0530e-3 * logq * logq));
+            }
 
-            return terms;
+            throw new NotImplementedException();
         }
     }
 }
