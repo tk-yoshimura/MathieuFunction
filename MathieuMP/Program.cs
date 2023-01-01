@@ -27,7 +27,7 @@ namespace MathieuMP {
                 us.Add(u);
             }
 
-            for (int n = 0; n <= 64; n++) {
+            for (int n = 7; n <= 64; n++) {
                 Console.WriteLine($"Plotting {n}");
 
                 using StreamWriter sw = new($"../../../../results/eigen_precision40_n{n}.csv");
@@ -105,6 +105,11 @@ namespace MathieuMP {
             }
 
             (a, b, m, d, cancellation_digits) = Compute<Pow2.N8, Pow2.N32>(n, q.Convert<Pow2.N32>(), needs_bits: 144);
+            if (!cancellation_digits) {
+                return (a, b, m, d, cancellation_digits);
+            }
+
+            (a, b, m, d, cancellation_digits) = Compute<Pow2.N8, Pow2.N64>(n, q.Convert<Pow2.N64>(), needs_bits: 144);
             return (a, b, m, d, cancellation_digits);
         }
     }
