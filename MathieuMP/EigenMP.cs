@@ -235,6 +235,11 @@ namespace MathieuMP {
                     ? 50
                     : (int)Math.Ceiling(Math.Pow(2, 6.4471 + 1.0543e-1 * logq + 2.4224e-3 * logq * logq));
             }
+            if (mp_length <= 128) {
+                return (q < 1e-3)
+                    ? 94
+                    : (int)Math.Ceiling(Math.Pow(2, 7.3228 + 9.3942e-2 * logq + 1.5475e-3 * logq * logq));
+            }
 
             throw new NotImplementedException();
         }
