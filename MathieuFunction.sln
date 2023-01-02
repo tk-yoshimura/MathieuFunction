@@ -7,6 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuMP", "MathieuMP\Math
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "MathieuVis", "MathieuVis\MathieuVis.pyproj", "{9EFAA275-3EE1-4FAB-B149-15909F208FE9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathieuDigits40", "MathieuDigits40\MathieuDigits40.csproj", "{6F60C293-7263-43E5-8474-DDE316D129EB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B3211B67-C226-4E31-9F98-0C5FB5B29353} = {B3211B67-C226-4E31-9F98-0C5FB5B29353}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +24,10 @@ Global
 		{B3211B67-C226-4E31-9F98-0C5FB5B29353}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9EFAA275-3EE1-4FAB-B149-15909F208FE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9EFAA275-3EE1-4FAB-B149-15909F208FE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F60C293-7263-43E5-8474-DDE316D129EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F60C293-7263-43E5-8474-DDE316D129EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F60C293-7263-43E5-8474-DDE316D129EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F60C293-7263-43E5-8474-DDE316D129EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

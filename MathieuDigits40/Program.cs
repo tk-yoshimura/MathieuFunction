@@ -27,7 +27,7 @@ namespace MathieuMP {
                 us.Add(u);
             }
 
-            for (int n = 28; n <= 64; n++) {
+            for (int n = 33; n <= 64; n++) {
                 Console.WriteLine($"Plotting {n}");
 
                 using StreamWriter sw = new($"../../../../results/eigen_precision40_n{n}.csv");
