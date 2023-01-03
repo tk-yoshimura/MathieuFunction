@@ -12,7 +12,7 @@ namespace MathieuMP {
                 us.Add(u);
             }
 
-            for (int n = 1; n <= 64; n++) {
+            for (int n = 19; n <= 64; n++) {
                 Console.WriteLine($"Plotting {n}");
 
                 using StreamWriter sw = new($"../../../../results/eigen_nearzero_precision1024bits_n{n}.csv");
@@ -87,20 +87,20 @@ namespace MathieuMP {
             MultiPrecision<Pow2.N32> m, d;
             bool cancellation_digits;
 
-            (m, d, cancellation_digits) = Compute<Pow2.N32, Plus4<Pow2.N32>>(n, q.Convert<Plus4<Pow2.N32>>(), needs_bits: 1040);
-            if (!cancellation_digits) {
-                return (m, d, cancellation_digits);
-            }
+            //(m, d, cancellation_digits) = Compute<Pow2.N32, Plus4<Pow2.N32>>(n, q.Convert<Plus4<Pow2.N32>>(), needs_bits: 1040);
+            //if (!cancellation_digits) {
+            //    return (m, d, cancellation_digits);
+            //}
 
-            (m, d, cancellation_digits) = Compute<Pow2.N32, Plus8<Pow2.N32>>(n, q.Convert<Plus8<Pow2.N32>>(), needs_bits: 1040);
-            if (!cancellation_digits) {
-                return (m, d, cancellation_digits);
-            }
+            //(m, d, cancellation_digits) = Compute<Pow2.N32, Plus8<Pow2.N32>>(n, q.Convert<Plus8<Pow2.N32>>(), needs_bits: 1040);
+            //if (!cancellation_digits) {
+            //    return (m, d, cancellation_digits);
+            //}
 
-            (m, d, cancellation_digits) = Compute<Pow2.N32, Plus16<Pow2.N32>>(n, q.Convert<Plus16<Pow2.N32>>(), needs_bits: 1040);
-            if (!cancellation_digits) {
-                return (m, d, cancellation_digits);
-            }
+            //(m, d, cancellation_digits) = Compute<Pow2.N32, Plus16<Pow2.N32>>(n, q.Convert<Plus16<Pow2.N32>>(), needs_bits: 1040);
+            //if (!cancellation_digits) {
+            //    return (m, d, cancellation_digits);
+            //}
 
             (m, d, cancellation_digits) = Compute<Pow2.N32, Pow2.N64>(n, q.Convert<Pow2.N64>(), needs_bits: 1040);
             if (!cancellation_digits) {
