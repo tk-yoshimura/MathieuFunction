@@ -14,7 +14,23 @@ namespace MathieuNearZero {
         public int Value => checked(default(N).Value + 16);
     }
 
+    internal struct Plus24<N> : IConstant where N : struct, IConstant {
+        public int Value => checked(default(N).Value + 24);
+    }
+
     internal struct Plus32<N> : IConstant where N : struct, IConstant {
         public int Value => checked(default(N).Value + 32);
+    }
+
+    internal struct Plus40<N> : IConstant where N : struct, IConstant {
+        public int Value => checked(default(N).Value + 40);
+    }
+
+    internal struct Plus48<N> : IConstant where N : struct, IConstant {
+        public int Value => checked(default(N).Value + 48);
+    }
+
+    internal struct Plus56<N> : IConstant where N : struct, IConstant {
+        public int Value => checked(default(N).Value + 56);
     }
 }

@@ -39,7 +39,7 @@ namespace MathieuMP {
 
                     i++;
                     if ((i % 16) == 0) {
-                        mp_length = mp_length * 3 / 4;
+                        mp_length -= 8;
                     }
                 }
             }
@@ -112,10 +112,38 @@ namespace MathieuMP {
                 }
             }
 
+            if (mp_length <= 88) {
+                (m, d, cancellation_digits) = Compute<Pow2.N64, Plus24<Pow2.N64>>(n, q.Convert<Plus24<Pow2.N64>>(), needs_bits: 2064);
+                if (!cancellation_digits) {
+                    return (m, d, cancellation_digits, 88);
+                }
+            }
+
             if (mp_length <= 96) {
                 (m, d, cancellation_digits) = Compute<Pow2.N64, Plus32<Pow2.N64>>(n, q.Convert<Plus32<Pow2.N64>>(), needs_bits: 2064);
                 if (!cancellation_digits) {
                     return (m, d, cancellation_digits, 96);
+                }
+            }
+
+            if (mp_length <= 104) {
+                (m, d, cancellation_digits) = Compute<Pow2.N64, Plus40<Pow2.N64>>(n, q.Convert<Plus40<Pow2.N64>>(), needs_bits: 2064);
+                if (!cancellation_digits) {
+                    return (m, d, cancellation_digits, 104);
+                }
+            }
+
+            if (mp_length <= 112) {
+                (m, d, cancellation_digits) = Compute<Pow2.N64, Plus48<Pow2.N64>>(n, q.Convert<Plus48<Pow2.N64>>(), needs_bits: 2064);
+                if (!cancellation_digits) {
+                    return (m, d, cancellation_digits, 112);
+                }
+            }
+
+            if (mp_length <= 120) {
+                (m, d, cancellation_digits) = Compute<Pow2.N64, Plus56<Pow2.N64>>(n, q.Convert<Plus56<Pow2.N64>>(), needs_bits: 2064);
+                if (!cancellation_digits) {
+                    return (m, d, cancellation_digits, 120);
                 }
             }
 
