@@ -25,7 +25,7 @@ plt.xlabel('$u$')
 plt.ylabel('$m$')
 
 plt.xlim([0, 16])
-plt.xticks(np.arange(1, 16+1))
+plt.xticks(np.arange(0, 16+1))
 plt.ylim([-2, 0.5])
 plt.yticks(np.arange(-8, 2+1) / 4)
 
@@ -56,9 +56,9 @@ plt.xlabel('$u$')
 plt.ylabel('$d$')
 
 plt.xlim([0, 16])
-plt.xticks(np.arange(1, 16+1))
+plt.xticks(np.arange(0, 16+1))
 plt.ylim([0, 32])
-plt.yticks(np.arange(1, 8+1) * 4)
+plt.yticks(np.arange(0, 8+1) * 4)
 
 plt.legend(loc='upper right')
 
