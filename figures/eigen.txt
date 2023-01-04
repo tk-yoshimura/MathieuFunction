@@ -38,3 +38,11 @@
 \begin{eqnarray*}
   C_{1,1}&=&-\frac{1}{8}, C_{n>1,1}=\frac{1}{2(n^2-1)}, D_{n,0}=\frac{1}{4^{n-1}{(n-1)!}^2}
 \end{eqnarray*}
+
+\begin{eqnarray*}
+  m_n(u) &:=& \left\{ \begin{matrix} a_0(\sqrt{u})~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ & (n=0) \\ 
+                                     \dfrac{1}{{2 n^2}} \left( a_n(q)+b_n(q) - 2 n^2 \right) & (n>0) \end{matrix}  \\
+  d_n(u) &:=& \left\{ \begin{matrix} 0 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ & (n=0) \\ 
+                                     \dfrac{q^n}{(2^{n-1} (n-1)!)^2} \dfrac{2}{a_n(q)-b_n(q)} - 1 & (n>0) \end{matrix} \\
+           && ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ (q:=\sqrt{u} n^2)
+\end{eqnarray*}
