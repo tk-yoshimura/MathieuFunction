@@ -45,5 +45,6 @@
 ### Rational Coefficient Expansion
 
 ![eigen rcoef md](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_rcoef_md.svg)  
+![eigen rcoef md grad0](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_rcoef_md_grad0.svg)  
 ![eigen rcoef m](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_m.svg)  
 ![eigen rcoef d](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_d.svg)  

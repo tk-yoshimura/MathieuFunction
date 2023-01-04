@@ -46,3 +46,10 @@
                                      \dfrac{q^n}{(2^{n-1} (n-1)!)^2} \dfrac{2}{a_n(q)-b_n(q)} - 1 & (n>0) \end{matrix} \\
            && ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ (q:=\sqrt{u} n^2)
 \end{eqnarray*}
+
+\begin{eqnarray*}
+  \dot{m_n}(0) &=& \left\{ -\frac{1}{2}, -\frac{1}{8}, \frac{2}{3}, \frac{9}{16}, \frac{8}{15}, 
+                           \frac{25}{48}, \frac{18}{35}, \frac{49}{96}, \frac{32}{63}, \cdots \right\} \\
+  \dot{d_n}(0) &=& \left\{ 0, \frac{1}{64}, \frac{16}{9}, \frac{405}{256}, \frac{128}{75} ,
+                           \frac{4375}{2304}, \frac{2592}{1225}, \frac{2401}{1024}, \cdots \right\} \\
+\end{eqnarray*}
