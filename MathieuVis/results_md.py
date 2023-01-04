@@ -29,7 +29,7 @@ plt.xticks(np.arange(1, 16+1))
 plt.ylim([-2, 0.5])
 plt.yticks(np.arange(-8, 2+1) / 4)
 
-plt.legend(loc='lower left')
+plt.legend(loc='upper right')
 
 plt.savefig('../figures/eigen_plot_m.svg', bbox_inches='tight', pad_inches=0.1)
 
