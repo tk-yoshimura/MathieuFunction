@@ -25,6 +25,13 @@
 ![eigen mean raw](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_mean_raw.svg)  
 ![eigen sub raw](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_sub_raw.svg)  
 
+### Rational Coefficient Expansion
+
+![eigen rcoef md](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_rcoef_md.svg)  
+![eigen rcoef md grad0](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_rcoef_md_grad0.svg)  
+![eigen rcoef m](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_m.svg)  
+![eigen rcoef d](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_d.svg)  
+
 ### Continued Fraction Terms
 
 128bit  
@@ -35,10 +42,3 @@
 ![eigen cfrac 512bit](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/needs_frac_log2_mp16.svg)  
 1024bit  
 ![eigen cfrac 1024bit](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/needs_frac_log2_mp32.svg)  
-
-### Rational Coefficient Expansion
-
-![eigen rcoef md](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_rcoef_md.svg)  
-![eigen rcoef md grad0](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_rcoef_md_grad0.svg)  
-![eigen rcoef m](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_m.svg)  
-![eigen rcoef d](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_d.svg)  
