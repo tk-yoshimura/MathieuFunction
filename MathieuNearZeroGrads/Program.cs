@@ -6,7 +6,7 @@ namespace MathieuMP {
         static void Main() {
             int degrees = ForwardFiniteDifference<N80, Pow2.N512>.SamplePoints - 1;
 
-            for (int n = 0; n <= 4; n++) {
+            for (int n = 0; n <= 5; n++) {
                 Console.WriteLine($"Plotting {n}");
 
                 List<(MultiPrecision<Pow2.N4> u, MultiPrecision<N80> m, MultiPrecision<N80> d)> values = ReadValues(n);
@@ -18,12 +18,71 @@ namespace MathieuMP {
 
                 sw.WriteLine($"# zero shifted mathieu eigen value near zero grads n={n}");
                 sw.WriteLine("# u:=q^2/max(1, n^4), m:=mean/max(1, n^2), d:=1/scaled_diff-1");
-                sw.WriteLine("degree,h,m,d");
+                sw.WriteLine("degree,m,m_precision,d,d_precision");
+
+                sw.WriteLine("0,0,inf,0,inf");
 
                 for (int deg = 0; deg < degrees; deg++) {
+                    List<MultiPrecision<N80>> mg = new(), dg = new();
+                    (MultiPrecision<N80> value, int precision) mg_sel = (MultiPrecision<N80>.NaN, 0), dg_sel = (MultiPrecision<N80>.NaN, 0);
+
                     for (int i = 0; i < mgs.Count; i++) {
-                        sw.WriteLine($"{deg},{values[i].u.Convert<Pow2.N16>()},{mgs[i][deg]},{dgs[i][deg]}");
+                        mg.Add(mgs[i][deg]);
+                        dg.Add(dgs[i][deg]);
                     }
+
+                    int mg_precision = MultiPrecision<N80>.DecimalDigits, dg_precision = MultiPrecision<N80>.DecimalDigits;
+
+                    for (; mg_precision >= 0 && mg_sel.precision <= 0; mg_precision--) {
+                        string dec_prev = mg_precision >= 2 ? mg[0].ToString($"e{mg_precision}") : ((double)(mg[0])).ToString($"e{mg_precision}");
+                        string dec = mg_precision >= 2 ? mg[1].ToString($"e{mg_precision}") : ((double)(mg[1])).ToString($"e{mg_precision}");
+
+                        for (int i = 1; i < mg.Count - 1; i++) {
+                            string dec_post = mg_precision >= 2 ? mg[i + 1].ToString($"e{mg_precision}") : ((double)(mg[i + 1])).ToString($"e{mg_precision}");
+
+                            if (dec_prev == dec && dec == dec_post) {
+                                mg_sel = (mg[i], mg_precision);
+                                break;
+                            }
+
+                            (dec_prev, dec) = (dec, dec_post);
+                        }
+                    }
+
+                    for (; dg_precision >= 0 && dg_sel.precision <= 0; dg_precision--) {
+                        string dec_prev = dg_precision >= 2 ? dg[0].ToString($"e{dg_precision}") : ((double)(dg[0])).ToString($"e{dg_precision}");
+                        string dec = dg_precision >= 2 ? dg[1].ToString($"e{dg_precision}") : ((double)(dg[1])).ToString($"e{dg_precision}");
+
+                        for (int i = 1; i < dg.Count - 1; i++) {
+                            string dec_post = dg_precision >= 2 ? dg[i + 1].ToString($"e{dg_precision}") : ((double)(dg[i + 1])).ToString($"e{dg_precision}");
+
+                            if (dec_prev == dec && dec == dec_post) {
+                                dg_sel = (dg[i], dg_precision);
+                                break;
+                            }
+
+                            (dec_prev, dec) = (dec, dec_post);
+                        }
+                    }
+
+                    if (n > 0) {
+                        sw.WriteLine($"{deg + 1}," +
+                            $"{mg_sel.value.ToString($"e{Math.Min(MultiPrecision<N80>.DecimalDigits, mg_sel.precision + 2)}")},{mg_sel.precision}," +
+                            $"{dg_sel.value.ToString($"e{Math.Min(MultiPrecision<N80>.DecimalDigits, dg_sel.precision + 2)}")},{dg_sel.precision}"
+                        );
+
+                        Console.WriteLine($"{mg_sel.value:e40},{dg_sel.value:e40}");
+                    }
+                    else {
+                        sw.WriteLine($"{deg + 1}," +
+                            $"{mg_sel.value.ToString($"e{Math.Min(MultiPrecision<N80>.DecimalDigits, mg_sel.precision + 2)}")},{mg_sel.precision}," +
+                            "0,inf"
+                        );
+
+                        Console.WriteLine($"{mg_sel.value:e40}");
+                    }
+
+                    sw.Flush();
                 }
             }
 
