@@ -7,7 +7,7 @@ namespace MathieuMP {
         public static int SamplePoints { get; private set; }
 
         static ForwardFiniteDifference() {
-            using StreamReader sr = new("../../../../sandbox/forward_log2pts_acc80.md");
+            using StreamReader sr = new("../../../../sandbox/forward_log2pts_acc64.md");
             sr.ReadLine();
             sr.ReadLine();
 

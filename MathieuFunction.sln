@@ -12,7 +12,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuDigits40", "MathieuD
 		{B3211B67-C226-4E31-9F98-0C5FB5B29353} = {B3211B67-C226-4E31-9F98-0C5FB5B29353}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathieuNearZeroLog2", "MathieuNearZeroLog2\MathieuNearZeroLog2.csproj", "{7E62F2F7-B8E9-4B2E-AA7B-3E95969814FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuNearZeroLog2", "MathieuNearZeroLog2\MathieuNearZeroLog2.csproj", "{7E62F2F7-B8E9-4B2E-AA7B-3E95969814FB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuNearZeroGrads", "MathieuNearZeroGrads\MathieuNearZeroGrads.csproj", "{644AE80B-F28A-4243-85B0-EEB1C05BFDC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +36,10 @@ Global
 		{7E62F2F7-B8E9-4B2E-AA7B-3E95969814FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E62F2F7-B8E9-4B2E-AA7B-3E95969814FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E62F2F7-B8E9-4B2E-AA7B-3E95969814FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{644AE80B-F28A-4243-85B0-EEB1C05BFDC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{644AE80B-F28A-4243-85B0-EEB1C05BFDC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{644AE80B-F28A-4243-85B0-EEB1C05BFDC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{644AE80B-F28A-4243-85B0-EEB1C05BFDC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

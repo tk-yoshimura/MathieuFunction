@@ -4,15 +4,15 @@ using System.Collections.Generic;
 namespace MathieuMP {
     class Program {
         static void Main() {
-            int degrees = ForwardFiniteDifference<Pow2.N32, Pow2.N256>.SamplePoints - 1;
-            
-            for (int n = 0; n <= 12; n++) {
+            int degrees = ForwardFiniteDifference<N80, Pow2.N512>.SamplePoints - 1;
+
+            for (int n = 0; n <= 4; n++) {
                 Console.WriteLine($"Plotting {n}");
 
-                List<(MultiPrecision<Pow2.N4> u, MultiPrecision<Pow2.N32> m, MultiPrecision<Pow2.N32> d)> values = ReadValues(n);
+                List<(MultiPrecision<Pow2.N4> u, MultiPrecision<N80> m, MultiPrecision<N80> d)> values = ReadValues(n);
 
-                List<MultiPrecision<Pow2.N32>[]> mgs = Grads(values.Select(item => (item.u, item.m)).ToList());
-                List<MultiPrecision<Pow2.N32>[]> dgs = Grads(values.Select(item => (item.u, item.d)).ToList());
+                List<MultiPrecision<N80>[]> mgs = Grads(values.Select(item => (item.u, item.m)).ToList());
+                List<MultiPrecision<N80>[]> dgs = Grads(values.Select(item => (item.u, item.d)).ToList());
 
                 using StreamWriter sw = new($"../../../../results/eigen_nearzero_grads_n{n}.csv");
 
@@ -31,15 +31,15 @@ namespace MathieuMP {
             Console.Read();
         }
 
-        static List<(MultiPrecision<Pow2.N4> u, MultiPrecision<Pow2.N32> m, MultiPrecision<Pow2.N32> d)> ReadValues(int n) {
-            List<(MultiPrecision<Pow2.N4> u, MultiPrecision<Pow2.N32> m, MultiPrecision<Pow2.N32> d)> res = new();
-            
-            using BinaryReader br = new(File.OpenRead($"../../../../results/eigen_nearzero_log2_precision1024bits_n{n}.bin"));
+        static List<(MultiPrecision<Pow2.N4> u, MultiPrecision<N80> m, MultiPrecision<N80> d)> ReadValues(int n) {
+            List<(MultiPrecision<Pow2.N4> u, MultiPrecision<N80> m, MultiPrecision<N80> d)> res = new();
 
-            for (int i = 0; i <= 128 + 8; i++) {
+            using BinaryReader br = new(File.OpenRead($"../../../../results/eigen_nearzero_log2_precision2560bits_n{n}.bin"));
+
+            for (int i = 0; i <= 80 + 8; i++) {
                 MultiPrecision<Pow2.N4> u = br.ReadMultiPrecision<Pow2.N4>();
-                MultiPrecision<Pow2.N32> m = br.ReadMultiPrecision<Pow2.N32>();
-                MultiPrecision<Pow2.N32> d = br.ReadMultiPrecision<Pow2.N32>();
+                MultiPrecision<N80> m = br.ReadMultiPrecision<N80>();
+                MultiPrecision<N80> d = br.ReadMultiPrecision<N80>();
 
                 res.Add((u, m, d));
             }
@@ -47,18 +47,18 @@ namespace MathieuMP {
             return res;
         }
 
-        static List<MultiPrecision<Pow2.N32>[]> Grads(List<(MultiPrecision<Pow2.N4> u, MultiPrecision<Pow2.N32> x)> values) {
-            List<MultiPrecision<Pow2.N32>[]> res = new();
+        static List<MultiPrecision<N80>[]> Grads(List<(MultiPrecision<Pow2.N4> u, MultiPrecision<N80> x)> values) {
+            List<MultiPrecision<N80>[]> res = new();
 
-            int sample_points = ForwardFiniteDifference<Pow2.N32, Pow2.N256>.SamplePoints;
+            int sample_points = ForwardFiniteDifference<N80, Pow2.N512>.SamplePoints;
 
             for (int i = 0; i < values.Count - sample_points; i++) {
-                MultiPrecision<Pow2.N32> h = values[i].u.Convert<Pow2.N32>();
-                MultiPrecision<Pow2.N32>[] xs 
-                    = new (MultiPrecision<Pow2.N4> u, MultiPrecision<Pow2.N32> x)[]{(0, 0)}
+                MultiPrecision<N80> h = values[i].u.Convert<N80>();
+                MultiPrecision<N80>[] xs
+                    = new (MultiPrecision<Pow2.N4> u, MultiPrecision<N80> x)[] { (0, 0) }
                     .Concat(values.Skip(i).Take(sample_points - 1)).Select(item => item.x).ToArray();
 
-                MultiPrecision<Pow2.N32>[] gs = ForwardFiniteDifference<Pow2.N32, Pow2.N256>.Diff(xs, h);
+                MultiPrecision<N80>[] gs = ForwardFiniteDifference<N80, Pow2.N512>.Diff(xs, h);
 
                 res.Add(gs);
             }
