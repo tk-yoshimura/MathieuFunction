@@ -6,7 +6,7 @@ namespace MathieuMP {
         static void Main() {
             int degrees = ForwardFiniteDifference<N80, Pow2.N512>.SamplePoints - 1;
 
-            for (int n = 0; n <= 5; n++) {
+            for (int n = 26; n <= 30; n++) {
                 Console.WriteLine($"Plotting {n}");
 
                 List<(MultiPrecision<Pow2.N4> u, MultiPrecision<N80> m, MultiPrecision<N80> d)> values = ReadValues(n);

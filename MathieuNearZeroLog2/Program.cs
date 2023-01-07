@@ -1,4 +1,5 @@
 ﻿using MultiPrecision;
+using System.Numerics;
 
 namespace MathieuMP {
     class Program {
@@ -14,7 +15,14 @@ namespace MathieuMP {
 
                 using StreamWriter sw = new($"../../../../results/eigen_nearzero_log2_precision2560bits_n{n}.csv");
                 sw.WriteLine($"# zero shifted mathieu eigen value near zero precision_digits=2560bits n={n}");
-                sw.WriteLine("# u:=q^2/max(1, n^4), m:=mean/max(1, n^2), d:=1/scaled_diff-1");
+
+                if (n >= 1) {
+                    sw.WriteLine("# u:=q^2/n^4, m:=(a+b-2n^2)/2n^2, d:=q^n/(2^(n-1)(n-1)!)^2 2/(a-b)-1");
+                }
+                else {
+                    sw.WriteLine("# u:=q^2, m:=a, d:=0");
+                }
+
                 sw.WriteLine("u,m,d,digits_loss(1/0)");
 
                 using BinaryWriter bw = new(File.OpenWrite($"../../../../results/eigen_nearzero_log2_precision2560bits_n{n}.bin"));
@@ -25,7 +33,7 @@ namespace MathieuMP {
                 sw.WriteLine("0,0,0,0");
 
                 foreach (MultiPrecision<Pow2.N4> u in us) {
-                    MultiPrecision<N80> q = s * MultiPrecision<N80>.Sqrt(u.Convert<N80>());
+                    MultiPrecision<Pow2.N128> q = s * MultiPrecision<Pow2.N128>.Sqrt(u.Convert<Pow2.N128>());
 
                     (MultiPrecision<N80> m, MultiPrecision<N80> d, bool cancellation_digits, mp_length)
                         = ComputeDigits2560bits(n, q, mp_length);
@@ -56,8 +64,8 @@ namespace MathieuMP {
                 throw new ArgumentException("Invalid multi precision length.");
             }
 
-            static MultiPrecision<M> frac(MultiPrecision<M> n) {
-                MultiPrecision<M> v = 1;
+            static BigInteger frac(long n) {
+                BigInteger v = 1;
 
                 for (int i = 2; i <= n; i++) {
                     v *= i;
@@ -84,9 +92,9 @@ namespace MathieuMP {
             return (m.Convert<N>(), d.Convert<N>(), cancellation_digits);
         }
 
-        static (MultiPrecision<N80> m, MultiPrecision<N80> d, bool cancellation_digits, int mp_length) ComputeDigits2560bits(int n, MultiPrecision<N80> q, int mp_length) {
+        static (MultiPrecision<N80> m, MultiPrecision<N80> d, bool cancellation_digits, int mp_length) ComputeDigits2560bits(int n, MultiPrecision<Pow2.N128> q, int mp_length) {
             if (n == 0) {
-                return (EigenMP<N80>.Value(EigenFunc.A, n, q, zero_shift: true).value, 0, cancellation_digits: false, mp_length: 0);
+                return (EigenMP<N80>.Value(EigenFunc.A, n, q.Convert<N80>(), zero_shift: true).value, 0, cancellation_digits: false, mp_length: 0);
             }
 
             int needs_bits = MultiPrecision<N80>.Bits + 16;
