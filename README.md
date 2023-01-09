@@ -25,12 +25,14 @@
 ![eigen mean raw](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_mean_raw.svg)  
 ![eigen sub raw](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_sub_raw.svg)  
 
-### Rational Coefficient Expansion
+### Rational Coefficient Series
 
 ![eigen rcoef md](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_rcoef_md.svg)  
 ![eigen rcoef md grad0](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_rcoef_md_grad0.svg)  
 ![eigen rcoef m](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_m.svg)  
 ![eigen rcoef d](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_d.svg)  
+
+[Numeric Table](https://github.com/tk-yoshimura/MathieuFunction/blob/main/results)  
 
 ### Continued Fraction Terms
 
