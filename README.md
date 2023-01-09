@@ -32,7 +32,7 @@
 ![eigen rcoef m](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_m.svg)  
 ![eigen rcoef d](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/eigen_plot_d.svg)  
 
-[Numeric Table](https://github.com/tk-yoshimura/MathieuFunction/blob/main/results)  
+[Numeric Table (64 digits)](https://github.com/tk-yoshimura/MathieuFunction/blob/main/results)  
 
 ### Continued Fraction Terms
 
