@@ -6,11 +6,9 @@ plt.clf()
 plt.figure(figsize=(12, 6))
 
 for i, n in enumerate([1, 2, 3, 4, 5, 6, 7, 8, 16, 32]):
-    data = pd.read_csv('../results/eigen_precision40_n%d.csv' % (n), delimiter=',', skiprows=2)
+    data = pd.read_csv('../results/eigen_precision64_n%d.csv' % (n), delimiter=',', skiprows=2)
 
-    u, m = data['u'].to_numpy().astype(float), data['mean'].to_numpy().astype(float)
-
-    m /= n * n
+    u, m= data['u'].to_numpy().astype(float), data['m'].to_numpy().astype(float)
         
     color = (i * 0.08, i * 0.08, i * 0.08)
 
@@ -36,12 +34,10 @@ plt.savefig('../figures/eigen_plot_m.svg', bbox_inches='tight', pad_inches=0.1)
 plt.clf()
 plt.figure(figsize=(12, 6))
 
-for i, n in enumerate([1, 2, 3, 4, 5, 6, 7, 8]):
-    data = pd.read_csv('../results/eigen_precision40_n%d.csv' % (n), delimiter=',', skiprows=2)
+for i, n in enumerate([1, 2, 3, 4, 5, 6, 7, 8, 16, 32]):
+    data = pd.read_csv('../results/eigen_precision64_n%d.csv' % (n), delimiter=',', skiprows=2)
 
-    u, d = data['u'].to_numpy().astype(float), data['scaled_diff'].to_numpy().astype(float)
-    
-    d = 1 / d - 1
+    u, d = data['u'].to_numpy().astype(float), data['d'].to_numpy().astype(float)
         
     color = (i * 0.08, i * 0.08, i * 0.08)
 

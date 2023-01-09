@@ -29,7 +29,7 @@ namespace MathieuMP {
                 us.Add(u);
             }
 
-            for (int n = 0; n <= 64; n++) {
+            for (int n = 37; n <= 64; n++) {
                 Console.WriteLine($"Plotting {n}");
 
                 using StreamWriter sw = new($"../../../../results/eigen_precision64_n{n}.csv");
@@ -47,7 +47,7 @@ namespace MathieuMP {
                 int s = Math.Max(1, n * n);
                 int i = 0, mp_length = 0;
 
-                sw.WriteLine("0,0,0,0,0,0,0");
+                sw.WriteLine("0,0,0,0,0,0");
 
                 foreach (MultiPrecision<N8> u in us) {
                     MultiPrecision<N64> q = s * MultiPrecision<N64>.Sqrt(u.Convert<N64>());
