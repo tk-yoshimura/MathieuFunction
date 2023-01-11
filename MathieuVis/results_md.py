@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 plt.clf()
 plt.figure(figsize=(12, 6))
 
-for i, n in enumerate([1, 2, 3, 4, 5, 6, 7, 8, 16, 32]):
+for i, n in enumerate([1, 2, 3, 4, 5, 6, 7, 8, 16, 32, 64]):
     data = pd.read_csv('../results/eigen_precision64_n%d.csv' % (n), delimiter=',', skiprows=2)
 
     u, m= data['u'].to_numpy().astype(float), data['m'].to_numpy().astype(float)
@@ -34,7 +34,7 @@ plt.savefig('../figures/eigen_plot_m.svg', bbox_inches='tight', pad_inches=0.1)
 plt.clf()
 plt.figure(figsize=(12, 6))
 
-for i, n in enumerate([1, 2, 3, 4, 5, 6, 7, 8, 16, 32]):
+for i, n in enumerate([1, 2, 3, 4, 5, 6, 7, 8, 16, 32, 64]):
     data = pd.read_csv('../results/eigen_precision64_n%d.csv' % (n), delimiter=',', skiprows=2)
 
     u, d = data['u'].to_numpy().astype(float), data['d'].to_numpy().astype(float)
