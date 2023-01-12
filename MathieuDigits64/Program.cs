@@ -219,6 +219,11 @@ namespace MathieuMP {
             }
 
             (a, b, m, d, cancellation_digits) = Compute<N8, N64>(n, q.Convert<N64>(), needs_bits);
+            if (!cancellation_digits) {
+                return (a, b, m, d, cancellation_digits, 64);
+            }
+
+            (a, b, m, d, cancellation_digits) = Compute<N8, N128>(n, q.Convert<N128>(), needs_bits);
             return (a, b, m, d, cancellation_digits, 64);
         }
     }
