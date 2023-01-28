@@ -1,12 +1,11 @@
 ﻿using MultiPrecision;
-using System.Collections.Generic;
 
 namespace MathieuMP {
     class Program {
         static void Main() {
             int degrees = ForwardFiniteDifference<N80, Pow2.N512>.SamplePoints - 1;
 
-            for (int n = 26; n <= 30; n++) {
+            for (int n = 0; n <= 32; n++) {
                 Console.WriteLine($"Plotting {n}");
 
                 List<(MultiPrecision<Pow2.N4> u, MultiPrecision<N80> m, MultiPrecision<N80> d)> values = ReadValues(n);
@@ -17,7 +16,14 @@ namespace MathieuMP {
                 using StreamWriter sw = new($"../../../../results/eigen_nearzero_grads_n{n}.csv");
 
                 sw.WriteLine($"# zero shifted mathieu eigen value near zero grads n={n}");
-                sw.WriteLine("# u:=q^2/max(1, n^4), m:=mean/max(1, n^2), d:=1/scaled_diff-1");
+
+                if (n >= 1) {
+                    sw.WriteLine("# u:=q^2/n^4, m:=(a+b-2n^2)/2n^2 (1+u), d:=(q^n/(2^(n-1)(n-1)!)^2 2/(a-b)-1) (1+u)");
+                }
+                else {
+                    sw.WriteLine("# u:=q^2, m:=a (1+u), d:=0");
+                }
+
                 sw.WriteLine("degree,m,m_precision,d,d_precision");
 
                 sw.WriteLine("0,0,inf,0,inf");

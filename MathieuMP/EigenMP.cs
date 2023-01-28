@@ -209,7 +209,7 @@ namespace MathieuMP {
             int mp_length = MultiPrecision<N>.Length;
 
             double logq = Math.Log2(q);
-            
+
             if (mp_length <= 4) {
                 return (q < 1e-3)
                     ? 6
