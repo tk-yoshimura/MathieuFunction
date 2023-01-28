@@ -5,6 +5,12 @@ import matplotlib.pyplot as plt
 plt.clf()
 plt.figure(figsize=(12, 6))
 
+data = pd.read_csv('../results/eigen_precision64_n0.csv', delimiter=',', skiprows=2)
+
+u, m= data['u'].to_numpy().astype(float), data['m'].to_numpy().astype(float)
+        
+plt.plot(u, m, label='$n=%d$' % (0), color='black', zorder = 0, linewidth = 2.5)
+
 for i, n in enumerate([1, 2, 3, 4, 5, 6, 7, 8, 16, 32, 64]):
     data = pd.read_csv('../results/eigen_precision64_n%d.csv' % (n), delimiter=',', skiprows=2)
 
