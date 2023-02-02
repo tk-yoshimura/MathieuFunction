@@ -9,8 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="TYoshimura.MultiPrecision" Version="5.1.0" />
-    <PackageReference Include="TYoshimura.MultiPrecision.Algebra" Version="1.2.2" />
-    <PackageReference Include="TYoshimura.MultiPrecision.CurveFitting" Version="1.5.2" />
+    <PackageReference Include="TYoshimura.MultiPrecision.Algebra" Version="1.2.4" />
+    <PackageReference Include="TYoshimura.MultiPrecision.CurveFitting" Version="1.5.4" />
   </ItemGroup>
 
 </Project>
