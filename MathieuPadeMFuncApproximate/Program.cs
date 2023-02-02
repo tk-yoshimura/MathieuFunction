@@ -6,10 +6,17 @@ namespace MathieuPadeApproximate {
     class Program {
         static void Main() {
             Dictionary<(MultiPrecision<N8> umin,  MultiPrecision<N8> umax), int> ranges = new(){
-                { (0, 1) , 4 },
-                //{ (1, 4) , 4 },
-                //{ (4, 16) , 4 },
-                //{ (16, 1024) , 4 },
+                { (0, 1d / 256), 4},
+                { (1d / 256, 1d / 16) , 4 },
+                { (1d / 16, 0.25) , 4 },
+                { (0.25, 1) , 4 },
+                { (1, 4) , 4 },
+                { (4, 16) , 4 },
+                { (16, 64) , 4 },
+                { (64, 1024) , 4 },
+                //{ (0, 1d / 64), 4},
+                //{ (1d / 64, 1d / 16), 4},
+                //{ (0, 1d / 16) , 4 },
             };
 
             for (int n = 0; n <= 64; n++) {
@@ -35,18 +42,16 @@ namespace MathieuPadeApproximate {
             bool success = false;
 
             for (; ranges[(umin, umax)] <= 1024 && !success; ranges[(umin, umax)]++) {
-                for (int k = n; k >= 0; k--) {
-                    int numer = ranges[(umin, umax)] + k, denom = ranges[(umin, umax)];
+                int numer = ranges[(umin, umax)], denom = ranges[(umin, umax)];
 
-                    Console.WriteLine($"numer {numer} denom {denom}");
+                Console.WriteLine($"numer {numer} denom {denom}");
 
-                    (parameter, approx, success) = PadeApproximate<N32>(expecteds.Select(v => (v.u, v.m)).ToList(), numer, denom, has_nonzero_root: (n >= 2));
+                (parameter, approx, success) = PadeApproximate<N32>(expecteds.Select(v => (v.u, v.m)).ToList(), numer, denom, has_nonzero_root: (n >= 1));
 
-                    if (success) {
-                        using StreamWriter sw = new($"../../../../results/eigen_padecoef_precisionbits104_range{umin}to{umax}_m_n{n}.csv");
-                        PlotResult(sw, expecteds, numer, parameter, approx);
-                        break;
-                    }
+                if (success) {
+                    using StreamWriter sw = new($"../../../../results/eigen_padecoef_precisionbits104_range{umin}to{umax}_m_n{n}.csv");
+                    PlotResult(sw, expecteds, numer, parameter, approx);
+                    break;
                 }
             }
         }
@@ -124,7 +129,7 @@ namespace MathieuPadeApproximate {
 
             Vector<N> xs = expecteds.Select((item) => item.u.Convert<N>()).ToArray();
             Vector<N> ys = expecteds.Select((item) => item.v.Convert<N>()).ToArray();
-            Vector<N> weights = xs.Select(x => 1 / (x.val * x.val)).ToArray();
+            Vector<N> weights = xs.Select(x => 1 / (x.val * x.val * x.val * x.val)).ToArray();
 
             if (x0 == 0) {
                 (xs, ys, weights) = (xs[1..], ys[1..], weights[1..]);
