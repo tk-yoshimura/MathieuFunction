@@ -19,12 +19,12 @@ namespace MathieuPadeDDouble {
             };
 
             for (int n = 0; n <= 32; n++) {
-                using StreamWriter sw = new($"../../../../sandbox/eigen_ddouble_results_m_n{n}.csv");
+                using StreamWriter sw = new($"../../../../results/ddouble/eigen_ddouble_results_m_n{n}.csv");
                 sw.WriteLine("x,expected,approx,error");
 
                 foreach ((ddouble umin, ddouble umax) in ranges) {
                     List<(ddouble u, ddouble m, ddouble d)> expected = ReadExpected(n, umin, umax);
-                    using StreamReader sr = new($"../../../../results/eigen_padecoef_precisionbits104_range{umin}to{umax}_m_n{n}.csv");
+                    using StreamReader sr = new($"../../../../results/padecoef/eigen_padecoef_precisionbits104_range{umin}to{umax}_m_n{n}.csv");
 
                     ((ddouble[] ms, ddouble[] ns), ddouble u0) = ReadPadecoef(sr, n, umin, umax);
 
@@ -38,13 +38,13 @@ namespace MathieuPadeDDouble {
                 }
             }
 
-            for (int n = 1; n <= 16; n++) {
-                using StreamWriter sw = new($"../../../../sandbox/eigen_ddouble_results_d_n{n}.csv");
+            for (int n = 1; n <= 32; n++) {
+                using StreamWriter sw = new($"../../../../results/ddouble/eigen_ddouble_results_d_n{n}.csv");
                 sw.WriteLine("x,expected,approx,error");
 
                 foreach ((ddouble umin, ddouble umax) in ranges) {
                     List<(ddouble u, ddouble m, ddouble d)> expected = ReadExpected(n, umin, umax);
-                    using StreamReader sr = new($"../../../../results/eigen_padecoef_precisionbits104_range{umin}to{umax}_d_n{n}.csv");
+                    using StreamReader sr = new($"../../../../results/padecoef/eigen_padecoef_precisionbits104_range{umin}to{umax}_d_n{n}.csv");
 
                     ((ddouble[] ms, ddouble[] ns), ddouble u0) = ReadPadecoef(sr, n, umin, umax);
 
