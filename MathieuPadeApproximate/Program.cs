@@ -5,45 +5,53 @@ using static MultiPrecision.Pow2;
 namespace MathieuPadeApproximate {
     class Program {
         static void Main() {
-            Dictionary<(MultiPrecision<N8> umin,  MultiPrecision<N8> umax), int> ranges = new(){
-                //{ (0, 1d / 256), 4},
-                //{ (1d / 256, 1d / 16) , 4 },
-                //{ (1d / 16, 0.25) , 4 },
-                //{ (0.25, 1) , 4 },
-                //{ (1, 4) , 4 },
-                //{ (4, 16) , 4 },
-                //{ (16, 64) , 4 },
-                //{ (64, 1024) , 4 },
-                //{ (0, 1d / 64), 4},
-                //{ (1d / 64, 1d / 16), 4},
-                //{ (0, 1d / 16) , 4 },
-                //{ (1d / 4, 1d / 2) , 4 },
-                //{ (1d / 2, 3d / 4) , 4 },
-                //{ (3d / 4, 1) , 4 },
-                { (0, 1) , 4 },
-                { (0, 1d / 2) , 4 },
-                { (1d / 2, 1) , 4 },
-                { (0, 1d / 4) , 4 },
-                { (1d / 4, 1d / 2) , 4 },
-                { (0, 1d / 8) , 4 },
-                { (1d / 8, 1d / 4) , 4 },
-                { (1d / 4, 3d / 8) , 4 },
-                { (3d / 8, 1d / 2) , 4 },
-                { (1d / 2, 3d / 4) , 4 },
-                { (3d / 4, 1) , 4 },
-                { (1, 4) , 4 },
-                { (4, 16) , 4 },
-                { (16, 64) , 4 },
-                { (64, 1024) , 4 },
-            };
+            {
+                Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges = new(){
+                    { (0, 1d / 8, 0) , 4 },
+                    { (1d / 8, 1d / 4, 3d / 16d) , 4 },
+                    { (1d / 4, 3d / 8, 5d / 16d) , 4 },
+                    { (3d / 8, 1d / 2, 7d / 16d) , 4 },
+                    { (1d / 2, 3d / 4, 1d / 2) , 4 },
+                    { (3d / 4, 1, 3d / 4) , 4 },
+                    { (1, 4, 1) , 4 },
+                    { (4, 16, 4) , 4 },
+                    { (16, 64, 16) , 4 },
+                    { (64, 1024, 64) , 4 },
+                };
 
-            for (int n = 1; n <= 64; n++) {
-                foreach ((MultiPrecision<N8> umin, MultiPrecision<N8> umax) in ranges.Keys) {
-                    if (n < 2) {
-                        ranges[(umin, umax)] = 4;
+                for (int n = 0; n <= 32; n++) {
+                    foreach ((MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) in ranges.Keys) {
+                        if (n < 2) {
+                            ranges[(umin, umax, u0)] = 4;
+                        }
+
+                        SearchAndPlotM(n, ranges, umin, umax, u0);
                     }
+                }
+            }
 
-                    SearchAndPlotD(n, ranges, umin, umax);
+            {
+                Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges = new(){
+                    { (0, 1d / 8, 0) , 4 },
+                    { (1d / 8, 1d / 4, 3d / 16d) , 4 },
+                    { (1d / 4, 3d / 8, 5d / 16d) , 4 },
+                    { (3d / 8, 1d / 2, 7d / 16d) , 4 },
+                    { (1d / 2, 3d / 4, 1d / 2) , 4 },
+                    { (3d / 4, 1, 3d / 4) , 4 },
+                    { (1, 4, 1) , 4 },
+                    { (4, 16, 4) , 4 },
+                    { (16, 64, 16) , 4 },
+                    { (64, 1024, 64) , 4 },
+                };
+
+                for (int n = 1; n <= 32; n++) {
+                    foreach ((MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) in ranges.Keys) {
+                        if (n < 2) {
+                            ranges[(umin, umax, u0)] = 4;
+                        }
+
+                        SearchAndPlotD(n, ranges, umin, umax, u0);
+                    }
                 }
             }
 
@@ -51,7 +59,7 @@ namespace MathieuPadeApproximate {
             Console.Read();
         }
 
-        private static void SearchAndPlotM(int n, Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax), int> ranges,  MultiPrecision<N8> umin, MultiPrecision<N8> umax) {
+        private static void SearchAndPlotM(int n, Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges,  MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) {
             Console.WriteLine($"Plotting n={n} range=[{umin},{umax}]");
 
             List<(MultiPrecision<N8> u, MultiPrecision<N8> m)> expecteds = ReadMExpected(n, umin, umax);
@@ -59,22 +67,22 @@ namespace MathieuPadeApproximate {
             Vector<N32> parameter, approx;
             bool success = false;
 
-            for (; ranges[(umin, umax)] <= 1024 && !success; ranges[(umin, umax)]++) {
-                int numer = ranges[(umin, umax)], denom = ranges[(umin, umax)];
+            for (; ranges[(umin, umax, u0)] <= 1024 && !success; ranges[(umin, umax, u0)]++) {
+                int numer = ranges[(umin, umax, u0)], denom = ranges[(umin, umax, u0)];
 
                 Console.WriteLine($"numer {numer} denom {denom}");
 
-                (parameter, approx, success) = PadeApproximate<N32>(expecteds.Select(v => (v.u, v.m)).ToList(), numer, denom, has_nonzero_root: (n >= 1));
+                (parameter, approx, success) = PadeApproximate<N32>(expecteds.Select(v => (v.u, v.m)).ToList(), u0, numer, denom, has_nonzero_root: (n >= 1));
 
                 if (success) {
-                    using StreamWriter sw = new($"../../../../results/eigen_padecoef_precisionbits104_range{umin}to{umax}_m_n{n}.csv");
-                    PlotResult(sw, expecteds, numer, parameter, approx);
+                    using StreamWriter sw = new($"../../../../results/padecoef/eigen_padecoef_precisionbits104_range{umin}to{umax}_m_n{n}.csv");
+                    PlotResult(sw, expecteds, u0, numer, parameter, approx);
                     break;
                 }
             }
         }
 
-        private static void SearchAndPlotD(int n, Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax), int> ranges,  MultiPrecision<N8> umin, MultiPrecision<N8> umax) {
+        private static void SearchAndPlotD(int n, Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges,  MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) {
             Console.WriteLine($"Plotting n={n} range=[{umin},{umax}]");
 
             List<(MultiPrecision<N8> u, MultiPrecision<N8> d)> expecteds = ReadDExpected(n, umin, umax);
@@ -82,24 +90,22 @@ namespace MathieuPadeApproximate {
             Vector<N32> parameter, approx;
             bool success = false;
 
-            for (; ranges[(umin, umax)] <= 1024 && !success; ranges[(umin, umax)]++) {
-                int numer = ranges[(umin, umax)], denom = ranges[(umin, umax)];
+            for (; ranges[(umin, umax, u0)] <= 1024 && !success; ranges[(umin, umax, u0)]++) {
+                int numer = ranges[(umin, umax, u0)], denom = ranges[(umin, umax, u0)];
 
                 Console.WriteLine($"numer {numer} denom {denom}");
 
-                (parameter, approx, success) = PadeApproximate<N32>(expecteds.Select(v => (v.u, v.d)).ToList(), numer, denom, has_nonzero_root: false);
+                (parameter, approx, success) = PadeApproximate<N32>(expecteds.Select(v => (v.u, v.d)).ToList(), u0, numer, denom, has_nonzero_root: false);
 
                 if (success) {
-                    using StreamWriter sw = new($"../../../../results/eigen_padecoef_precisionbits104_range{umin}to{umax}_d_n{n}.csv");
-                    PlotResult(sw, expecteds, numer, parameter, approx);
+                    using StreamWriter sw = new($"../../../../results/padecoef/eigen_padecoef_precisionbits104_range{umin}to{umax}_d_n{n}.csv");
+                    PlotResult(sw, expecteds, u0, numer, parameter, approx);
                     break;
                 }
             }
         }
 
-        private static void PlotResult<N>(StreamWriter sw, List<(MultiPrecision<N8> u, MultiPrecision<N8> v)> expecteds, int numer, Vector<N> parameter, Vector<N> approx) where N : struct, IConstant {
-            MultiPrecision<N> u0 = expecteds[0].u.Convert<N>();
-
+        private static void PlotResult<N>(StreamWriter sw, List<(MultiPrecision<N8> u, MultiPrecision<N8> v)> expecteds, MultiPrecision<N8> u0, int numer, Vector<N> parameter, Vector<N> approx) where N : struct, IConstant {
             sw.WriteLine($"u0 = {u0}");
             sw.WriteLine($"numers: {numer}");
             foreach ((_, MultiPrecision<N> v) in parameter[..numer]) {
@@ -185,8 +191,8 @@ namespace MathieuPadeApproximate {
             return res;
         }
 
-        static (Vector<N> parameter, Vector<N> approx, bool success) PadeApproximate<N>(List<(MultiPrecision<N8> u, MultiPrecision<N8> v)> expecteds, int numer, int denom, bool has_nonzero_root) where N : struct, IConstant {
-            MultiPrecision<N> x0 = expecteds[0].u.Convert<N>();
+        static (Vector<N> parameter, Vector<N> approx, bool success) PadeApproximate<N>(List<(MultiPrecision<N8> u, MultiPrecision<N8> v)> expecteds, MultiPrecision<N8> u0, int numer, int denom, bool has_nonzero_root) where N : struct, IConstant {
+            MultiPrecision<N> x0 = u0.Convert<N>();
 
             Func<MultiPrecision<N>, MultiPrecision<N>, MultiPrecision<N>, bool> needs_increase_weight =
                 has_nonzero_root

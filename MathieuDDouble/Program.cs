@@ -24,13 +24,15 @@ namespace MathieuPadeDDouble {
 
                 foreach ((ddouble umin, ddouble umax) in ranges) {
                     List<(ddouble u, ddouble m, ddouble d)> expected = ReadExpected(n, umin, umax);
-                    (ddouble[] ms, ddouble[] ns) = ReadPadecoefM(n, umin, umax);
+                    using StreamReader sr = new($"../../../../results/eigen_padecoef_precisionbits104_range{umin}to{umax}_m_n{n}.csv");
+
+                    ((ddouble[] ms, ddouble[] ns), ddouble u0) = ReadPadecoef(sr, n, umin, umax);
 
                     PlotResult(
                         sw,
                         expected.Select(item => item.u).ToArray(),
                         expected.Select(item => item.m).ToArray(),
-                        umin,
+                        u0,
                         ms, ns
                     );
                 }
@@ -42,13 +44,15 @@ namespace MathieuPadeDDouble {
 
                 foreach ((ddouble umin, ddouble umax) in ranges) {
                     List<(ddouble u, ddouble m, ddouble d)> expected = ReadExpected(n, umin, umax);
-                    (ddouble[] ms, ddouble[] ns) = ReadPadecoefD(n, umin, umax);
+                    using StreamReader sr = new($"../../../../results/eigen_padecoef_precisionbits104_range{umin}to{umax}_d_n{n}.csv");
+
+                    ((ddouble[] ms, ddouble[] ns), ddouble u0) = ReadPadecoef(sr, n, umin, umax);
 
                     PlotResult(
                         sw,
                         expected.Select(item => item.u).ToArray(),
                         expected.Select(item => item.d).ToArray(),
-                        umin,
+                        u0,
                         ms, ns
                     );
                 }
@@ -93,17 +97,22 @@ namespace MathieuPadeDDouble {
             return res;
         }
 
-        static (ddouble[] ms, ddouble[] ns) ReadPadecoefM(int n, ddouble umin, ddouble umax) {
+        static ((ddouble[] ms, ddouble[] ns) padecoef, ddouble u0) ReadPadecoef(StreamReader sr, int n, ddouble umin, ddouble umax) {
             List<ddouble> ms = new(), ns = new();
 
-            using StreamReader sr = new($"../../../../results/eigen_padecoef_precisionbits104_range{umin}to{umax}_m_n{n}.csv");
-            sr.ReadLine();
+            string line = sr.ReadLine();
+            if (!(line.StartsWith("u0 = "))) {
+                throw new FormatException();
+            }
+
+            ddouble u0 = line[5..];
+
             if (!(sr.ReadLine().StartsWith("numers"))) {
                 throw new FormatException();
             }
 
             while (!sr.EndOfStream) {
-                string line = sr.ReadLine();
+                line = sr.ReadLine();
 
                 if (line.StartsWith("denoms")) {
                     break;
@@ -113,7 +122,7 @@ namespace MathieuPadeDDouble {
             }
 
             while (!sr.EndOfStream) {
-                string line = sr.ReadLine();
+                line = sr.ReadLine();
 
                 if (line == "u,expected,approx,error") {
                     break;
@@ -122,39 +131,7 @@ namespace MathieuPadeDDouble {
                 ns.Add(line);
             }
 
-            return (ms.ToArray(), ns.ToArray());
-        }
-
-        static (ddouble[] ms, ddouble[] ns) ReadPadecoefD(int n, ddouble umin, ddouble umax) {
-            List<ddouble> ms = new(), ns = new();
-
-            using StreamReader sr = new($"../../../../results/eigen_padecoef_precisionbits104_range{umin}to{umax}_d_n{n}.csv");
-            sr.ReadLine();
-            if (!(sr.ReadLine().StartsWith("numers"))) {
-                throw new FormatException();
-            }
-
-            while (!sr.EndOfStream) {
-                string line = sr.ReadLine();
-
-                if (line.StartsWith("denoms")) {
-                    break;
-                }
-
-                ms.Add(line);
-            }
-
-            while (!sr.EndOfStream) {
-                string line = sr.ReadLine();
-
-                if (line == "u,expected,approx,error") {
-                    break;
-                }
-
-                ns.Add(line);
-            }
-
-            return (ms.ToArray(), ns.ToArray());
+            return ((ms.ToArray(), ns.ToArray()), u0);
         }
 
         static void PlotResult(StreamWriter sw, ddouble[] xs, ddouble[] expecteds, ddouble x0, ddouble[] ms, ddouble[] ns) {

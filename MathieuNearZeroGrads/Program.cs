@@ -18,10 +18,10 @@ namespace MathieuMP {
                 sw.WriteLine($"# zero shifted mathieu eigen value near zero grads n={n}");
 
                 if (n >= 1) {
-                    sw.WriteLine("# u:=q^2/n^4, m:=(a+b-2n^2)/2n^2 (1+u), d:=(q^n/(2^(n-1)(n-1)!)^2 2/(a-b)-1) (1+u)");
+                    sw.WriteLine("# u:=q^2/n^4, m:=(a+b-2n^2)/2n^2, d:=(q^n/(2^(n-1)(n-1)!)^2 2/(a-b)-1)");
                 }
                 else {
-                    sw.WriteLine("# u:=q^2, m:=a (1+u), d:=0");
+                    sw.WriteLine("# u:=q^2, m:=a, d:=0");
                 }
 
                 sw.WriteLine("degree,m,m_precision,d,d_precision");
