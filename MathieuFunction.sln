@@ -16,7 +16,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuNearZeroLog2", "Math
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuNearZeroGrads", "MathieuNearZeroGrads\MathieuNearZeroGrads.csproj", "{644AE80B-F28A-4243-85B0-EEB1C05BFDC6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuPadeMFuncApproximate", "MathieuPadeMFuncApproximate\MathieuPadeMFuncApproximate.csproj", "{4B7D28E2-A2CB-4DDA-8183-5A6EAA5DBA3F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuPadeApproximate", "MathieuPadeApproximate\MathieuPadeApproximate.csproj", "{4B7D28E2-A2CB-4DDA-8183-5A6EAA5DBA3F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuDDouble", "MathieuDDouble\MathieuDDouble.csproj", "{164F830A-F78B-486A-AD0A-E6641DB895B0}"
 EndProject
