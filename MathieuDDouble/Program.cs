@@ -13,14 +13,15 @@ namespace MathieuPadeDDouble {
                 (1d / 2, 3d / 4) , 
                 (3d / 4, 1) , 
                 (1, 4) , 
-                (4, 16) , 
+                (4, 8) , 
+                (8, 16) , 
                 (16, 64) , 
                 (64, 1024) ,
             };
 
             for (int n = 0; n <= 32; n++) {
                 using StreamWriter sw = new($"../../../../results/ddouble/eigen_ddouble_results_m_n{n}.csv");
-                sw.WriteLine("x,expected,approx,error");
+                sw.WriteLine("x,expected,approx,denom,error,relative_error");
 
                 foreach ((ddouble umin, ddouble umax) in ranges) {
                     List<(ddouble u, ddouble m, ddouble d)> expected = ReadExpected(n, umin, umax);
@@ -40,7 +41,7 @@ namespace MathieuPadeDDouble {
 
             for (int n = 1; n <= 32; n++) {
                 using StreamWriter sw = new($"../../../../results/ddouble/eigen_ddouble_results_d_n{n}.csv");
-                sw.WriteLine("x,expected,approx,error");
+                sw.WriteLine("x,expected,approx,denom,error,relative_error");
 
                 foreach ((ddouble umin, ddouble umax) in ranges) {
                     List<(ddouble u, ddouble m, ddouble d)> expected = ReadExpected(n, umin, umax);
@@ -149,10 +150,21 @@ namespace MathieuPadeDDouble {
                 return p / q;
             }
 
-            for (int i = 0; i < expecteds.Length; i++) {
-                ddouble x = xs[i], expected = expecteds[i], approx = pade(x - x0), error = expected - approx;
+            ddouble denom(ddouble x) {
+                ddouble q = ns[^1];
 
-                sw.WriteLine($"{x},{expected},{approx},{error}");
+                for (int i = ns.Length - 2; i >= 0; i--) { 
+                    q = x * q + ns[i];
+                }
+
+                return q;
+            }
+
+            for (int i = 0; i < expecteds.Length; i++) {
+                ddouble x = xs[i], expected = expecteds[i], approx = pade(x - x0), d = denom(x - x0), error = expected - approx;
+                ddouble relative_error = ((x > 0 && x < 1) || ddouble.Abs(expected) > 0.125) ? ddouble.Abs(error / expected) : ddouble.Abs(error);
+
+                sw.WriteLine($"{x},{expected},{approx},{d},{error},{relative_error}");
             }
         }
     }
