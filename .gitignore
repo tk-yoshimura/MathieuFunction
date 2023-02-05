@@ -56,5 +56,6 @@ Resource.aps
 /**/*.nupkg
 *.csv#
 sandbox
+results/padecoef
 
 # Safelist
