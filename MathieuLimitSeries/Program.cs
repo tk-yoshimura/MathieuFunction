@@ -15,8 +15,8 @@ namespace MathieuLimitSeries {
 
                 MultiPrecision<N8> c = SearchA(n, expecteds, p, b);
 
-                sw.WriteLine($"A,{n},{c}");
-                Console.WriteLine($"A,{n},{c}");
+                sw.WriteLine($"A,{n},{(long)c}");
+                Console.WriteLine($"A,{n},{(long)c}");
             }
 
             for (int n = 1; n <= 16; n++) {
@@ -24,8 +24,8 @@ namespace MathieuLimitSeries {
             
                 MultiPrecision<N8> c = SearchB(n, expecteds, p, b);
 
-                sw.WriteLine($"B,{n},{c}");
-                Console.WriteLine($"B,{n},{c}");
+                sw.WriteLine($"B,{n},{(long)c}");
+                Console.WriteLine($"B,{n},{(long)c}");
             }
 
             Console.WriteLine("END");
@@ -83,7 +83,7 @@ namespace MathieuLimitSeries {
                     Vector<N8> delta_power = (delta_diff[1..] * invu[..^1]) / (delta_diff[..^1] * invu[1..]);
 
                     for (int i = 1; i < delta_power.Dim; i++) {
-                        if (delta_power[i - 1] > delta_power[i] * 1.25) {
+                        if (delta_power[i - 1] > delta_power[i] * 1.15) {
                             is_ok = false;
                             break;
                         }
