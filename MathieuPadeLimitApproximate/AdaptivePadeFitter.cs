@@ -7,17 +7,17 @@ namespace MathieuPadeApproximate {
         public AdaptivePadeFitter(Vector<N> xs, Vector<N> ys, int numer, int denom, MultiPrecision<N>? intercept = null)
             : base(xs, ys, numer, denom, intercept) { }
 
-        public (Vector<N> parameters, bool success) ExecuteFitting(Vector<N> weights, Func<Vector<N>, Vector<N>, bool[]> needs_increase_weight, MultiPrecision<N>? norm_cost = null, int iter = 64) {
+        public (Vector<N> parameters, bool success) ExecuteFitting(Vector<N> weights, Func<Vector<N>, Vector<N>, Vector<N>, bool[]> needs_increase_weight, MultiPrecision<N>? norm_cost = null, int iter = 64) {
             Vector<N> parameters = base.ExecuteFitting(weights, norm_cost);
 
             int min_increase_weight_count = Points;
 
             for (int j = 0; j < iter; j++) {
-                Vector<N> approx = base.FittingValue(X, parameters);
+                Vector<N> error = Y - base.FittingValue(X, parameters);
 
                 int increase_weight_count = 0;
 
-                bool[] increase_weights = needs_increase_weight(X, approx);
+                bool[] increase_weights = needs_increase_weight(X, Y, error);
                 
                 for (int i = 0; i < Points; i++) {
                     if (increase_weights[i]) {

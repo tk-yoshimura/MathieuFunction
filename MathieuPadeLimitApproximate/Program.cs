@@ -20,13 +20,6 @@ namespace MathieuPadeApproximate {
         private static void SearchAndPlotA(int n) {
             List<(MultiPrecision<N32> u, MultiPrecision<N32> a, MultiPrecision<N32> a_delta)> expecteds = ReadAExpected<N32>(n);
 
-            List<(MultiPrecision<N32> u, MultiPrecision<N32> a, MultiPrecision<N32> a_delta)> expecteds_transform = new();
-            for (int i = 0; i < expecteds.Count; i++) {
-                expecteds_transform.Add((1 / expecteds[i].u, expecteds[i].a, expecteds[i].a_delta));
-            }
-
-            expecteds_transform.Reverse();
-
             Vector<N32> parameter, approx;
 
             for (int k = 4; k <= 1024; k++) {
@@ -34,11 +27,11 @@ namespace MathieuPadeApproximate {
 
                 Console.WriteLine($"numer {numer} denom {denom}");
 
-                (parameter, approx, bool success) = PadeApproximate<N32>(expecteds_transform, numer, denom);
+                (parameter, approx, bool success) = PadeApproximate<N32>(expecteds, numer, denom);
 
                 if (success) {
                     using StreamWriter sw = new($"../../../../results/padecoef/eigen_limit_padecoef_precisionbits104_quad_delta_a_n{n}.csv");
-                    PlotResult(sw, expecteds_transform, numer, parameter, approx);
+                    PlotResult(sw, expecteds, numer, parameter, approx);
                     break;
                 }
             }
@@ -47,24 +40,17 @@ namespace MathieuPadeApproximate {
         private static void SearchAndPlotB(int n) {
             List<(MultiPrecision<N32> u, MultiPrecision<N32> b, MultiPrecision<N32> b_delta)> expecteds = ReadBExpected<N32>(n);
 
-            List<(MultiPrecision<N32> u, MultiPrecision<N32> b, MultiPrecision<N32> b_delta)> expecteds_transform = new();
-            for (int i = 0; i < expecteds.Count; i++) {
-                expecteds_transform.Add((1 / expecteds[i].u, expecteds[i].b, expecteds[i].b_delta));
-            }
-
-            expecteds_transform.Reverse();
-
             Vector<N32> parameter, approx;
             for (int k = 4; k <= 1024; k++) {
                 int numer = k + 1, denom = k;
 
                 Console.WriteLine($"numer {numer} denom {denom}");
 
-                (parameter, approx, bool success) = PadeApproximate<N32>(expecteds_transform, numer, denom);
+                (parameter, approx, bool success) = PadeApproximate<N32>(expecteds, numer, denom);
 
                 if (success) {
                     using StreamWriter sw = new($"../../../../results/padecoef/eigen_limit_padecoef_precisionbits104_quad_delta_b_n{n}.csv");
-                    PlotResult(sw, expecteds_transform, numer, parameter, approx);
+                    PlotResult(sw, expecteds, numer, parameter, approx);
                     break;
                 }
             }
@@ -81,7 +67,7 @@ namespace MathieuPadeApproximate {
                 sw.WriteLine($"{v:e64}");
             }
 
-            sw.WriteLine("u,expected,expected_delta,approx_delta,error");
+            sw.WriteLine("1/u,expected,expected_delta,approx_delta,error");
             for (int i = 0; i < expecteds.Count; i++) {
                 sw.WriteLine($"{expecteds[i].u},{expecteds[i].v:e32},{expecteds[i].v_delta:e32},{approx[i]:e32},{(expecteds[i].v_delta - approx[i].Convert<N32>()):e10}");
             }
@@ -91,6 +77,7 @@ namespace MathieuPadeApproximate {
             List<(MultiPrecision<N> u, MultiPrecision<N> a, MultiPrecision<N> a_delta)> res = new();
 
             using StreamReader sr = new($"../../../../results/eigen_limit_r2_precision64_n{n}.csv");
+            sr.ReadLine();
             sr.ReadLine();
             sr.ReadLine();
             sr.ReadLine();
@@ -118,6 +105,7 @@ namespace MathieuPadeApproximate {
             sr.ReadLine();
             sr.ReadLine();
             sr.ReadLine();
+            sr.ReadLine();
 
             while (!sr.EndOfStream) {
                 string? line = sr.ReadLine();
@@ -136,24 +124,27 @@ namespace MathieuPadeApproximate {
         }
 
         static (Vector<N> parameter, Vector<N> approx, bool success) PadeApproximate<N>(List<(MultiPrecision<N32> u, MultiPrecision<N32> v, MultiPrecision<N32> v_delta)> expecteds, int numer, int denom) where N : struct, IConstant {
+            MultiPrecision<N> s = MultiPrecision<N>.Pow(expecteds.Select((item) => item.v_delta).Max().Convert<N>(), 4);
+            
             Vector<N> y = ((Vector<N32>)expecteds.Select(expected => expected.v).ToArray()).Convert<N>();
 
-            bool[] needs_increase_weight(Vector<N> x, Vector<N> delta_quad) {
-                Vector<N> delta = Vector<N>.Func(delta_quad, v => MultiPrecision<N>.Sqrt(MultiPrecision<N>.Sqrt(v)));
+            bool[] needs_increase_weight(Vector<N> x, Vector<N> y, Vector<N> error) {
+                Vector<N> relative_error = error / y;
 
-                Vector<N> error = Vector<N>.Func(y, delta, (expected, d) => MultiPrecision<N>.Abs(d / expected));
-
-                return error.Select(e => e.val.Exponent > -104).ToArray();
+                return relative_error.Select(e => e.val.Exponent > -100).ToArray();
             }
 
-            Vector<N> xs = expecteds.Select((item) => item.u.Convert<N>()).ToArray();
+            Vector<N> xs = expecteds.Select((item) => item.u.Convert<N>() * 1024).ToArray();
             Vector<N> ys = expecteds.Select((item) => MultiPrecision<N>.Pow(item.v_delta.Convert<N>(), 4)).ToArray();
-            Vector<N> weights = xs.Select(x => (MultiPrecision<N>)1).ToArray();
+            Vector<N> weights = xs.Select(x => 1 / (x.val * x.val)).ToArray();
 
-            AdaptivePadeFitter<N> fitter = new(xs, ys, numer, denom, intercept: 0);
+            AdaptivePadeFitter<N> fitter = new(xs, ys / s, numer, denom, intercept: 0);
 
             (Vector<N> parameter, bool success) = fitter.ExecuteFitting(weights, needs_increase_weight);
-            Vector<N> approx = fitter.FittingValue(expecteds.Select((item) => item.u.Convert<N>()).ToArray(), parameter);
+            parameter[..numer] *= s;
+
+            Vector<N> approx = fitter.FittingValue(xs, parameter);
+            approx = Vector<N>.Func(approx, v => MultiPrecision<N>.Sqrt(MultiPrecision<N>.Sqrt(v)));
 
             return (parameter, approx, success);
         }
