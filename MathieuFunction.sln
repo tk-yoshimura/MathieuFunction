@@ -20,9 +20,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuPadeApproximate", "M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuDDouble", "MathieuDDouble\MathieuDDouble.csproj", "{164F830A-F78B-486A-AD0A-E6641DB895B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathieuPadeLimitApproximate", "MathieuPadeLimitApproximate\MathieuPadeLimitApproximate.csproj", "{18A44218-66CE-444C-AB4B-3B6879B29CC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuPadeLimitApproximate", "MathieuPadeLimitApproximate\MathieuPadeLimitApproximate.csproj", "{18A44218-66CE-444C-AB4B-3B6879B29CC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathieuLimitDigits64", "MathieuLimitDigits64\MathieuLimitDigits64.csproj", "{2ACBA6AC-F23B-4205-ADC9-CACD770EBFFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuLimitDigits64", "MathieuLimitDigits64\MathieuLimitDigits64.csproj", "{2ACBA6AC-F23B-4205-ADC9-CACD770EBFFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathieuLimitSeries", "MathieuLimitSeries\MathieuLimitSeries.csproj", "{F87C1286-0199-4236-97CF-FFEB9EC99434}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,6 +66,10 @@ Global
 		{2ACBA6AC-F23B-4205-ADC9-CACD770EBFFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2ACBA6AC-F23B-4205-ADC9-CACD770EBFFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2ACBA6AC-F23B-4205-ADC9-CACD770EBFFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F87C1286-0199-4236-97CF-FFEB9EC99434}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F87C1286-0199-4236-97CF-FFEB9EC99434}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F87C1286-0199-4236-97CF-FFEB9EC99434}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F87C1286-0199-4236-97CF-FFEB9EC99434}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
