@@ -5,7 +5,7 @@ using static MultiPrecision.Pow2;
 namespace MathieuLimitSeries {
     class Program {
         static void Main() {
-            const int p = 6, b = 30;
+            const int p = 7, b = 36;
             using StreamWriter sw = new($"../../../../sandbox/eigen_limit_coef{p}_scaleb{b}.csv");
 
             sw.WriteLine("func,n,c");
@@ -37,9 +37,9 @@ namespace MathieuLimitSeries {
             Vector<N8> q = expecteds.Select(item => MultiPrecision<N8>.Sqrt(1 / item.u) * Math.Max(1, n * n)).ToArray();
 
             Vector<N8> delta_expected = expecteds.Select(item => item.a_delta).ToArray();
-            Vector<N8> delta_term5 = Vector<N8>.Func(q, v => LimitDeltaTerm5EigenA(n, v));
+            Vector<N8> delta_term6 = Vector<N8>.Func(q, v => LimitDeltaTerm6EigenA(n, v));
 
-            Vector<N8> delta_rem = delta_expected - delta_term5;
+            Vector<N8> delta_rem = delta_expected - delta_term6;
 
             Vector<N8> delta_term6_unit = Vector<N8>.Func(q, v => 1 / (Math.ScaleB(1, b) * MultiPrecision<N8>.Pow(v, p * 0.5)));
 
@@ -51,9 +51,9 @@ namespace MathieuLimitSeries {
             Vector<N8> q = expecteds.Select(item => MultiPrecision<N8>.Sqrt(1 / item.u) * Math.Max(1, n * n)).ToArray();
 
             Vector<N8> delta_expected = expecteds.Select(item => item.b_delta).ToArray();
-            Vector<N8> delta_term5 = Vector<N8>.Func(q, v => LimitDeltaTerm5EigenB(n, v));
+            Vector<N8> delta_term6 = Vector<N8>.Func(q, v => LimitDeltaTerm6EigenB(n, v));
 
-            Vector<N8> delta_rem = delta_expected - delta_term5;
+            Vector<N8> delta_rem = delta_expected - delta_term6;
 
             Vector<N8> delta_term6_unit = Vector<N8>.Func(q, v => 1 / (Math.ScaleB(1, b) * MultiPrecision<N8>.Pow(v, p * 0.5)));
 
@@ -66,9 +66,9 @@ namespace MathieuLimitSeries {
 
             MultiPrecision<N8> c = 0, dc = MultiPrecision<N8>.Ldexp(1, exponent);
             while (dc >= 1) {
-                Vector<N8> delta_term6 = checked(c + dc) * delta_term_unit;
+                Vector<N8> delta_term = checked(c + dc) * delta_term_unit;
 
-                Vector<N8> delta_diff = delta_rem - delta_term6;
+                Vector<N8> delta_diff = delta_rem - delta_term;
 
                 bool is_ok = true;
 
@@ -172,6 +172,66 @@ namespace MathieuLimitSeries {
             return delta;
         }
 
+        static MultiPrecision<N> LimitDeltaTerm6EigenA<N>(int n, MultiPrecision<N> q) where N : struct, IConstant {
+            int s = 2 * n + 1;
+
+            MultiPrecision<N> h = MultiPrecision<N>.Sqrt(q);
+
+            MultiPrecision<N>[] c6 = new MultiPrecision<N>[] {
+                3888840           ,
+                306376764         ,
+                5813875953        ,
+                53467223196       ,
+                2964972550241     ,
+                11327184240489    ,
+                40588474402185    ,
+                125453881876663   ,
+                333685697794930   ,
+                8400175517958246  ,
+                11140113047006072 ,
+                26316021447278539 ,
+                61050830906379734 ,
+                108046749099092452,
+                188297945113537561,
+                313180840876516265,
+                520128832895466565,
+            };
+
+            MultiPrecision<N> delta = DeltaTerm6(s, h, MultiPrecision<N>.Ldexp(c6[n], -30));
+
+            return delta;
+        }
+
+        static MultiPrecision<N> LimitDeltaTerm6EigenB<N>(int n, MultiPrecision<N> q) where N : struct, IConstant {
+            int s = 2 * n - 1;
+
+            MultiPrecision<N> h = MultiPrecision<N>.Sqrt(q);
+
+            MultiPrecision<N>[] c6 = new MultiPrecision<N>[] {
+                -1,
+                2008817           ,
+                306245940         ,
+                5812787791        ,
+                53460959011       ,
+                3599731002398     ,
+                13226576470455    ,
+                46292840099754    ,
+                140684377732158   ,
+                369241964205361   ,
+                10259299831890252 ,
+                13261325522499640 ,
+                30914292926139497 ,
+                70936803722838360 ,
+                124102996070214688,
+                214191639546155697,
+                353223126681787163,
+            };
+
+            MultiPrecision<N> delta = DeltaTerm6(s, h, MultiPrecision<N>.Ldexp(c6[n], -30));
+
+            return delta;
+        }
+
         private static MultiPrecision<N> DeltaTerm5<N>(int s, MultiPrecision<N> h) where N : struct, IConstant {
             MultiPrecision<N> delta = 0;
             delta += (s * (3 + s * s)) / (128 * h);
@@ -179,6 +239,13 @@ namespace MathieuLimitSeries {
             delta += (s * (405 + s * s * (410 + s * s * 33))) / (131072 * h * h * h);
             delta += (486 + s * s * (2943 + s * s * (1260 + s * s * 63))) / (1048576 * h * h * h * h);
             delta += (s * (41607 + s * s * (69001 + s * s * (15617 + s * s * 527)))) / (33554432 * h * h * h * h * h);
+
+            return delta;
+        }
+
+        private static MultiPrecision<N> DeltaTerm6<N>(int s, MultiPrecision<N> h, MultiPrecision<N> c6) where N : struct, IConstant {
+            MultiPrecision<N> delta = DeltaTerm5(s, h);
+            delta += c6 / (h * h * h * h * h * h);
 
             return delta;
         }
