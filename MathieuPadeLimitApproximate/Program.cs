@@ -7,11 +7,6 @@ namespace MathieuPadeApproximate {
         static void Main() {
             {
                 Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges = new(){
-                    //{ (0, 1d / 16384d, 0) , 4 },
-                    //{ (1d / 16384d, 1d / 8192d, 1d / 16384d) , 4 },
-                    //{ (0, 1d / 4096d, 0) , 4 },
-                    //{ (1d / 4096d, 1d / 2048d, 1d / 4096d) , 4 },
-                    //{ (1d / 2048d, 1d / 1024d, 1d / 2048d) , 4 },
                     { (0, 1, 0) , 4 }
                 };
 
@@ -24,11 +19,6 @@ namespace MathieuPadeApproximate {
 
             {
                 Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges = new(){
-                    //{ (0, 1d / 16384d, 0) , 4 },
-                    //{ (1d / 16384d, 1d / 8192d, 1d / 16384d) , 4 },
-                    //{ (0, 1d / 4096d, 0) , 4 },
-                    //{ (1d / 4096d, 1d / 2048d, 1d / 4096d) , 4 },
-                    //{ (1d / 2048d, 1d / 1024d, 1d / 2048d) , 4 },
                     { (0, 1, 0) , 4 }
                 };
 
@@ -44,11 +34,13 @@ namespace MathieuPadeApproximate {
         }
 
         private static void SearchAndPlotA(int n, Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges,  MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) {
+            Console.WriteLine($"Plotting n={n} range=[{umin},{umax}]");
+            
             List<(MultiPrecision<N32> u, MultiPrecision<N32> a, MultiPrecision<N32> a_delta)> expecteds = ReadAExpected(n, umin.Convert<N32>(), umax.Convert<N32>());
 
             Vector<N64> parameter, approx;
 
-            for (; ranges[(umin, umax, u0)] <= 1024; ranges[(umin, umax, u0)]++) {
+            for (ranges[(umin, umax, u0)] = 4; ranges[(umin, umax, u0)] <= 1024; ranges[(umin, umax, u0)]++) {
                 int numer = ranges[(umin, umax, u0)] + (u0 == 0 ? 1 : 0), denom = ranges[(umin, umax, u0)];
 
                 Console.WriteLine($"numer {numer} denom {denom}");
@@ -64,11 +56,13 @@ namespace MathieuPadeApproximate {
         }
 
         private static void SearchAndPlotB(int n, Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges,  MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) {
+            Console.WriteLine($"Plotting n={n} range=[{umin},{umax}]");
+            
             List<(MultiPrecision<N32> u, MultiPrecision<N32> b, MultiPrecision<N32> b_delta)> expecteds = ReadBExpected(n, umin.Convert<N32>(), umax.Convert<N32>());
 
             Vector<N64> parameter, approx;
 
-            for (; ranges[(umin, umax, u0)] <= 1024; ranges[(umin, umax, u0)]++) {
+            for (ranges[(umin, umax, u0)] = 4; ranges[(umin, umax, u0)] <= 1024; ranges[(umin, umax, u0)]++) {
                 int numer = ranges[(umin, umax, u0)] + (u0 == 0 ? 1 : 0), denom = ranges[(umin, umax, u0)];
 
                 Console.WriteLine($"numer {numer} denom {denom}");
