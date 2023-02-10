@@ -1,5 +1,6 @@
 ﻿using MultiPrecision;
 using MultiPrecisionAlgebra;
+using System;
 using static MultiPrecision.Pow2;
 
 namespace MathieuPadeApproximate {
@@ -14,12 +15,15 @@ namespace MathieuPadeApproximate {
                     { (1d / 2, 3d / 4, 1d / 2) , 4 },
                     { (3d / 4, 1, 3d / 4) , 4 },
                     { (1, 4, 1) , 4 },
-                    { (4, 16, 4) , 4 },
+                    { (4, 8, 4) , 4 },
+                    { (8, 16, 8) , 4 },
                     { (16, 64, 16) , 4 },
                     { (64, 1024, 64) , 4 },
+                    { (64, 512, 64) , 4 },
+                    { (512, 4096, 512) , 4 },
                 };
 
-                for (int n = 0; n <= 32; n++) {
+                for (int n = 0; n <= 16; n++) {
                     foreach ((MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) in ranges.Keys) {
                         if (n < 2) {
                             ranges[(umin, umax, u0)] = 4;
@@ -39,12 +43,15 @@ namespace MathieuPadeApproximate {
                     { (1d / 2, 3d / 4, 1d / 2) , 4 },
                     { (3d / 4, 1, 3d / 4) , 4 },
                     { (1, 4, 1) , 4 },
-                    { (4, 16, 4) , 4 },
+                    { (4, 8, 4) , 4 },
+                    { (8, 16, 8) , 4 },
                     { (16, 64, 16) , 4 },
                     { (64, 1024, 64) , 4 },
+                    { (64, 512, 64) , 4 },
+                    { (512, 4096, 512) , 4 },
                 };
 
-                for (int n = 1; n <= 32; n++) {
+                for (int n = 1; n <= 16; n++) {
                     foreach ((MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) in ranges.Keys) {
                         if (n < 2) {
                             ranges[(umin, umax, u0)] = 4;
@@ -126,31 +133,63 @@ namespace MathieuPadeApproximate {
         static List<(MultiPrecision<N> u, MultiPrecision<N> m)> ReadMExpected<N>(int n,  MultiPrecision<N> umin,  MultiPrecision<N> umax) where N : struct, IConstant {
             List<(MultiPrecision<N> u, MultiPrecision<N> m)> res = new();
 
-            using StreamReader sr = new($"../../../../results/eigen_precision64_n{n}.csv");
-            sr.ReadLine();
-            sr.ReadLine();
-            sr.ReadLine();
+            {
+                using StreamReader sr = new($"../../../../results/eigen_precision64_n{n}.csv");
+                sr.ReadLine();
+                sr.ReadLine();
+                sr.ReadLine();
 
-            while (!sr.EndOfStream) {
-                string? line = sr.ReadLine();
-                if (string.IsNullOrWhiteSpace(line)) {
-                    break;
+                while (!sr.EndOfStream) {
+                    string? line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line)) {
+                        break;
+                    }
+
+                    string[] line_split = line.Split(',');
+
+                    MultiPrecision<N> u = line_split[0], m = line_split[3];
+
+                    if (n >= 1) {
+                        m += 1;
+                    }
+
+                    if (u > umax) {
+                        break;
+                    }
+
+                    if (u >= umin) {
+                        res.Add((u, m));
+                    }
                 }
+            }
 
-                string[] line_split = line.Split(',');
+            {
+                using StreamReader sr = new($"../../../../results/eigen_largeval_precision64_n{n}.csv");
+                sr.ReadLine();
+                sr.ReadLine();
+                sr.ReadLine();
 
-                MultiPrecision<N> u = line_split[0], m = line_split[3];
+                while (!sr.EndOfStream) {
+                    string? line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line)) {
+                        break;
+                    }
 
-                if (n >= 1) {
-                    m += 1;
-                }
+                    string[] line_split = line.Split(',');
 
-                if (u > umax) {
-                    break;
-                }
+                    MultiPrecision<N> u = line_split[0], m = line_split[3];
 
-                if (u >= umin) {
-                    res.Add((u, m));
+                    if (u > umax) {
+                        break;
+                    }
+
+                    if (n >= 1) {
+                        m += 1;
+                    }
+
+                    if (u >= umin && u > res[^1].u) {
+                        res.Add((u, m));
+                    }
                 }
             }
 
@@ -160,31 +199,63 @@ namespace MathieuPadeApproximate {
         static List<(MultiPrecision<N> u, MultiPrecision<N> d)> ReadDExpected<N>(int n,  MultiPrecision<N> umin,  MultiPrecision<N> umax) where N : struct, IConstant {
             List<(MultiPrecision<N> u, MultiPrecision<N> d)> res = new();
 
-            using StreamReader sr = new($"../../../../results/eigen_precision64_n{n}.csv");
-            sr.ReadLine();
-            sr.ReadLine();
-            sr.ReadLine();
+            {
+                using StreamReader sr = new($"../../../../results/eigen_precision64_n{n}.csv");
+                sr.ReadLine();
+                sr.ReadLine();
+                sr.ReadLine();
 
-            while (!sr.EndOfStream) {
-                string? line = sr.ReadLine();
-                if (string.IsNullOrWhiteSpace(line)) {
-                    break;
+                while (!sr.EndOfStream) {
+                    string? line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line)) {
+                        break;
+                    }
+
+                    string[] line_split = line.Split(',');
+
+                    MultiPrecision<N> u = line_split[0], d = line_split[4];
+
+                    if (n >= 1) {
+                        d += 1;
+                    }
+
+                    if (u > umax) {
+                        break;
+                    }
+
+                    if (u >= umin) {
+                        res.Add((u, d));
+                    }
                 }
+            }
 
-                string[] line_split = line.Split(',');
+            {
+                using StreamReader sr = new($"../../../../results/eigen_largeval_precision64_n{n}.csv");
+                sr.ReadLine();
+                sr.ReadLine();
+                sr.ReadLine();
 
-                MultiPrecision<N> u = line_split[0], d = line_split[4];
+                while (!sr.EndOfStream) {
+                    string? line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line)) {
+                        break;
+                    }
 
-                if (n >= 1) {
-                    d += 1;
-                }
+                    string[] line_split = line.Split(',');
 
-                if (u > umax) {
-                    break;
-                }
+                    MultiPrecision<N> u = line_split[0], d = line_split[4];
 
-                if (u >= umin) {
-                    res.Add((u, d));
+                    if (n >= 1) {
+                        d += 1;
+                    }
+
+                    if (u > umax) {
+                        break;
+                    }
+
+                    if (u >= umin && u > res[^1].u) {
+                        res.Add((u, d));
+                    }
                 }
             }
 

@@ -17,7 +17,8 @@ namespace MathieuPadeDDouble {
                 (4, 8) , 
                 (8, 16) , 
                 (16, 64) , 
-                (64, 1024) ,
+                (64, 512) , 
+                (512, 4096) ,
             };
 
             using StreamWriter sw_com = new($"../../../../sandbox/eigen_ddouble_padecoef.txt");
@@ -105,32 +106,65 @@ namespace MathieuPadeDDouble {
         static List<(ddouble u, ddouble m, ddouble d)> ReadExpected(int n, ddouble umin, ddouble umax) {
             List<(ddouble u, ddouble m, ddouble d)> res = new();
 
-            using StreamReader sr = new($"../../../../results/eigen_precision64_n{n}.csv");
-            sr.ReadLine();
-            sr.ReadLine();
-            sr.ReadLine();
+            {
+                using StreamReader sr = new($"../../../../results/eigen_precision64_n{n}.csv");
+                sr.ReadLine();
+                sr.ReadLine();
+                sr.ReadLine();
 
-            while (!sr.EndOfStream) {
-                string? line = sr.ReadLine();
-                if (string.IsNullOrWhiteSpace(line)) {
-                    break;
+                while (!sr.EndOfStream) {
+                    string? line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line)) {
+                        break;
+                    }
+
+                    string[] line_split = line.Split(',');
+
+                    ddouble u = line_split[0], m = line_split[3], d = line_split[4];
+
+                    if (u > umax) {
+                        break;
+                    }
+
+                    if (n >= 1) {
+                        m += 1;
+                        d += 1;
+                    }
+
+                    if (u >= umin) {
+                        res.Add((u, m, d));
+                    }
                 }
+            }
 
-                string[] line_split = line.Split(',');
+            {
+                using StreamReader sr = new($"../../../../results/eigen_largeval_precision64_n{n}.csv");
+                sr.ReadLine();
+                sr.ReadLine();
+                sr.ReadLine();
 
-                ddouble u = line_split[0], m = line_split[3], d = line_split[4];
+                while (!sr.EndOfStream) {
+                    string? line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line)) {
+                        break;
+                    }
 
-                if (u > umax) {
-                    break;
-                }
+                    string[] line_split = line.Split(',');
 
-                if (n >= 1) {
-                    m += 1;
-                    d += 1;
-                }
+                    ddouble u = line_split[0], m = line_split[3], d = line_split[4];
 
-                if (u >= umin) {
-                    res.Add((u, m, d));
+                    if (u > umax) {
+                        break;
+                    }
+
+                    if (n >= 1) {
+                        m += 1;
+                        d += 1;
+                    }
+
+                    if (u >= umin && u > res[^1].u) {
+                        res.Add((u, m, d));
+                    }
                 }
             }
 
