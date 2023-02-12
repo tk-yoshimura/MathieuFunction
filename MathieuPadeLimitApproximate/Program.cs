@@ -7,11 +7,13 @@ namespace MathieuPadeApproximate {
         static void Main() {
             {
                 Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges = new(){
-                    { (0, 1, 0) , 4 }
+                    { (0, Math.ScaleB(1, -20), 0) , 4 },
+                    { (Math.ScaleB(1, -20), Math.ScaleB(1, -16), Math.ScaleB(81, -24)) , 4 },
+                    { (Math.ScaleB(1, -16), Math.ScaleB(1, -12), Math.ScaleB(81, -20)) , 4 },
                 };
 
                 for (int n = 0; n <= 16; n++) {
-                    foreach ((MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) in ranges.Keys) {                        
+                    foreach ((MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) in ranges.Keys) {
                         SearchAndPlotA(n, ranges, umin, umax, u0);
                     }
                 }
@@ -19,11 +21,13 @@ namespace MathieuPadeApproximate {
 
             {
                 Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges = new(){
-                    { (0, 1, 0) , 4 }
+                    { (0, Math.ScaleB(1, -20), 0) , 4 },
+                    { (Math.ScaleB(1, -20), Math.ScaleB(1, -16), Math.ScaleB(81, -24)) , 4 },
+                    { (Math.ScaleB(1, -16), Math.ScaleB(1, -12), Math.ScaleB(81, -20)) , 4 },
                 };
 
                 for (int n = 1; n <= 16; n++) {
-                    foreach ((MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) in ranges.Keys) {                        
+                    foreach ((MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) in ranges.Keys) {
                         SearchAndPlotB(n, ranges, umin, umax, u0);
                     }
                 }
@@ -33,9 +37,9 @@ namespace MathieuPadeApproximate {
             Console.Read();
         }
 
-        private static void SearchAndPlotA(int n, Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges,  MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) {
+        private static void SearchAndPlotA(int n, Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges, MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) {
             Console.WriteLine($"Plotting n={n} range=[{umin},{umax}]");
-            
+
             List<(MultiPrecision<N32> u, MultiPrecision<N32> a, MultiPrecision<N32> a_delta)> expecteds = ReadAExpected(n, umin.Convert<N32>(), umax.Convert<N32>());
 
             Vector<N64> parameter, approx;
@@ -55,9 +59,9 @@ namespace MathieuPadeApproximate {
             }
         }
 
-        private static void SearchAndPlotB(int n, Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges,  MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) {
+        private static void SearchAndPlotB(int n, Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges, MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) {
             Console.WriteLine($"Plotting n={n} range=[{umin},{umax}]");
-            
+
             List<(MultiPrecision<N32> u, MultiPrecision<N32> b, MultiPrecision<N32> b_delta)> expecteds = ReadBExpected(n, umin.Convert<N32>(), umax.Convert<N32>());
 
             Vector<N64> parameter, approx;
@@ -70,7 +74,7 @@ namespace MathieuPadeApproximate {
                 (parameter, approx, bool success) = PadeApproximate<N64>(expecteds, u0, numer, denom);
 
                 if (success) {
-                    using StreamWriter sw = new($"../../../../results/padecoef/eigen_limit_padecoef_precisionbits104_range{umin}to{umax}_delta_b_n{n}.csv");
+                    using StreamWriter sw = new($"../../../../results/padecoef/eigen_limit_padecoef_precisionbits104_delta_range{umin}to{umax}_b_n{n}.csv");
                     PlotResult(sw, expecteds, u0, numer, parameter, approx);
                     break;
                 }
@@ -98,7 +102,7 @@ namespace MathieuPadeApproximate {
         static List<(MultiPrecision<N> u, MultiPrecision<N> a, MultiPrecision<N> a_delta)> ReadAExpected<N>(int n, MultiPrecision<N> umin, MultiPrecision<N> umax) where N : struct, IConstant {
             List<(MultiPrecision<N> u, MultiPrecision<N> a, MultiPrecision<N> a_delta)> res = new();
 
-            using StreamReader sr = new($"../../../../results/eigen_limit_r3_precision64_n{n}.csv");
+            using StreamReader sr = new($"../../../../results/eigen_limit_r4_precision64_n{n}.csv");
             sr.ReadLine();
             sr.ReadLine();
             sr.ReadLine();
@@ -129,7 +133,7 @@ namespace MathieuPadeApproximate {
         static List<(MultiPrecision<N> u, MultiPrecision<N> b, MultiPrecision<N> b_delta)> ReadBExpected<N>(int n, MultiPrecision<N> umin, MultiPrecision<N> umax) where N : struct, IConstant {
             List<(MultiPrecision<N> u, MultiPrecision<N> b, MultiPrecision<N> a_delta)> res = new();
 
-            using StreamReader sr = new($"../../../../results/eigen_limit_r3_precision64_n{n}.csv");
+            using StreamReader sr = new($"../../../../results/eigen_limit_r4_precision64_n{n}.csv");
             sr.ReadLine();
             sr.ReadLine();
             sr.ReadLine();
@@ -159,7 +163,7 @@ namespace MathieuPadeApproximate {
 
         static (Vector<N> parameter, Vector<N> approx, bool success) PadeApproximate<N>(List<(MultiPrecision<N32> u, MultiPrecision<N32> v, MultiPrecision<N32> v_delta)> expecteds, MultiPrecision<N8> u0, int numer, int denom) where N : struct, IConstant {
             long[] tol = expecteds.Select(expected => (MultiPrecision<N32>.Ldexp(expected.v.Exponent, -104) / expected.v_delta).Exponent).ToArray();
-            
+
             bool[] needs_increase_weight(Vector<N> x, Vector<N> y, Vector<N> error) {
                 Vector<N> relative_error = error / y;
 
@@ -169,6 +173,8 @@ namespace MathieuPadeApproximate {
             Vector<N> xs = expecteds.Select((item) => MultiPrecision<N>.Sqrt(MultiPrecision<N>.Sqrt(item.u.Convert<N>()))).ToArray();
             Vector<N> ys = expecteds.Select((item) => item.v_delta.Convert<N>()).ToArray();
             Vector<N> weights = xs.Select(x => 1 / (x.val * x.val)).ToArray();
+
+            xs -= MultiPrecision<N>.Sqrt(MultiPrecision<N>.Sqrt(u0.Convert<N>()));
 
             AdaptivePadeFitter<N> fitter = new(xs, ys, numer, denom, intercept: u0 == 0 ? 0 : null);
 

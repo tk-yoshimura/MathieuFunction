@@ -18,7 +18,7 @@ namespace MathieuPadeApproximate {
                 int increase_weight_count = 0;
 
                 bool[] increase_weights = needs_increase_weight(X, Y, error);
-                
+
                 for (int i = 0; i < Points; i++) {
                     if (increase_weights[i]) {
                         weights[i] *= 10;
@@ -34,7 +34,7 @@ namespace MathieuPadeApproximate {
                 if (increase_weight_count > Points / 16 && increase_weight_count > min_increase_weight_count * 3 / 2) {
                     break;
                 }
-                if(increase_weight_count <= 0){
+                if (increase_weight_count <= 0) {
                     return (parameters, true);
                 }
 

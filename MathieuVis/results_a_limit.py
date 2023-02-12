@@ -62,17 +62,17 @@ for n in range(16 + 1):
 
         a_diff = a_limit - a
     
-        plt.plot(invu, a_diff, label='$level=%d$' % (level))
+        plt.plot(np.sqrt(np.sqrt(invu)), a_diff / np.max(a_diff), label='$level=%d$' % (level))
         
     plt.grid()
 
-    plt.xlabel('$1 / u$')
+    plt.xlabel('$sqrt(1 / u)$')
     plt.ylabel('$\Delta a$')
 
-    plt.xlim([0, 0.001])
-    plt.xticks(np.arange(0, 10+1) / 10000)
+    plt.xlim([0, np.sqrt(1 / 32)])
+    #plt.xticks(np.arange(0, 10+1) / 10000)
 
-    plt.yscale('log')
+    #plt.yscale('log')
 
     plt.legend(loc='upper right')
 

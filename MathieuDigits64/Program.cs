@@ -25,11 +25,14 @@ namespace MathieuMP {
             for (MultiPrecision<N8> u = 64; u < 256; u += 1 / 4d) {
                 us.Add(u);
             }
-            for (MultiPrecision<N8> u = 256; u <= 1024; u += 1) {
+            for (MultiPrecision<N8> u = 256; u < 1024; u += 1) {
+                us.Add(u);
+            }
+            for (MultiPrecision<N8> u = 1024; u <= 4096; u += 4) {
                 us.Add(u);
             }
 
-            for (int n = 37; n <= 64; n++) {
+            for (int n = 0; n <= 16; n++) {
                 Console.WriteLine($"Plotting {n}");
 
                 using StreamWriter sw = new($"../../../../results/eigen_precision64_n{n}.csv");
@@ -60,7 +63,7 @@ namespace MathieuMP {
                         Console.WriteLine($"{u},{a:e20},{d:e20}");
                     }
                     else {
-                        sw.WriteLine($"{u},{a:e64},0,{a:e64},0,0,0");
+                        sw.WriteLine($"{u},{a:e64},0,{a:e64},0,0");
                         Console.WriteLine($"{u},{a:e20}");
                     }
 

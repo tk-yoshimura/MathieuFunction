@@ -34,7 +34,7 @@ namespace MathieuPadeApproximate {
                 if (increase_weight_count > Points / 16 && increase_weight_count > min_increase_weight_count * 3 / 2) {
                     break;
                 }
-                if(increase_weight_count <= 0){
+                if (increase_weight_count <= 0) {
                     return (parameters, true);
                 }
 

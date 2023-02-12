@@ -1,23 +1,21 @@
 ﻿using DoubleDouble;
 using MultiPrecision;
-using System;
-using System.Text;
 
 namespace MathieuPadeDDouble {
     class Program {
         static void Main() {
-            (ddouble umin,  ddouble umax)[] ranges = new (ddouble, ddouble)[]{
-                (0, 1d / 8) , 
-                (1d / 8, 1d / 4) , 
-                (1d / 4, 3d / 8) , 
-                (3d / 8, 1d / 2) , 
-                (1d / 2, 3d / 4) , 
-                (3d / 4, 1) , 
-                (1, 4) , 
-                (4, 8) , 
-                (8, 16) , 
-                (16, 64) , 
-                (64, 512) , 
+            (ddouble umin, ddouble umax)[] ranges = new (ddouble, ddouble)[]{
+                (0, 1d / 8) ,
+                (1d / 8, 1d / 4) ,
+                (1d / 4, 3d / 8) ,
+                (3d / 8, 1d / 2) ,
+                (1d / 2, 3d / 4) ,
+                (3d / 4, 1) ,
+                (1, 4) ,
+                (4, 8) ,
+                (8, 16) ,
+                (16, 64) ,
+                (64, 512) ,
                 (512, 4096) ,
             };
 
@@ -208,7 +206,7 @@ namespace MathieuPadeDDouble {
             return ((ms.ToArray(), ns.ToArray()), u0);
         }
 
-        static ((MultiPrecision<N>[] ms, MultiPrecision<N>[] ns) padecoef, MultiPrecision<N> u0) ReadPadecoef<N>(StreamReader sr) where N: struct, IConstant {
+        static ((MultiPrecision<N>[] ms, MultiPrecision<N>[] ns) padecoef, MultiPrecision<N> u0) ReadPadecoef<N>(StreamReader sr) where N : struct, IConstant {
             List<MultiPrecision<N>> ms = new(), ns = new();
 
             string line = sr.ReadLine();
@@ -249,11 +247,11 @@ namespace MathieuPadeDDouble {
             ddouble pade(ddouble x) {
                 ddouble p = ms[^1], q = ns[^1];
 
-                for (int i = ms.Length - 2; i >= 0; i--) { 
+                for (int i = ms.Length - 2; i >= 0; i--) {
                     p = x * p + ms[i];
                 }
 
-                for (int i = ns.Length - 2; i >= 0; i--) { 
+                for (int i = ns.Length - 2; i >= 0; i--) {
                     q = x * q + ns[i];
                 }
 
@@ -263,7 +261,7 @@ namespace MathieuPadeDDouble {
             ddouble denom(ddouble x) {
                 ddouble q = ns[^1];
 
-                for (int i = ns.Length - 2; i >= 0; i--) { 
+                for (int i = ns.Length - 2; i >= 0; i--) {
                     q = x * q + ns[i];
                 }
 

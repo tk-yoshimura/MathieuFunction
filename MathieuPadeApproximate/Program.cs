@@ -1,6 +1,5 @@
 ﻿using MultiPrecision;
 using MultiPrecisionAlgebra;
-using System;
 using static MultiPrecision.Pow2;
 
 namespace MathieuPadeApproximate {
@@ -18,7 +17,6 @@ namespace MathieuPadeApproximate {
                     { (4, 8, 4) , 4 },
                     { (8, 16, 8) , 4 },
                     { (16, 64, 16) , 4 },
-                    { (64, 1024, 64) , 4 },
                     { (64, 512, 64) , 4 },
                     { (512, 4096, 512) , 4 },
                 };
@@ -46,7 +44,6 @@ namespace MathieuPadeApproximate {
                     { (4, 8, 4) , 4 },
                     { (8, 16, 8) , 4 },
                     { (16, 64, 16) , 4 },
-                    { (64, 1024, 64) , 4 },
                     { (64, 512, 64) , 4 },
                     { (512, 4096, 512) , 4 },
                 };
@@ -66,7 +63,7 @@ namespace MathieuPadeApproximate {
             Console.Read();
         }
 
-        private static void SearchAndPlotM(int n, Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges,  MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) {
+        private static void SearchAndPlotM(int n, Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges, MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) {
             Console.WriteLine($"Plotting n={n} range=[{umin},{umax}]");
 
             List<(MultiPrecision<N8> u, MultiPrecision<N8> m)> expecteds = ReadMExpected(n, umin, umax);
@@ -89,7 +86,7 @@ namespace MathieuPadeApproximate {
             }
         }
 
-        private static void SearchAndPlotD(int n, Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges,  MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) {
+        private static void SearchAndPlotD(int n, Dictionary<(MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0), int> ranges, MultiPrecision<N8> umin, MultiPrecision<N8> umax, MultiPrecision<N8> u0) {
             Console.WriteLine($"Plotting n={n} range=[{umin},{umax}]");
 
             List<(MultiPrecision<N8> u, MultiPrecision<N8> d)> expecteds = ReadDExpected(n, umin, umax);
@@ -130,7 +127,7 @@ namespace MathieuPadeApproximate {
             }
         }
 
-        static List<(MultiPrecision<N> u, MultiPrecision<N> m)> ReadMExpected<N>(int n,  MultiPrecision<N> umin,  MultiPrecision<N> umax) where N : struct, IConstant {
+        static List<(MultiPrecision<N> u, MultiPrecision<N> m)> ReadMExpected<N>(int n, MultiPrecision<N> umin, MultiPrecision<N> umax) where N : struct, IConstant {
             List<(MultiPrecision<N> u, MultiPrecision<N> m)> res = new();
 
             {
@@ -196,7 +193,7 @@ namespace MathieuPadeApproximate {
             return res;
         }
 
-        static List<(MultiPrecision<N> u, MultiPrecision<N> d)> ReadDExpected<N>(int n,  MultiPrecision<N> umin,  MultiPrecision<N> umax) where N : struct, IConstant {
+        static List<(MultiPrecision<N> u, MultiPrecision<N> d)> ReadDExpected<N>(int n, MultiPrecision<N> umin, MultiPrecision<N> umax) where N : struct, IConstant {
             List<(MultiPrecision<N> u, MultiPrecision<N> d)> res = new();
 
             {
@@ -286,7 +283,7 @@ namespace MathieuPadeApproximate {
             if (x0 == 0) {
                 (xs, ys, weights) = (xs[1..], ys[1..], weights[1..]);
             }
-            else { 
+            else {
                 xs -= x0;
             }
 

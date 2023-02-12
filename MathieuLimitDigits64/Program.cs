@@ -1,22 +1,31 @@
 ﻿using MultiPrecision;
-using System.Numerics;
 using static MultiPrecision.Pow2;
 
 namespace MathieuMP {
     class Program {
         static void Main() {
-            List<MultiPrecision<N8>> us = new();
+            List<MultiPrecision<N8>> fs = new();
 
-            for (MultiPrecision<N8> u = 1024; u.Exponent <= 40; u *= 2) {
-                for (MultiPrecision<N8> f = 1; f < 2; f += 1d / 16) {
-                    us.Add(u * f);
+            for (MultiPrecision<N8> f = MultiPrecision<N8>.Ldexp(1, -40); f < MultiPrecision<N8>.Ldexp(1, -20); f *= 2) {
+                for (MultiPrecision<N8> r = 1; r < 2; r += 1d / 16) {
+                    fs.Add(f * r);
+                }
+            }
+            for (MultiPrecision<N8> f = MultiPrecision<N8>.Ldexp(1, -20); f < MultiPrecision<N8>.Ldexp(1, -16); f *= 2) {
+                for (MultiPrecision<N8> r = 1; r < 2; r += 1d / 64) {
+                    fs.Add(f * r);
+                }
+            }
+            for (MultiPrecision<N8> f = MultiPrecision<N8>.Ldexp(1, -16); f <= MultiPrecision<N8>.Ldexp(1, -12); f *= 2) {
+                for (MultiPrecision<N8> r = 1; r < 2; r += 1d / 64) {
+                    fs.Add(f * r);
                 }
             }
 
             for (int n = 0; n <= 16; n++) {
                 Console.WriteLine($"Plotting {n}");
 
-                using StreamWriter sw = new($"../../../../results/eigen_limit_r2_precision64_n{n}.csv");
+                using StreamWriter sw = new($"../../../../results/eigen_limit_precision64_n{n}.csv");
                 sw.WriteLine($"# zero shifted mathieu eigen limit value precision_digits=64 n={n}");
 
                 if (n >= 1) {
@@ -26,27 +35,28 @@ namespace MathieuMP {
                     sw.WriteLine("# u:=q^2");
                 }
 
-                sw.WriteLine("u,a,a_limit,a_delta,b,b_limit,b_delta,digits_loss(1/0)");
+                sw.WriteLine("1/u,a,a_limit,a_delta,b,b_limit,b_delta,digits_loss(1/0)");
 
                 int s = Math.Max(1, n * n);
                 int i = 0, mp_length = 0;
 
-                foreach (MultiPrecision<N8> u in us) {
-                    MultiPrecision<N64> q = s * MultiPrecision<N64>.Sqrt(u.Convert<N64>());
+                sw.WriteLine("0,-inf,-inf,0,-inf,-inf,0,0");
+
+                foreach (MultiPrecision<N8> f in fs) {
+                    MultiPrecision<N64> u = 1 / f.Convert<N64>();
+                    MultiPrecision<N64> q = s * MultiPrecision<N64>.Sqrt(u);
 
                     (MultiPrecision<N8> a, MultiPrecision<N8> a_limit, MultiPrecision<N8> a_delta, MultiPrecision<N8> b, MultiPrecision<N8> b_limit, MultiPrecision<N8> b_delta, bool cancellation_digits, mp_length)
                         = ComputeDigits64(n, q, mp_length);
 
                     if (n >= 1) {
-                        sw.WriteLine($"{u},{a:e64},{a_limit:e64},{a_delta:e64},{b:e64},{b_limit:e64},{b_delta:e64},{(cancellation_digits ? "1" : "0")}");
-                        Console.WriteLine($"{u},{a:e20},{a_limit:e20},{b:e20},{b_limit:e20}");
+                        sw.WriteLine($"{f},{a:e64},{a_limit:e64},{a_delta:e64},{b:e64},{b_limit:e64},{b_delta:e64},{(cancellation_digits ? "1" : "0")}");
+                        Console.WriteLine($"{f},{a:e20},{a_limit:e20},{b:e20},{b_limit:e20}");
                     }
                     else {
-                        sw.WriteLine($"{u},{a:e64},{a_limit:e64},{a_delta:e64},0,0,0,0");
-                        Console.WriteLine($"{u},{a:e20},{a_limit:e20}");
+                        sw.WriteLine($"{f},{a:e64},{a_limit:e64},{a_delta:e64},0,0,0,0");
+                        Console.WriteLine($"{f},{a:e20},{a_limit:e20}");
                     }
-
-                    sw.Flush();
 
                     i++;
                     if ((i % 8) == 0) {
@@ -200,16 +210,32 @@ namespace MathieuMP {
 
         static MultiPrecision<N> LimitEigenA<N>(int n, MultiPrecision<N> q) where N : struct, IConstant {
             int s = 2 * n + 1;
-            MultiPrecision<N> y = 2 * (s * MultiPrecision<N>.Sqrt(q) - q) - MultiPrecision<N>.Div(6 * n * n + 2 * n + 1, 4);
+            MultiPrecision<N> h = MultiPrecision<N>.Sqrt(q);
+
+            MultiPrecision<N> y = 2 * (s * h - q) - MultiPrecision<N>.Div(6 * n * n + 2 * n + 1, 4) - DeltaTerm5(s, h);
 
             return y;
         }
 
         static MultiPrecision<N> LimitEigenB<N>(int n, MultiPrecision<N> q) where N : struct, IConstant {
             int s = 2 * n - 1;
-            MultiPrecision<N> y = 2 * (s * MultiPrecision<N>.Sqrt(q) - q) - MultiPrecision<N>.Div(6 * n * n - 2 * n + 1, 4);
+            MultiPrecision<N> h = MultiPrecision<N>.Sqrt(q);
+
+            MultiPrecision<N> y = 2 * (s * h - q) - MultiPrecision<N>.Div(6 * n * n - 2 * n + 1, 4) - DeltaTerm5(s, h);
 
             return y;
+        }
+
+        static MultiPrecision<N> DeltaTerm5<N>(long s, MultiPrecision<N> h) where N : struct, IConstant {
+            MultiPrecision<N> delta = 0;
+
+            delta += (s * (3 + s * s)) / (128 * h);
+            delta += (9 + s * s * (34 + s * s * 5)) / (4096 * h * h);
+            delta += (s * (405 + s * s * (410 + s * s * 33))) / (131072 * h * h * h);
+            delta += (486 + s * s * (2943 + s * s * (1260 + s * s * 63))) / (1048576 * h * h * h * h);
+            delta += (checked(s * (41607 + s * s * (69001 + s * s * (15617 + s * s * 527))))) / (33554432 * h * h * h * h * h);
+
+            return delta;
         }
     }
 }
