@@ -102,7 +102,7 @@ namespace MathieuPadeApproximate {
         static List<(MultiPrecision<N> u, MultiPrecision<N> a, MultiPrecision<N> a_delta)> ReadAExpected<N>(int n, MultiPrecision<N> umin, MultiPrecision<N> umax) where N : struct, IConstant {
             List<(MultiPrecision<N> u, MultiPrecision<N> a, MultiPrecision<N> a_delta)> res = new();
 
-            using StreamReader sr = new($"../../../../results/eigen_limit_r4_precision64_n{n}.csv");
+            using StreamReader sr = new($"../../../../results/eigen_limit_precision64_n{n}.csv");
             sr.ReadLine();
             sr.ReadLine();
             sr.ReadLine();
@@ -133,7 +133,7 @@ namespace MathieuPadeApproximate {
         static List<(MultiPrecision<N> u, MultiPrecision<N> b, MultiPrecision<N> b_delta)> ReadBExpected<N>(int n, MultiPrecision<N> umin, MultiPrecision<N> umax) where N : struct, IConstant {
             List<(MultiPrecision<N> u, MultiPrecision<N> b, MultiPrecision<N> a_delta)> res = new();
 
-            using StreamReader sr = new($"../../../../results/eigen_limit_r4_precision64_n{n}.csv");
+            using StreamReader sr = new($"../../../../results/eigen_limit_precision64_n{n}.csv");
             sr.ReadLine();
             sr.ReadLine();
             sr.ReadLine();

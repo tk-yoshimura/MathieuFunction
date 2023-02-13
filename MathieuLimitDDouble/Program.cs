@@ -137,7 +137,7 @@ namespace MathieuPadeDDouble {
         static List<(ddouble invu, ddouble a, ddouble b)> ReadExpected(int n, ddouble umin, ddouble umax) {
             List<(ddouble invu, ddouble a, ddouble b)> res = new();
 
-            using StreamReader sr = new($"../../../../results/eigen_limit_r4_precision64_n{n}.csv");
+            using StreamReader sr = new($"../../../../results/eigen_limit_precision64_n{n}.csv");
             sr.ReadLine();
             sr.ReadLine();
             sr.ReadLine();
@@ -294,7 +294,6 @@ namespace MathieuPadeDDouble {
         static ddouble DeltaTerm5(long s, ddouble h) {
             ddouble delta = 0;
 
-            delta += (1 + s * s) / (8d);
             delta += (s * (3 + s * s)) / (128 * h);
             delta += (9 + s * s * (34 + s * s * 5)) / (4096 * h * h);
             delta += (s * (405 + s * s * (410 + s * s * 33))) / (131072 * h * h * h);
