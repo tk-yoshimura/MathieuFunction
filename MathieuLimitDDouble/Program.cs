@@ -4,8 +4,6 @@ using MultiPrecision;
 namespace MathieuPadeDDouble {
     class Program {
         static void Main() {
-            ddouble b = DeltaTerm5(9, 32);
-
             (ddouble umin, ddouble umax)[] ranges = new (ddouble, ddouble)[]{
                 (0, Math.ScaleB(1, -20)),
                 (Math.ScaleB(1, -20), Math.ScaleB(1, -16)),
