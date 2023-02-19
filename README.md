@@ -50,7 +50,7 @@ Mathieu function with eigenvalue a for q is a periodic solution and can be expre
 ![coef fourier](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/coef_fourier.svg)  
 
 ### Coefficient Matrix
-The relationship between the coefficients is expressed using a triple diagonal matrix T.  
+The relationship between the coefficients is expressed using a tridiagonal matrix *T*.  
 ![coef matrix](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/coef_matrix.svg)  
 ![coef param](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/coef_param.svg)  
 
