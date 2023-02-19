@@ -46,6 +46,7 @@
 ![eigen cfrac 1024bit](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/needs_frac_log2_mp32.svg)  
 
 ## Fourier Series
+Mathieu function with eigenvalue a for q is a periodic solution and can be expressed as a Fourier series.  
 ![coef fourier](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/coef_fourier.svg)  
 
 ### Coefficient Matrix
