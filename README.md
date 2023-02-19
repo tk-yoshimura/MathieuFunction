@@ -44,3 +44,20 @@
 ![eigen cfrac 512bit](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/needs_frac_log2_mp16.svg)  
 1024bit  
 ![eigen cfrac 1024bit](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/needs_frac_log2_mp32.svg)  
+
+## Fourier Series
+![coef fourier](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/coef_fourier.svg)  
+
+### Coefficient Matrix
+The relationship between the coefficients is expressed using a triple diagonal matrix T.  
+![coef matrix](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/coef_matrix.svg)  
+![coef param](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/coef_param.svg)  
+
+### Backward Recurse
+Backward recursion is used as an approximate method to solve the coefficient sequence.  
+![coef backrecur](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/coef_backrecur.svg)  
+
+### Solve Matrix
+In backward recursion, terms may cancel each other and produce a value close to zero, although this is a rare case.  
+In this case, it must be solved in pieces as a linear problem because the digits drop out and subsequent values become inaccurate.  
+![coef det](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/coef_det.svg)  

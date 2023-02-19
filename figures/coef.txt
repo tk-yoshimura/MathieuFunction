@@ -1,0 +1,56 @@
+\begin{eqnarray*}
+\left[ \begin{matrix}
+    a-r_0  & -q     & 0      & \cdots &        & \cdots    & 0 \\
+    -K q   & a-r_1  & -q     & 0      & \cdots & \cdots    & 0 \\
+    0      & -q     & a-r_2  & -q     & 0      & \cdots    & 0 \\
+    \vdots & 0      & -q     & a-r_3  & -q     & \ddots    & \vdots \\
+           & \vdots & \ddots & \ddots & \ddots & \ddots    & 0 \\
+    \vdots & \vdots &        & \ddots & -q     & a-r_{n-2} & -q \\
+    0      & 0      & \cdots & \cdots & 0      & -q & a-r_{n-1} \\
+  \end{matrix} \right] \left[ \begin{matrix}
+    c_0     \\
+    c_1     \\
+    c_2     \\
+    c_3     \\
+    \vdots  \\
+    c_{n-2} \\
+    c_{n-1}
+  \end{matrix} \right] = \left[ \begin{matrix}
+    0     \\
+    0     \\
+    0     \\
+    0     \\
+    \vdots \\
+    0      \\
+    q c_{n}
+  \end{matrix} \right]
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\mathrm{ce}_{2n}(z, q) &=& \sum_{m=0}^{\infty} c_m \cos 2mz \\
+\mathrm{ce}_{2n+1}(z, q) &=& \sum_{m=0}^{\infty} c_m \cos (2m+1)z \\
+\mathrm{se}_{2n+1}(z, q) &=& \sum_{m=0}^{\infty} c_m \sin (2m+1)z \\
+\mathrm{se}_{2n+2}(z, q) &=& \sum_{m=0}^{\infty} c_m \sin (2m+2)z \\
+\end{eqnarray*}
+
+\begin{eqnarray*}
+&& \mathrm{ce}~~ n \text{:even} \\
+&&~~ K = 2, r_m = (2 m)^2 \\
+&& \mathrm{ce}~~ n \text{:odd} \\
+&&~~ K = 1, r_0 = 1 + q, r_{m \geq 1} = (2m+1)^2 \\
+&& \mathrm{se}~~ n \text{:odd} \\
+&&~~ K = 1, r_0 = 1 - q, r_{m \geq 1} = (2m+1)^2 \\
+&& \mathrm{se}~~ n \text{:even} \\
+&&~~ K = 1, r_m = (2m+2)^2 \\
+\end{eqnarray*}
+
+\begin{eqnarray*}
+|T_2| &=& (a - r_0) (a - r_1) - K q^2 \\
+|T_3| &=& (a - r_0) (a - r_1) (a - r_2) - ((a - r_0) + K (a - r_2)) q^2 \\
+|T_{n>3}| &=& |T_{n-1}| (a - r_{n-1}) - |T_{n-2}| q^2
+\end{eqnarray*}
+
+\begin{eqnarray*}
+&& c_{L} = 0, c_{L-1} = \epsilon~~~~(L : \text{large integer}) \\
+&& c_{m-1} = \frac{c_m}{q} (a - r_m) - c_{m+1} ~~~~(m \geq 3)
+\end{eqnarray*}
