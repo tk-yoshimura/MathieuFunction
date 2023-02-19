@@ -45,12 +45,18 @@
 \end{eqnarray*}
 
 \begin{eqnarray*}
+&& c_{L} = 0, c_{L-1} = \epsilon~~~~(L : \text{large integer}) \\
+&& c_{m-1} = \frac{c_m}{q} (a - r_m) - c_{m+1} ~~~~(m \geq 3)
+\end{eqnarray*}
+
+\begin{eqnarray*}
+|T_0| &=& 1 \\
+|T_1| &=& (a - r_0) \\
 |T_2| &=& (a - r_0) (a - r_1) - K q^2 \\
 |T_3| &=& (a - r_0) (a - r_1) (a - r_2) - ((a - r_0) + K (a - r_2)) q^2 \\
 |T_{n>3}| &=& |T_{n-1}| (a - r_{n-1}) - |T_{n-2}| q^2
 \end{eqnarray*}
 
 \begin{eqnarray*}
-&& c_{L} = 0, c_{L-1} = \epsilon~~~~(L : \text{large integer}) \\
-&& c_{m-1} = \frac{c_m}{q} (a - r_m) - c_{m+1} ~~~~(m \geq 3)
+c_m &=& \frac{c_n q^{n-m} |T_m|}{|T_n|}
 \end{eqnarray*}

@@ -62,3 +62,4 @@ Backward recursion is used as an approximate method to solve the coefficient seq
 In backward recursion, terms may cancel each other and produce a value close to zero, although this is a rare case.  
 In this case, it must be solved in pieces as a linear problem because the digits drop out and subsequent values become inaccurate.  
 ![coef det](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/coef_det.svg)  
+![coef solve](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/coef_solve.svg)  
