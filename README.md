@@ -64,5 +64,5 @@ In this case, it must be solved in pieces as a linear problem because the digits
 ![coef det](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/coef_det.svg)  
 ![coef solve](https://github.com/tk-yoshimura/MathieuFunction/blob/main/figures/coef_solve.svg)  
 
-When *q* is small, the accuracy of calculation is extremely poor for ce, se(n=1), se(n=2), where the *a* - *r*<sup>0</sup> is close to zero.  
+When *q* is small, the accuracy of calculation is extremely poor for ce, se(n=1), se(n=2), where the *a* - *r*<sub>0</sub> is close to zero.  
 Therefore, it is necessary to separately prepare an approximation of zero-shifted eigenvalue function.
