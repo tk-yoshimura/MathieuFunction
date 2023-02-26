@@ -66,3 +66,6 @@ In this case, it must be solved in pieces as a linear problem because the digits
 
 When *q* is small, the accuracy of calculation is extremely poor for ce, se(n=1), se(n=2), where the *a* - *r*<sub>0</sub> is close to zero.  
 Therefore, it is necessary to separately prepare an approximation of zero-shifted eigenvalue function.
+
+## Implement
+[DoubleDouble (30 digits)](https://github.com/tk-yoshimura/DoubleDouble/blob/main/DoubleDouble/DDouble/DDouble_mathieu.cs)  
