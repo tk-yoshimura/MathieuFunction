@@ -1,5 +1,4 @@
 ﻿using MultiPrecision;
-using System.Numerics;
 using static MultiPrecision.Pow2;
 
 namespace MathieuMP {
@@ -51,7 +50,7 @@ namespace MathieuMP {
         }
 
         static (MultiPrecision<N> a, MultiPrecision<N> b) ComputeDigits40<N>(int n, MultiPrecision<N> q) where N : struct, IConstant {
-            if (n == 0) { 
+            if (n == 0) {
                 return (EigenMP<N>.Value(EigenFunc.A, n, q, zero_shift: false).value, 0);
             }
 

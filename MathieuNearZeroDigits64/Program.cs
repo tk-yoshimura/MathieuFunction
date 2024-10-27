@@ -1,5 +1,4 @@
 ﻿using MultiPrecision;
-using System.Numerics;
 using static MultiPrecision.Pow2;
 
 namespace MathieuMP {
@@ -47,7 +46,7 @@ namespace MathieuMP {
                     (MultiPrecision<N8> a, MultiPrecision<N8> b, MultiPrecision<N8> az, MultiPrecision<N8> bz, bool cancellation_digits, mp_length)
                         = ComputeDigits64(n, q, mp_length);
 
-                    sw.WriteLine($"{u},{q},{a:e64},{b:e64},{az:e64},{bz:e64},{(az/(q*q).Convert<N8>()):e64},{(bz/(q*q).Convert<N8>()):e64},{(cancellation_digits ? "1" : "0")}");
+                    sw.WriteLine($"{u},{q},{a:e64},{b:e64},{az:e64},{bz:e64},{(az / (q * q).Convert<N8>()):e64},{(bz / (q * q).Convert<N8>()):e64},{(cancellation_digits ? "1" : "0")}");
                     Console.WriteLine($"{u},{q},{a:e20},{az:e20}");
 
                     i++;
