@@ -70,7 +70,7 @@ namespace MathieuMP {
                 x = x0 - s;
                 y = f(x);
 
-                if (y.IsFinite && y < 0) {
+                if (MultiPrecision<N>.IsFinite(y) && y < 0) {
                     break;
                 }
                 s *= 2;
@@ -90,7 +90,7 @@ namespace MathieuMP {
                 h = MultiPrecision<N>.Max(MultiPrecision<N>.BitIncrement(h), h * 1.25);
             }
 
-            if (!x.IsFinite || !h.IsFinite) {
+            if (!MultiPrecision<N>.IsFinite(x) || !MultiPrecision<N>.IsFinite(h)) {
                 return (MultiPrecision<N>.NaN, false);
             }
             if (h.Exponent < x.Exponent - MultiPrecision<N>.Bits + 4) {
@@ -159,7 +159,7 @@ namespace MathieuMP {
                 x = x0 + s;
                 y = f(x);
 
-                if (y.IsFinite && y > 0) {
+                if (MultiPrecision<N>.IsFinite(y) && y > 0) {
                     break;
                 }
                 s *= 2;
@@ -179,7 +179,7 @@ namespace MathieuMP {
                 h = MultiPrecision<N>.Max(MultiPrecision<N>.BitIncrement(h), h * 1.25);
             }
 
-            if (!x.IsFinite || !h.IsFinite) {
+            if (!MultiPrecision<N>.IsFinite(x) || !MultiPrecision<N>.IsFinite(h)) {
                 return (MultiPrecision<N>.NaN, false);
             }
             if (h.Exponent < x.Exponent - MultiPrecision<N>.Bits + 4) {
@@ -239,7 +239,7 @@ namespace MathieuMP {
         public static MultiPrecision<N> LinearityScore(Func<MultiPrecision<N>, MultiPrecision<N>> f, MultiPrecision<N> x) {
             MultiPrecision<N> h0 = MultiPrecision<N>.Max(MultiPrecision<N>.Ldexp(1, -256), MultiPrecision<N>.BitIncrement(x) - x);
 
-            if (!h0.IsFinite || h0 == 0) {
+            if (!MultiPrecision<N>.IsFinite(h0) || h0 == 0) {
                 throw new ArgumentOutOfRangeException(nameof(x));
             }
 
@@ -258,14 +258,14 @@ namespace MathieuMP {
 
                     sw += w;
 
-                    if (mny.IsFinite && pny.IsFinite) {
+                    if (MultiPrecision<N>.IsFinite(mny) && MultiPrecision<N>.IsFinite(pny)) {
                         snw += w;
                         snxx += 2 * w * h * h;
                         snxy += w * h * (pny - mny);
                         snyy += w * (mny * mny + pny * pny);
                     }
 
-                    if (miy.IsFinite && piy.IsFinite) {
+                    if (MultiPrecision<N>.IsFinite(miy) && MultiPrecision<N>.IsFinite(piy)) {
                         siw += w;
                         sixx += 2 * w * h * h;
                         sixy += w * h * (piy - miy);
@@ -277,16 +277,16 @@ namespace MathieuMP {
 
                 MultiPrecision<N> snxypw = snxy / snw, sixypw = sixy / siw;
 
-                MultiPrecision<N> r = snxypw.IsFinite && sixypw.IsFinite
+                MultiPrecision<N> r = MultiPrecision<N>.IsFinite(snxypw) && MultiPrecision<N>.IsFinite(sixypw)
                     ? MultiPrecision<N>.Min(MultiPrecision<N>.Abs(snxypw), MultiPrecision<N>.Abs(sixypw))
-                    : snxypw.IsFinite ? MultiPrecision<N>.Abs(snxypw)
-                    : sixypw.IsFinite ? MultiPrecision<N>.Abs(sixypw)
+                    : MultiPrecision<N>.IsFinite(snxypw) ? MultiPrecision<N>.Abs(snxypw)
+                    : MultiPrecision<N>.IsFinite(sixypw) ? MultiPrecision<N>.Abs(sixypw)
                     : 0d;
 
                 MultiPrecision<N> rn = MultiPrecision<N>.Abs(snxy / MultiPrecision<N>.Max(MultiPrecision<N>.Epsilon, MultiPrecision<N>.Sqrt(snxx * snyy))) * MultiPrecision<N>.Exp((r - MultiPrecision<N>.Abs(snxypw)) * sw);
                 MultiPrecision<N> ri = MultiPrecision<N>.Abs(sixy / MultiPrecision<N>.Max(MultiPrecision<N>.Epsilon, MultiPrecision<N>.Sqrt(sixx * siyy))) * MultiPrecision<N>.Exp((r - MultiPrecision<N>.Abs(sixypw)) * sw);
 
-                score = (rn.IsFinite ? rn : 0) - (ri.IsFinite ? ri : 0);
+                score = (MultiPrecision<N>.IsFinite(rn) ? rn : 0) - (MultiPrecision<N>.IsFinite(ri) ? ri : 0);
 
                 if (MultiPrecision<N>.Abs(score) > 0.5) {
                     return score;

@@ -128,7 +128,7 @@ namespace MathieuPadeApproximate {
         }
 
         static List<(MultiPrecision<N> u, MultiPrecision<N> m)> ReadMExpected<N>(int n, MultiPrecision<N> umin, MultiPrecision<N> umax) where N : struct, IConstant {
-            List<(MultiPrecision<N> u, MultiPrecision<N> m)> res = new();
+            List<(MultiPrecision<N> u, MultiPrecision<N> m)> res = [];
 
             {
                 using StreamReader sr = new($"../../../../results/eigen_precision64_n{n}.csv");
@@ -194,7 +194,7 @@ namespace MathieuPadeApproximate {
         }
 
         static List<(MultiPrecision<N> u, MultiPrecision<N> d)> ReadDExpected<N>(int n, MultiPrecision<N> umin, MultiPrecision<N> umax) where N : struct, IConstant {
-            List<(MultiPrecision<N> u, MultiPrecision<N> d)> res = new();
+            List<(MultiPrecision<N> u, MultiPrecision<N> d)> res = [];
 
             {
                 using StreamReader sr = new($"../../../../results/eigen_precision64_n{n}.csv");
@@ -289,8 +289,8 @@ namespace MathieuPadeApproximate {
 
             AdaptivePadeFitter<N> fitter = new(xs, ys, numer, denom, intercept: (x0 <= 0) ? expecteds[0].v.Convert<N>() : null);
 
-            (Vector<N> parameter, bool success) = fitter.ExecuteFitting(weights, needs_increase_weight);
-            Vector<N> approx = fitter.FittingValue(expecteds.Select((item) => item.u.Convert<N>() - x0).ToArray(), parameter);
+            (Vector<N> parameter, bool success) = fitter.Fit(weights, needs_increase_weight);
+            Vector<N> approx = fitter.Regress(expecteds.Select((item) => item.u.Convert<N>() - x0).ToArray(), parameter);
 
             return (parameter, approx, success);
         }

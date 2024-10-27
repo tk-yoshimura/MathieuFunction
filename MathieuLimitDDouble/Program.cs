@@ -133,7 +133,7 @@ namespace MathieuPadeDDouble {
         }
 
         static List<(ddouble invu, ddouble a, ddouble b)> ReadExpected(int n, ddouble umin, ddouble umax) {
-            List<(ddouble invu, ddouble a, ddouble b)> res = new();
+            List<(ddouble invu, ddouble a, ddouble b)> res = [];
 
             using StreamReader sr = new($"../../../../results/eigen_limit_precision64_n{n}.csv");
             sr.ReadLine();
@@ -164,7 +164,7 @@ namespace MathieuPadeDDouble {
         }
 
         static ((ddouble[] ms, ddouble[] ns) padecoef, ddouble u0) ReadPadecoef(StreamReader sr) {
-            List<ddouble> ms = new(), ns = new();
+            List<ddouble> ms = [], ns = [];
 
             string line = sr.ReadLine();
             if (!(line.StartsWith("u0 = "))) {
@@ -201,7 +201,7 @@ namespace MathieuPadeDDouble {
         }
 
         static ((MultiPrecision<N>[] ms, MultiPrecision<N>[] ns) padecoef, MultiPrecision<N> u0) ReadPadecoef<N>(StreamReader sr) where N : struct, IConstant {
-            List<MultiPrecision<N>> ms = new(), ns = new();
+            List<MultiPrecision<N>> ms = [], ns = [];
 
             string line = sr.ReadLine();
             if (!(line.StartsWith("u0 = "))) {

@@ -72,7 +72,7 @@ namespace MathieuMP {
             MultiPrecision<N> y = func switch {
                 EigenFunc.A => FractionA(n, q, a, terms),
                 EigenFunc.B => FractionB(n, q, a, terms),
-                _ => throw new ArgumentException(nameof(func)),
+                _ => throw new ArgumentException(null, nameof(func)),
             };
 
             return y;
@@ -141,7 +141,7 @@ namespace MathieuMP {
                 return (a_interpolate, 0.5, is_convergence: false);
             }
 
-            bool is_convergence = a_likelihood.IsFinite;
+            bool is_convergence = MultiPrecision<N>.IsFinite(a_likelihood);
             if (!is_convergence && MultiPrecision<N>.Abs(a - ap) < heuristics_err) {
                 a_likelihood = ap;
             }

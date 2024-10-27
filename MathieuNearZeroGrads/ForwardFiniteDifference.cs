@@ -33,7 +33,7 @@ namespace MathieuMP {
 
         public static MultiPrecision<N>[] Diff(MultiPrecision<N>[] xs, MultiPrecision<N> h) {
             if (xs.Length != SamplePoints) {
-                throw new ArgumentException(nameof(xs));
+                throw new ArgumentException(null, nameof(xs));
             }
 
             MultiPrecision<N>[] ds = new MultiPrecision<N>[table.Length];
@@ -43,7 +43,7 @@ namespace MathieuMP {
                 MultiPrecision<M>[] ts = table[i];
 
                 for (int j = 0; j < ts.Length; j++) {
-                    if (ts[j].IsZero || xs[j].IsZero) {
+                    if (MultiPrecision<M>.IsZero(ts[j]) || MultiPrecision<N>.IsZero(xs[j])) {
                         continue;
                     }
 

@@ -4,7 +4,7 @@ using System.Numerics;
 namespace MathieuMP {
     class Program {
         static void Main() {
-            List<MultiPrecision<Pow2.N4>> us = new();
+            List<MultiPrecision<Pow2.N4>> us = [];
 
             for (MultiPrecision<Pow2.N4> u = MultiPrecision<Pow2.N4>.Ldexp(1, -80); u <= 256; u *= 2) {
                 us.Add(u);

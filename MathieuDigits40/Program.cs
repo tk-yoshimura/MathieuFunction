@@ -5,7 +5,7 @@ using static MultiPrecision.Pow2;
 namespace MathieuMP {
     class Program {
         static void Main() {
-            List<MultiPrecision<N8>> us = new();
+            List<MultiPrecision<N8>> us = [];
 
             for (MultiPrecision<N8> u = MultiPrecision<N8>.Ldexp(1, -20); u <= MultiPrecision<N8>.Ldexp(1, 80); u *= 2) {
                 us.Add(u);

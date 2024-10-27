@@ -29,7 +29,7 @@ namespace MathieuMP {
                 sw.WriteLine("0,0,inf,0,inf");
 
                 for (int deg = 0; deg < degrees; deg++) {
-                    List<MultiPrecision<N80>> mg = new(), dg = new();
+                    List<MultiPrecision<N80>> mg = [], dg = [];
                     (MultiPrecision<N80> value, int precision) mg_sel = (MultiPrecision<N80>.NaN, 0), dg_sel = (MultiPrecision<N80>.NaN, 0);
 
                     for (int i = 0; i < mgs.Count; i++) {
@@ -97,7 +97,7 @@ namespace MathieuMP {
         }
 
         static List<(MultiPrecision<Pow2.N4> u, MultiPrecision<N80> m, MultiPrecision<N80> d)> ReadValues(int n) {
-            List<(MultiPrecision<Pow2.N4> u, MultiPrecision<N80> m, MultiPrecision<N80> d)> res = new();
+            List<(MultiPrecision<Pow2.N4> u, MultiPrecision<N80> m, MultiPrecision<N80> d)> res = [];
 
             using BinaryReader br = new(File.OpenRead($"../../../../results/eigen_nearzero_log2_precision2560bits_n{n}.bin"));
 
@@ -113,7 +113,7 @@ namespace MathieuMP {
         }
 
         static List<MultiPrecision<N80>[]> Grads(List<(MultiPrecision<Pow2.N4> u, MultiPrecision<N80> x)> values) {
-            List<MultiPrecision<N80>[]> res = new();
+            List<MultiPrecision<N80>[]> res = [];
 
             int sample_points = ForwardFiniteDifference<N80, Pow2.N512>.SamplePoints;
 

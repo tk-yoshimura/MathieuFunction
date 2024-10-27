@@ -4,7 +4,7 @@ using static MultiPrecision.Pow2;
 namespace MathieuMP {
     class Program {
         static void Main() {
-            List<MultiPrecision<N8>> fs = new();
+            List<MultiPrecision<N8>> fs = [];
 
             for (MultiPrecision<N8> f = MultiPrecision<N8>.Ldexp(1, -40); f < MultiPrecision<N8>.Ldexp(1, -20); f *= 2) {
                 for (MultiPrecision<N8> r = 1; r < 2; r += 1d / 16) {
