@@ -57,5 +57,6 @@ Resource.aps
 *.csv#
 sandbox
 results/padecoef
+results_disused/
 
 # Safelist
