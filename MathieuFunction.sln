@@ -30,9 +30,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuDigits40", "MathieuD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuNearZeroDigits64", "MathieuNearZeroDigits64\MathieuNearZeroDigits64.csproj", "{31DAD6AA-030D-4557-A353-5E0E0713172B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathieuPadeNearZeroApproximate", "MathieuPadeNearZeroApproximate\MathieuPadeNearZeroApproximate.csproj", "{4B75B7D8-506E-416F-9F27-191DFEBBAE55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuPadeNearZeroApproximate", "MathieuPadeNearZeroApproximate\MathieuPadeNearZeroApproximate.csproj", "{4B75B7D8-506E-416F-9F27-191DFEBBAE55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathieuNearZeroDDouble", "MathieuNearZeroDDouble\MathieuNearZeroDDouble.csproj", "{6C49A13F-091C-48FD-826D-56E5BF192F24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuNearZeroDDouble", "MathieuNearZeroDDouble\MathieuNearZeroDDouble.csproj", "{6C49A13F-091C-48FD-826D-56E5BF192F24}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuDigits145", "MathieuDigits145\MathieuDigits145.csproj", "{886AEA5C-568A-42D0-92A3-6C631E332187}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathieuLimitDigits145", "MathieuLimitDigits145\MathieuLimitDigits145.csproj", "{D46761A5-97E0-4B33-ABF6-9AD7FA6AEDDC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,6 +98,14 @@ Global
 		{6C49A13F-091C-48FD-826D-56E5BF192F24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C49A13F-091C-48FD-826D-56E5BF192F24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C49A13F-091C-48FD-826D-56E5BF192F24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{886AEA5C-568A-42D0-92A3-6C631E332187}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{886AEA5C-568A-42D0-92A3-6C631E332187}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{886AEA5C-568A-42D0-92A3-6C631E332187}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{886AEA5C-568A-42D0-92A3-6C631E332187}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D46761A5-97E0-4B33-ABF6-9AD7FA6AEDDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D46761A5-97E0-4B33-ABF6-9AD7FA6AEDDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D46761A5-97E0-4B33-ABF6-9AD7FA6AEDDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D46761A5-97E0-4B33-ABF6-9AD7FA6AEDDC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
