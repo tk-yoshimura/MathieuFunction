@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuDigits145", "Mathieu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuLimitDigits145", "MathieuLimitDigits145\MathieuLimitDigits145.csproj", "{D46761A5-97E0-4B33-ABF6-9AD7FA6AEDDC}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathieuPadeBothwardApproximate", "MathieuPadeBothwardApproximate\MathieuPadeBothwardApproximate.csproj", "{5EAC8B0E-0BF1-436B-9025-5D90E22AEFB8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{D46761A5-97E0-4B33-ABF6-9AD7FA6AEDDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D46761A5-97E0-4B33-ABF6-9AD7FA6AEDDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D46761A5-97E0-4B33-ABF6-9AD7FA6AEDDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EAC8B0E-0BF1-436B-9025-5D90E22AEFB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EAC8B0E-0BF1-436B-9025-5D90E22AEFB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EAC8B0E-0BF1-436B-9025-5D90E22AEFB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EAC8B0E-0BF1-436B-9025-5D90E22AEFB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
